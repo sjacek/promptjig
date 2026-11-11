@@ -1,0 +1,8 @@
+{
+  "lockVersion" : 1,
+  "prompts" : {
+    "patient.disability.certificate-extraction" : {
+      "1" : "sha256:10b7a8f7292b6d393bdc5642a396aff16a180f1e02224fc5e5801bcaa2cc9410"
+    }
+  }
+}

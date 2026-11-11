@@ -1,0 +1,28 @@
+[versions]
+jackson = "2.22.4"
+jackson3 = "3.1.8"
+json-schema-validator = "2.0.8"
+st4 = "4.3.4"
+jspecify = "1.0.0"
+junit = "5.14.4"
+spring-ai = "2.0.2"
+plugin-publish = "2.2.1"
+
+[libraries]
+jackson-bom = { module = "com.fasterxml.jackson:jackson-bom", version.ref = "jackson" }
+jackson-databind = { module = "com.fasterxml.jackson.core:jackson-databind" }
+jackson-jsr310 = { module = "com.fasterxml.jackson.datatype:jackson-datatype-jsr310" }
+jackson3-databind = { module = "tools.jackson.core:jackson-databind" }
+jackson-yaml = { module = "com.fasterxml.jackson.dataformat:jackson-dataformat-yaml" }
+jackson3-bom = { module = "tools.jackson:jackson-bom", version.ref = "jackson3" }
+json-schema-validator = { module = "com.networknt:json-schema-validator", version.ref = "json-schema-validator" }
+st4 = { module = "org.antlr:ST4", version.ref = "st4" }
+jspecify = { module = "org.jspecify:jspecify", version.ref = "jspecify" }
+junit-bom = { module = "org.junit:junit-bom", version.ref = "junit" }
+junit-jupiter = { module = "org.junit.jupiter:junit-jupiter" }
+junit-platform-launcher = { module = "org.junit.platform:junit-platform-launcher" }
+spring-ai-model = { module = "org.springframework.ai:spring-ai-model", version.ref = "spring-ai" }
+spring-ai-template-st = { module = "org.springframework.ai:spring-ai-template-st", version.ref = "spring-ai" }
+
+[plugins]
+plugin-publish = { id = "com.gradle.plugin-publish", version.ref = "plugin-publish" }

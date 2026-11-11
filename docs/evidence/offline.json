@@ -1,0 +1,115 @@
+{
+  "java" : "25.0.1",
+  "fingerprint" : "sha256:e92be038aef9799dc8818211a16010f270d376b6d718e119d1908149d387484b",
+  "parameterViolations" : [ ],
+  "parameters" : {
+    "certificate-extraction.system.st" : [ "contract" ],
+    "certificate-extraction.user.st" : [ "ocrText" ]
+  },
+  "e1Snapshot" : {
+    "parameters" : [ "ocrText" ],
+    "outputFieldCount" : 15,
+    "rawSha256" : "fe6c80973f0d0a075bcf307c16c2826e4bd1af4776a03c84a676dca83105f0fa"
+  },
+  "springAiThrow" : [ {
+    "template" : "certificate-extraction.system.st",
+    "status" : "FAIL",
+    "reason" : "Not all variables were replaced in the template. Missing variable names are: [separator]."
+  }, {
+    "template" : "certificate-extraction.user.st",
+    "status" : "PASS",
+    "renderedLength" : 271
+  } ],
+  "compatibleCandidate" : {
+    "status" : "PASS",
+    "renderedLength" : 952
+  },
+  "rendererLimitations" : [ {
+    "reason" : "Not all variables were replaced in the template. Missing variable names are: [value, separator].",
+    "case" : "anonymous-local-variables",
+    "status" : "FAIL"
+  } ],
+  "validation" : [ {
+    "name" : "mixed",
+    "errors" : [ {
+      "keyword" : "enum",
+      "instancePointer" : "/degree",
+      "schemaLocation" : "#/properties/degree/enum"
+    }, {
+      "keyword" : "format",
+      "instancePointer" : "/issuedAt",
+      "schemaLocation" : "#/properties/issuedAt/format"
+    }, {
+      "keyword" : "type",
+      "instancePointer" : "/permanent",
+      "schemaLocation" : "#/properties/permanent/type"
+    }, {
+      "keyword" : "pattern",
+      "instancePointer" : "/symbolCodes/0",
+      "schemaLocation" : "#/properties/symbolCodes/items/pattern"
+    }, {
+      "keyword" : "enum",
+      "instancePointer" : "/symbolCodes/0",
+      "schemaLocation" : "#/properties/symbolCodes/items/enum"
+    }, {
+      "keyword" : "type",
+      "instancePointer" : "/symbolCodes/2",
+      "schemaLocation" : "#/properties/symbolCodes/items/type"
+    }, {
+      "keyword" : "enum",
+      "instancePointer" : "/symbolCodes/2",
+      "schemaLocation" : "#/properties/symbolCodes/items/enum"
+    }, {
+      "keyword" : "additionalProperties",
+      "instancePointer" : "",
+      "schemaLocation" : "#/additionalProperties",
+      "property" : "unknown/key~name"
+    }, {
+      "keyword" : "required",
+      "instancePointer" : "",
+      "schemaLocation" : "#/required",
+      "property" : "patientSurname"
+    } ]
+  }, {
+    "name" : "array-structure",
+    "errors" : [ {
+      "keyword" : "type",
+      "instancePointer" : "/symbolCodes",
+      "schemaLocation" : "#/properties/symbolCodes/type"
+    } ]
+  }, {
+    "name" : "wrong-root",
+    "errors" : [ {
+      "keyword" : "type",
+      "instancePointer" : "",
+      "schemaLocation" : "#/type"
+    } ]
+  }, {
+    "name" : "nested-ref",
+    "errors" : [ {
+      "keyword" : "enum",
+      "instancePointer" : "/a~1b~0c/0/degree",
+      "schemaLocation" : "#/$defs/detail/properties/degree/enum"
+    }, {
+      "keyword" : "format",
+      "instancePointer" : "/a~1b~0c/0/issuedAt",
+      "schemaLocation" : "#/$defs/detail/properties/issuedAt/format"
+    }, {
+      "keyword" : "additionalProperties",
+      "instancePointer" : "/a~1b~0c/1",
+      "schemaLocation" : "#/$defs/detail/additionalProperties",
+      "property" : "unknown/key~name"
+    }, {
+      "keyword" : "required",
+      "instancePointer" : "/a~1b~0c/1",
+      "schemaLocation" : "#/$defs/detail/required",
+      "property" : "degree"
+    }, {
+      "keyword" : "required",
+      "instancePointer" : "/a~1b~0c/1",
+      "schemaLocation" : "#/$defs/detail/required",
+      "property" : "issuedAt"
+    } ]
+  } ],
+  "elapsedMillis" : 2461
+}

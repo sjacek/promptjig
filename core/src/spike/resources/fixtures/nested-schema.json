@@ -1,0 +1,10 @@
+{
+  "type": "object", "additionalProperties": false, "required": ["a/b~c"],
+  "properties": {"a/b~c": {"type": "array", "items": {"$ref": "#/$defs/detail"}}},
+  "$defs": {
+    "detail": {
+      "type": "object", "additionalProperties": false, "required": ["degree", "issuedAt"],
+      "properties": {"degree": {"type": ["string", "null"], "enum": ["MILD", null]}, "issuedAt": {"type": ["string", "null"], "format": "date"}}
+    }
+  }
+}

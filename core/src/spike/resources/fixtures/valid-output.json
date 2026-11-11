@@ -1,0 +1,7 @@
+{
+  "patientFirstNames": null, "patientSurname": null, "nationalId": null, "country": "PL",
+  "certificateType": "PZON_ADULT_DEGREE", "degree": "MODERATE",
+  "certificateNumber": null, "issuingBodyName": null, "issuedAt": "2026-10-01",
+  "validFrom": null, "validTo": null, "permanent": true,
+  "symbolCodes": ["05-R"], "indicationCodes": [], "notes": null
+}

@@ -1,0 +1,10 @@
+plugins {
+    id 'java'
+    id 'io.github.sjacek.promptjig' version '0.1.0'
+}
+
+promptContracts {
+    source = layout.projectDirectory.dir('src/main/resources/prompts')
+    lockFile = layout.projectDirectory.file('prompt-contracts.lock.json')
+    // CI can supply -Ppromptjig.baselineLockFile=baseline-lock.json.
+}

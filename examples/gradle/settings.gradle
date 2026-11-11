@@ -1,0 +1,6 @@
+pluginManagement {
+    def preview = providers.gradleProperty('promptjigPluginBuild')
+    if (preview.isPresent()) includeBuild(file(preview.get()))
+    repositories { gradlePluginPortal() }
+}
+rootProject.name = 'promptjig-gradle-example'

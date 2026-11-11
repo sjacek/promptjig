@@ -1,0 +1,39 @@
+plugins { id 'base' }
+
+allprojects {
+    group = 'io.github.sjacek.promptjig'
+    version = '0.1.0'
+    repositories { mavenCentral() }
+}
+
+subprojects {
+    apply plugin: 'java-library'
+    java {
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
+        withSourcesJar()
+    }
+    tasks.withType(JavaCompile).configureEach {
+        options.release = 17
+        options.encoding = 'UTF-8'
+    }
+    tasks.withType(Test).configureEach { useJUnitPlatform() }
+    tasks.withType(Javadoc).configureEach {
+        options.encoding = 'UTF-8'
+        options.addBooleanOption('Xdoclint:all', true)
+        options.addBooleanOption('Werror', true)
+    }
+    tasks.named('check') { dependsOn tasks.named('javadoc') }
+    tasks.withType(Jar).configureEach {
+        from(rootProject.file('LICENSE')) { into 'META-INF' }
+    }
+}
+
+tasks.named('check') { dependsOn subprojects.collect { it.tasks.named('check') } }
+tasks.named('assemble') { dependsOn subprojects.collect { it.tasks.named('assemble') } }
+
+def configuredVersion = version.toString()
+tasks.register('printVersion') {
+    description = 'Print the candidate publication version for release automation.'
+    doLast { println(configuredVersion) }
+}

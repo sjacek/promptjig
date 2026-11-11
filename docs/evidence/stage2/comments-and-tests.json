@@ -1,0 +1,172 @@
+{
+  "date": "2026-11-11",
+  "scope": "follow-up API/generated Javadoc and edge-case tests after initial stage-2 acceptance",
+  "coreTests": 80,
+  "coreSuites": [
+    {
+      "suite": "io.github.sjacek.promptjig.core.ContractEngineTest",
+      "tests": 22,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "suite": "io.github.sjacek.promptjig.core.JavaSourceGeneratorTest",
+      "tests": 29,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "suite": "io.github.sjacek.promptjig.core.PromptContractTest",
+      "tests": 9,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "suite": "io.github.sjacek.promptjig.core.SchemaValidationTest",
+      "tests": 4,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "suite": "io.github.sjacek.promptjig.core.TemplateParametersTest",
+      "tests": 12,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "suite": "io.github.sjacek.promptjig.core.ValidationResultTest",
+      "tests": 4,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    }
+  ],
+  "expandedConsumerSuites": [
+    {
+      "gradle": "9.0.0",
+      "java": 17,
+      "tests": 19,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "runtimeIdentityChecked": true,
+      "cases": [
+        "explicitLockAndCheckCanRunTogetherWithoutMakingLockImplicit()",
+        "consumerActuallyUsesTheRequestedGradleAndJavaRuntime()",
+        "checkDetectsChangesAndLockRequiresANewVersionWithConfigurationCache()",
+        "generationRemovesStaleTypesAndDoesNotWireSourcesWhenDisabled()",
+        "publishedMarkerWorksWithoutInjectedPluginClasspathAndCarriesLicense()",
+        "invalidGenerationSettingsProduceReportsWithoutSources()",
+        "explicitGenerationWorksWithoutTheJavaPluginAndDoesNotBecomePartOfCheck()",
+        "customOutputAndResourcePrefixAreTrackedByCompilationAndConfigurationCache()",
+        "externalBaselineContentInvalidatesValidationWithConfigurationCache()",
+        "baselineProtectsHistoryAndMissingBaselineIsNotSilentlySkipped()",
+        "jacksonRuntimeIsNotExposedToTheConsumerBuildscript()",
+        "changedBaselineInvalidatesGenerationAndPreservesPreviousSourcesOnFailure()",
+        "[1] false",
+        "[2] true",
+        "dslOverridesApplyToAlreadyRegisteredTasksAndDoNotCreateTheDefaultLock()",
+        "generatedSourcesAndReportsCanBeRestoredFromCacheAfterRelocation()",
+        "lockAlwaysRunsAndLeavesExistingBytesUntouched()",
+        "validationReportsAreRestoredFromBuildCacheAfterRelocation()",
+        "pluginCanBeAppliedWithoutJavaOrPrompts()"
+      ]
+    },
+    {
+      "gradle": "9.9.1",
+      "java": 25,
+      "tests": 19,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "runtimeIdentityChecked": true,
+      "cases": [
+        "explicitLockAndCheckCanRunTogetherWithoutMakingLockImplicit()",
+        "consumerActuallyUsesTheRequestedGradleAndJavaRuntime()",
+        "checkDetectsChangesAndLockRequiresANewVersionWithConfigurationCache()",
+        "generationRemovesStaleTypesAndDoesNotWireSourcesWhenDisabled()",
+        "publishedMarkerWorksWithoutInjectedPluginClasspathAndCarriesLicense()",
+        "invalidGenerationSettingsProduceReportsWithoutSources()",
+        "explicitGenerationWorksWithoutTheJavaPluginAndDoesNotBecomePartOfCheck()",
+        "customOutputAndResourcePrefixAreTrackedByCompilationAndConfigurationCache()",
+        "externalBaselineContentInvalidatesValidationWithConfigurationCache()",
+        "baselineProtectsHistoryAndMissingBaselineIsNotSilentlySkipped()",
+        "jacksonRuntimeIsNotExposedToTheConsumerBuildscript()",
+        "changedBaselineInvalidatesGenerationAndPreservesPreviousSourcesOnFailure()",
+        "[1] false",
+        "[2] true",
+        "dslOverridesApplyToAlreadyRegisteredTasksAndDoNotCreateTheDefaultLock()",
+        "generatedSourcesAndReportsCanBeRestoredFromCacheAfterRelocation()",
+        "lockAlwaysRunsAndLeavesExistingBytesUntouched()",
+        "validationReportsAreRestoredFromBuildCacheAfterRelocation()",
+        "pluginCanBeAppliedWithoutJavaOrPrompts()"
+      ]
+    }
+  ],
+  "expandedConsumerExecutions": 38,
+  "javadocRegressionAfterConstructorParamFix": [
+    {
+      "gradle": "9.0.0",
+      "java": 17,
+      "tests": 1,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "case": "custom output, resource prefix, full generated Javadoc and configuration cache"
+    },
+    {
+      "gradle": "9.9.1",
+      "java": 25,
+      "tests": 1,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "case": "custom output, resource prefix, full generated Javadoc and configuration cache"
+    }
+  ],
+  "javadocRegressionExecutions": 2,
+  "otherSixConsumerCellsRerun": false,
+  "serviceTests": 38,
+  "serviceSuites": [
+    {
+      "suite": "com.grinnotech.tichodroma.patient.disability.importing.CertificateExtractionPromptMapperTest",
+      "tests": 6,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "suite": "com.grinnotech.tichodroma.patient.disability.importing.DisabilityCertificateAiAuditLogTest",
+      "tests": 6,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "suite": "com.grinnotech.tichodroma.patient.disability.importing.DisabilityCertificateAiDraftExtractorTest",
+      "tests": 18,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "suite": "com.grinnotech.tichodroma.patient.disability.importing.DisabilityCertificateImportServiceTest",
+      "tests": 8,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    }
+  ],
+  "serviceGeneratedJavadoc17": "passed: Xdoclint:all and Werror",
+  "serviceCheckstyle": "passed on four changed Java source/test files",
+  "finalAcceptance": "check assemble passed; 80 core tests and focused consumer Javadoc regression after doc-only constructor fix",
+  "coreJarSha256": "a75d1be03916b51f52c734f36fe931d13a285eef5144acde36147827afb6b9b8",
+  "pluginJarSha256": "37e1b924a4433cc7f27c39a696880c40e821bfb5d508cd65f7e910b15f8b4c5a",
+  "modelCalls": 0,
+  "pluginPortalUpload": false
+}

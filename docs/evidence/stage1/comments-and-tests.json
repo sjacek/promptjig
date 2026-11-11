@@ -1,0 +1,96 @@
+{
+  "date": "2026-11-11",
+  "scope": "API documentation and additional regression tests after initial stage-1 acceptance",
+  "coreTests": 51,
+  "coreSuites": [
+    {
+      "suite": "io.github.sjacek.promptjig.core.ContractEngineTest",
+      "tests": 22,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "suite": "io.github.sjacek.promptjig.core.PromptContractTest",
+      "tests": 9,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "suite": "io.github.sjacek.promptjig.core.SchemaValidationTest",
+      "tests": 4,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "suite": "io.github.sjacek.promptjig.core.TemplateParametersTest",
+      "tests": 12,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "suite": "io.github.sjacek.promptjig.core.ValidationResultTest",
+      "tests": 4,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    }
+  ],
+  "consumerCells": [
+    {
+      "gradle": "9.0.0",
+      "java": 17,
+      "tests": 11,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "runtimeIdentityChecked": true,
+      "cases": [
+        "explicitLockAndCheckCanRunTogetherWithoutMakingLockImplicit()",
+        "consumerActuallyUsesTheRequestedGradleAndJavaRuntime()",
+        "checkDetectsChangesAndLockRequiresANewVersionWithConfigurationCache()",
+        "publishedMarkerWorksWithoutInjectedPluginClasspathAndCarriesLicense()",
+        "externalBaselineContentInvalidatesValidationWithConfigurationCache()",
+        "baselineProtectsHistoryAndMissingBaselineIsNotSilentlySkipped()",
+        "jacksonRuntimeIsNotExposedToTheConsumerBuildscript()",
+        "dslOverridesApplyToAlreadyRegisteredTasksAndDoNotCreateTheDefaultLock()",
+        "lockAlwaysRunsAndLeavesExistingBytesUntouched()",
+        "validationReportsAreRestoredFromBuildCacheAfterRelocation()",
+        "pluginCanBeAppliedWithoutJavaOrPrompts()"
+      ]
+    },
+    {
+      "gradle": "9.9.1",
+      "java": 25,
+      "tests": 11,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "runtimeIdentityChecked": true,
+      "cases": [
+        "explicitLockAndCheckCanRunTogetherWithoutMakingLockImplicit()",
+        "consumerActuallyUsesTheRequestedGradleAndJavaRuntime()",
+        "checkDetectsChangesAndLockRequiresANewVersionWithConfigurationCache()",
+        "publishedMarkerWorksWithoutInjectedPluginClasspathAndCarriesLicense()",
+        "externalBaselineContentInvalidatesValidationWithConfigurationCache()",
+        "baselineProtectsHistoryAndMissingBaselineIsNotSilentlySkipped()",
+        "jacksonRuntimeIsNotExposedToTheConsumerBuildscript()",
+        "dslOverridesApplyToAlreadyRegisteredTasksAndDoNotCreateTheDefaultLock()",
+        "lockAlwaysRunsAndLeavesExistingBytesUntouched()",
+        "validationReportsAreRestoredFromBuildCacheAfterRelocation()",
+        "pluginCanBeAppliedWithoutJavaOrPrompts()"
+      ]
+    }
+  ],
+  "consumerTestExecutions": 22,
+  "otherConsumerCellsRerun": false,
+  "javadoc": "passed: Xdoclint:all and Werror, included in check",
+  "checkAndAssemble": "passed on authoring Gradle 9.9.1 / JDK 25",
+  "coreJarSha256": "a3fb2aaa06005f6d4f2dd2292982aa3bdda5ef5c86d631069fcbfe25cc4c6e7e",
+  "pluginJarSha256": "f9bfa26420e5d5bfaa46c0485618d818980735b9ae66e2b0520f0c041932896d",
+  "modelCalls": 0,
+  "pluginPortalUpload": false
+}

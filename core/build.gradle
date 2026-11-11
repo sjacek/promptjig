@@ -1,0 +1,102 @@
+import org.gradle.api.publish.maven.MavenPom
+import org.gradle.api.publish.maven.MavenPomDeveloper
+import org.gradle.api.publish.maven.MavenPomDeveloperSpec
+import org.gradle.api.publish.maven.MavenPomLicense
+import org.gradle.api.publish.maven.MavenPomLicenseSpec
+import org.gradle.api.publish.maven.MavenPomScm
+import org.gradle.api.publish.maven.MavenPublication
+
+plugins { id 'maven-publish' }
+
+description = 'Build-tool-independent prompt contract validation, immutable version locks, typed Java generation and source-located diagnostics.'
+java { withJavadocJar() }
+
+sourceSets {
+    test { resources.srcDir 'src/spike/resources' }
+    spike {
+        compileClasspath += sourceSets.main.output
+        runtimeClasspath += sourceSets.main.output
+    }
+}
+configurations {
+    spikeImplementation.extendsFrom implementation
+    spikeRuntimeOnly.extendsFrom runtimeOnly
+}
+
+dependencies {
+    api(platform(libs.jackson.bom.get()))
+    api(libs.jackson.databind)
+    implementation(libs.jackson.yaml)
+    implementation(libs.json.schema.validator)
+    implementation(libs.st4)
+    compileOnly(libs.jspecify.get())
+    testCompileOnly(libs.jspecify.get())
+    testImplementation(platform(libs.junit.bom.get()))
+    testImplementation(libs.junit.jupiter)
+    testImplementation(platform(libs.jackson3.bom.get()))
+    testImplementation(libs.jackson3.databind)
+    testImplementation(libs.jackson.jsr310)
+    testRuntimeOnly(libs.junit.platform.launcher)
+    // Align Spring AI's transitive Jackson 3 modules with the CVE-2026-110879 fix.
+    spikeImplementation(platform(libs.jackson3.bom.get()))
+    spikeImplementation(libs.spring.ai.model)
+    spikeImplementation(libs.spring.ai.template.st)
+}
+
+// HttpClient is AutoCloseable from Java 21; the main library and its tests stay on Java 17.
+tasks.named('compileSpikeJava', JavaCompile) {
+    options.release = 21
+}
+
+tasks.register('spike', JavaExec) {
+    group = 'verification'
+    description = 'Probe the certificate contract, ST4 parameters and validation locations offline.'
+    classpath = sourceSets.spike.runtimeClasspath
+    mainClass = 'io.github.sjacek.promptjig.spike.Stage0Probe'
+    args rootProject.layout.projectDirectory.asFile.absolutePath
+}
+
+def modelDigest = providers.gradleProperty('spikeModel')
+def modelTimeout = providers.gradleProperty('spikeTimeoutSeconds')
+tasks.register('modelSpike', JavaExec) {
+    group = 'verification'
+    description = 'Explicit local Docker Model Runner probe; requires -PspikeModel=sha256:... .'
+    classpath = sourceSets.spike.runtimeClasspath
+    mainClass = 'io.github.sjacek.promptjig.spike.ModelRunnerProbe'
+    args rootProject.layout.projectDirectory.asFile.absolutePath, modelDigest.getOrElse(''), modelTimeout.getOrElse('600')
+    dependsOn 'spike'
+}
+
+tasks.named('check') { dependsOn 'spikeClasses' }
+
+def javaComponent = components.named('java')
+
+publishing {
+    publications.register('core', MavenPublication) { MavenPublication publication ->
+        publication.from(javaComponent.get())
+        publication.artifactId = 'promptjig-core'
+        publication.pom { MavenPom pom ->
+            pom.name.set('Promptjig core')
+            pom.description.set(project.description)
+            pom.url.set('https://github.com/sjacek/promptjig')
+            pom.licenses { MavenPomLicenseSpec licenses ->
+                licenses.license { MavenPomLicense license ->
+                    license.name.set('MIT License')
+                    license.url.set('https://opensource.org/license/mit')
+                }
+            }
+            pom.developers { MavenPomDeveloperSpec developers ->
+                developers.developer { MavenPomDeveloper developer ->
+                    developer.id.set('sjacek')
+                    developer.name.set('Jacek Sztajnke')
+                    developer.url.set('https://github.com/sjacek')
+                }
+            }
+            pom.scm { MavenPomScm scm ->
+                scm.url.set('https://github.com/sjacek/promptjig')
+                scm.connection.set('scm:git:https://github.com/sjacek/promptjig.git')
+            }
+        }
+    }
+    repositories { maven { name = 'staging'; url = layout.buildDirectory.dir('staging-repository') } }
+}

@@ -1,0 +1,10 @@
+pluginManagement {
+    def preview = providers.gradleProperty('promptjigPluginBuild')
+    if (preview.isPresent()) includeBuild(file(preview.get()))
+    repositories { gradlePluginPortal() }
+}
+dependencyResolutionManagement {
+    repositories { mavenCentral() }
+    versionCatalogs { libs { from(files('../../gradle/libs.versions.toml')) } }
+}
+rootProject.name = 'promptjig-generation-example'

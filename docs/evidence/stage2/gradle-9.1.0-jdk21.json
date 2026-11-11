@@ -1,0 +1,27 @@
+{
+  "gradle": "9.1.0",
+  "java": 21,
+  "tests": 16,
+  "failures": 0,
+  "errors": 0,
+  "skipped": 0,
+  "runtimeIdentityChecked": true,
+  "cases": [
+    "explicitLockAndCheckCanRunTogetherWithoutMakingLockImplicit()",
+    "consumerActuallyUsesTheRequestedGradleAndJavaRuntime()",
+    "checkDetectsChangesAndLockRequiresANewVersionWithConfigurationCache()",
+    "generationRemovesStaleTypesAndDoesNotWireSourcesWhenDisabled()",
+    "publishedMarkerWorksWithoutInjectedPluginClasspathAndCarriesLicense()",
+    "invalidGenerationSettingsProduceReportsWithoutSources()",
+    "externalBaselineContentInvalidatesValidationWithConfigurationCache()",
+    "baselineProtectsHistoryAndMissingBaselineIsNotSilentlySkipped()",
+    "jacksonRuntimeIsNotExposedToTheConsumerBuildscript()",
+    "[1] false",
+    "[2] true",
+    "dslOverridesApplyToAlreadyRegisteredTasksAndDoNotCreateTheDefaultLock()",
+    "generatedSourcesAndReportsCanBeRestoredFromCacheAfterRelocation()",
+    "lockAlwaysRunsAndLeavesExistingBytesUntouched()",
+    "validationReportsAreRestoredFromBuildCacheAfterRelocation()",
+    "pluginCanBeAppliedWithoutJavaOrPrompts()"
+  ]
+}

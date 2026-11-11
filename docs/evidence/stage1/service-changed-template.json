@@ -1,0 +1,22 @@
+{
+  "reportVersion" : 1,
+  "valid" : false,
+  "contracts" : 1,
+  "diagnostics" : [ {
+    "rule" : "lock-baseline",
+    "severity" : "INFO",
+    "file" : "build/promptjig-acceptance/prompt-contracts.lock.json",
+    "line" : 1,
+    "column" : 1,
+    "pointer" : "",
+    "message" : "Baseline check skipped: no baselineLockFile supplied"
+  }, {
+    "rule" : "lock",
+    "severity" : "ERROR",
+    "file" : "build/promptjig-acceptance/prompt-contracts.lock.json",
+    "line" : 5,
+    "column" : 7,
+    "pointer" : "/prompts/patient.disability.certificate-extraction/1",
+    "message" : "Content changed for patient.disability.certificate-extraction v1; increment version before updating the lock"
+  } ]
+}

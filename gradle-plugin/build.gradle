@@ -1,0 +1,111 @@
+import org.gradle.api.plugins.ExtensionAware
+import org.gradle.api.publish.maven.MavenPom
+import org.gradle.api.publish.maven.MavenPomDeveloper
+import org.gradle.api.publish.maven.MavenPomDeveloperSpec
+import org.gradle.api.publish.maven.MavenPomLicense
+import org.gradle.api.publish.maven.MavenPomLicenseSpec
+import org.gradle.api.publish.maven.MavenPomScm
+import org.gradle.api.publish.maven.MavenPublication
+import org.gradle.plugin.compatibility.CompatibilityExtension
+import org.gradle.plugin.compatibility.CompatibleFeatures
+import org.gradle.plugin.devel.GradlePluginDevelopmentExtension
+import org.gradle.plugin.devel.PluginDeclaration
+
+plugins {
+    id 'java-gradle-plugin'
+    id 'maven-publish'
+    alias(libs.plugins.plugin.publish)
+}
+
+description = 'Validate contract-first Spring AI prompts, generate typed Java models, detect template/schema mismatches, and enforce immutable versions with append-only locks and CI baselines.'
+
+gradlePlugin { GradlePluginDevelopmentExtension development ->
+    development.website.set('https://github.com/sjacek/promptjig')
+    development.vcsUrl.set('https://github.com/sjacek/promptjig.git')
+    development.plugins.register('promptjig') { PluginDeclaration declaration ->
+        declaration.id = 'io.github.sjacek.promptjig'
+        declaration.implementationClass = 'io.github.sjacek.promptjig.gradle.PromptjigPlugin'
+        declaration.displayName = 'Promptjig'
+        declaration.description = project.description
+        declaration.tags.set(['spring-ai', 'prompts', 'validation', 'contract-first'])
+        // The compatibility plugin is applied by plugin-publish; use its public extension API directly.
+        CompatibleFeatures features = (declaration as ExtensionAware).extensions.getByType(CompatibilityExtension).features
+        features.configurationCache.set(true)
+        features.isolatedProjects.set(false)
+    }
+}
+
+configurations {
+    isolatedRuntime {
+        canBeConsumed = false
+        canBeResolved = true
+        attributes { attribute(Usage.USAGE_ATTRIBUTE, objects.named(Usage, Usage.JAVA_RUNTIME)) }
+    }
+}
+
+dependencies {
+    compileOnly(project(path: ':core'))
+    compileOnly(libs.jspecify.get())
+    add('isolatedRuntime', project(path: ':core'))
+    testImplementation(platform(libs.junit.bom.get()))
+    testImplementation(libs.junit.jupiter)
+    testImplementation gradleTestKit()
+    testRuntimeOnly(libs.junit.platform.launcher)
+}
+
+// Nested runtime JARs keep Jackson/ST4 off the consumer's build-script classpath.
+tasks.register('runtimeBundle', Zip) {
+    from configurations.isolatedRuntime
+    archiveFileName = 'runtime.zip'
+    destinationDirectory = layout.buildDirectory.dir('generated/runtime')
+    preserveFileTimestamps = false
+    reproducibleFileOrder = true
+}
+tasks.named('processResources') {
+    from(tasks.named('runtimeBundle')) { into 'META-INF/promptjig' }
+}
+
+publishing {
+    publications.withType(MavenPublication).configureEach { MavenPublication publication ->
+        if (publication.name == 'pluginMaven') publication.artifactId = 'promptjig-gradle-plugin'
+        publication.pom { MavenPom pom ->
+            pom.name.set('Promptjig')
+            pom.description.set(project.description)
+            pom.url.set('https://github.com/sjacek/promptjig')
+            pom.licenses { MavenPomLicenseSpec licenses ->
+                licenses.license { MavenPomLicense license ->
+                    license.name.set('MIT License')
+                    license.url.set('https://opensource.org/license/mit')
+                }
+            }
+            pom.developers { MavenPomDeveloperSpec developers ->
+                developers.developer { MavenPomDeveloper developer ->
+                    developer.id.set('sjacek')
+                    developer.name.set('Jacek Sztajnke')
+                    developer.url.set('https://github.com/sjacek')
+                }
+            }
+            pom.scm { MavenPomScm scm ->
+                scm.url.set('https://github.com/sjacek/promptjig')
+                scm.connection.set('scm:git:https://github.com/sjacek/promptjig.git')
+            }
+        }
+    }
+    repositories { maven { name = 'staging'; url = layout.buildDirectory.dir('staging-repository') } }
+}
+
+tasks.named('test') {
+    maxHeapSize = '512m'
+    systemProperty 'promptjig.testGradleHome', gradle.gradleHomeDir.absolutePath
+    systemProperty 'promptjig.testGradleVersion', providers.gradleProperty('testGradleVersion').getOrElse('')
+    systemProperty 'promptjig.testJavaHome', providers.gradleProperty('testJavaHome').getOrElse('')
+    systemProperty 'promptjig.jackson3Version', libs.versions.jackson3.get()
+    systemProperty 'promptjig.annotationsJar', configurations.isolatedRuntime.files.find { it.name.startsWith('jackson-annotations-') }.absolutePath
+    systemProperty 'promptjig.testKitDir', rootProject.layout.projectDirectory.dir('.gradle-user-home/testkit').asFile.absolutePath
+    systemProperty 'promptjig.fixtureDirectory', rootProject.layout.projectDirectory.dir('examples/gradle').asFile.absolutePath
+    inputs.files(rootProject.fileTree('examples/gradle') { exclude '**/build/**', '**/.gradle/**' })
+            .withPathSensitivity(PathSensitivity.RELATIVE)
+    dependsOn tasks.named('publishAllPublicationsToStagingRepository')
+    systemProperty 'promptjig.stagingRepository', layout.buildDirectory.dir('staging-repository').get().asFile.absolutePath
+    systemProperty 'promptjig.pluginArtifact', tasks.named('jar').flatMap { it.archiveFile }.get().asFile.absolutePath
+}

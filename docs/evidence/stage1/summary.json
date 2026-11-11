@@ -1,0 +1,21 @@
+{
+  "date": "2026-11-11",
+  "scope": "initial stage-1 acceptance; original artifact hashes and test counts",
+  "followUpEvidence": "comments-and-tests.json",
+  "candidateVersion": "0.1.0",
+  "authoringGradle": "9.9.1",
+  "coreTests": 39,
+  "consumerCells": 8,
+  "consumerTestsPerCell": 9,
+  "consumerTestExecutions": 72,
+  "runtimeIdentityChecked": true,
+  "pluginPortalUpload": false,
+  "serviceIntegration": "explicit included-build preview",
+  "serviceCheckGraphVerified": true,
+  "modelCalls": 0,
+  "coreJarSha256": "f660af75037f5ac3e78d31e658c78ae7a0225b59d07f2776ab61a3d167d1beab",
+  "pluginJarSha256": "a7a92fc2efefdc03489286c8bea55aa5a55294b5241ed4f61cfc1e797077de72",
+  "wikiUnitTests": 31,
+  "mkdocsStrict": "passed",
+  "wikiChecker": "failed: metadata in two unrelated eBOK fixture README files"
+}

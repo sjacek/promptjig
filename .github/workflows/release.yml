@@ -1,0 +1,46 @@
+name: Publish plugin
+
+on:
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: Existing reviewed release tag, for example v0.1.0
+        required: true
+        type: string
+
+permissions:
+  contents: read
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    environment: plugin-portal
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ inputs.tag }}
+          fetch-depth: 0
+          persist-credentials: false
+      - run: chmod +x gradlew
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '25'
+      - uses: gradle/actions/setup-gradle@v4
+      - name: Verify immutable release reference
+        shell: bash
+        env:
+          RELEASE_TAG: ${{ inputs.tag }}
+        run: |
+          set -euo pipefail
+          version="$(./gradlew -q printVersion --no-configuration-cache)"
+          test "$RELEASE_TAG" = "v$version"
+          test "$(git rev-parse --verify "refs/tags/$RELEASE_TAG^{commit}")" = "$(git rev-parse HEAD)"
+          git diff --exit-code
+          git diff --cached --exit-code
+      - run: ./gradlew check assemble :core:spike :gradle-plugin:publishPlugins --validate-only --console=plain
+      - name: Publish reviewed plugin to Plugin Portal
+        run: ./gradlew :gradle-plugin:publishPlugins --console=plain
+        env:
+          GRADLE_PUBLISH_KEY: ${{ secrets.GRADLE_PUBLISH_KEY }}
+          GRADLE_PUBLISH_SECRET: ${{ secrets.GRADLE_PUBLISH_SECRET }}

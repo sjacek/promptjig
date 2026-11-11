@@ -1,0 +1,75 @@
+name: Compatibility
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  core-and-packaging:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - run: chmod +x gradlew
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '25'
+      - uses: gradle/actions/setup-gradle@v4
+      - run: ./gradlew check assemble :core:spike :gradle-plugin:publishPlugins --validate-only --console=plain
+      - run: ./gradlew -p examples/generation check -PpromptjigPluginBuild=../.. --configuration-cache --configuration-cache-problems=fail --console=plain
+      - name: Protect example lock history against the target branch
+        env:
+          BASE_SHA: ${{ github.event.pull_request.base.sha || github.event.before }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          baseline="$RUNNER_TEMP/promptjig-baseline.json"
+          if [[ -n "$BASE_SHA" && ! "$BASE_SHA" =~ ^0+$ ]]; then
+            git rev-parse --verify --end-of-options "$BASE_SHA^{commit}" >/dev/null
+            if git cat-file -e "$BASE_SHA:examples/gradle/prompt-contracts.lock.json"; then
+              git show "$BASE_SHA:examples/gradle/prompt-contracts.lock.json" > "$baseline"
+            else
+              printf '{"lockVersion":1,"prompts":{}}\n' > "$baseline"
+            fi
+          else
+            printf '{"lockVersion":1,"prompts":{}}\n' > "$baseline"
+          fi
+          ./gradlew -p examples/gradle check -PpromptjigPluginBuild=../.. "-Ppromptjig.baselineLockFile=$baseline" --configuration-cache --console=plain
+
+  consumer:
+    name: Gradle ${{ matrix.gradle }} / JDK ${{ matrix.java }}
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        gradle: ['9.0.0', '9.1.0', '9.9.1']
+        java: ['17', '21', '25']
+        exclude:
+          - gradle: '9.0.0'
+            java: '25'
+    steps:
+      - uses: actions/checkout@v4
+      - run: chmod +x gradlew
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: ${{ matrix.java }}
+      - name: Preserve consumer JDK
+        run: echo "CONSUMER_JAVA_HOME=$JAVA_HOME" >> "$GITHUB_ENV"
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '25'
+      - uses: gradle/actions/setup-gradle@v4
+      - run: ./gradlew :gradle-plugin:test -PtestGradleVersion=${{ matrix.gradle }} -PtestJavaHome="$CONSUMER_JAVA_HOME" --console=plain
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: reports-${{ matrix.gradle }}-jdk-${{ matrix.java }}
+          path: gradle-plugin/build/reports/

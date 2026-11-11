@@ -1,0 +1,14 @@
+{
+  "recordedAt" : "2026-11-10T19:55:33.766635100Z",
+  "endpoint" : "http://localhost:12434/engines/v1/chat/completions",
+  "model" : "sha256:f799fb1ad223f00fc55cf4d6c12de7dc9b71d10ca427bb0ff7b644f49d9a7960",
+  "cases" : [ {
+    "name" : "certificate-json-object",
+    "transportFailureType" : "HttpTimeoutException",
+    "elapsedMillis" : 120636
+  }, {
+    "name" : "certificate-json-schema",
+    "transportFailureType" : "HttpTimeoutException",
+    "elapsedMillis" : 120441
+  } ]
+}

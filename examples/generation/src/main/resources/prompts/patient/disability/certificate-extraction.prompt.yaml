@@ -1,0 +1,52 @@
+promptContract: 1
+id: patient.disability.certificate-extraction
+version: 1
+description: Stage-0 certificate extraction fixture, reviewed by an operator.
+sensitivity: [PERSONAL_DATA, HEALTH_DATA]
+messages:
+  - role: system
+    template: certificate-extraction.system.st
+  - role: user
+    template: certificate-extraction.user.st
+input:
+  schema:
+    type: object
+    additionalProperties: false
+    required: [ocrText]
+    properties:
+      ocrText: {type: string}
+output:
+  format: json
+  schema:
+    type: object
+    additionalProperties: false
+    required: [patientFirstNames, patientSurname, nationalId, country, certificateType, degree, certificateNumber, issuingBodyName, issuedAt, validFrom, validTo, permanent, symbolCodes, indicationCodes, notes]
+    properties:
+      patientFirstNames: {type: [string, 'null']}
+      patientSurname: {type: [string, 'null']}
+      nationalId: {type: [string, 'null']}
+      country: {type: [string, 'null']}
+      certificateType:
+        type: [string, 'null']
+        enum: [PZON_CHILD, PZON_ADULT_DEGREE, ZUS_WORK_INCAPACITY, null]
+      degree:
+        type: [string, 'null']
+        enum: [MILD, MODERATE, SEVERE, null]
+      certificateNumber: {type: [string, 'null']}
+      issuingBodyName: {type: [string, 'null']}
+      issuedAt: {type: [string, 'null'], format: date}
+      validFrom: {type: [string, 'null'], format: date}
+      validTo: {type: [string, 'null'], format: date}
+      permanent: {type: [boolean, 'null']}
+      symbolCodes:
+        type: array
+        items:
+          type: string
+          pattern: '^\d{2}-[A-Z]$'
+          enum: [01-U, 02-P, 03-L, 04-O, 05-R, 06-E, 07-S, 08-T, 09-M, 10-N, 11-I, 12-C]
+      indicationCodes:
+        type: array
+        items:
+          type: string
+          enum: [I, II, III, IV, V, VI, VII, VIII, IX]
+      notes: {type: [string, 'null']}

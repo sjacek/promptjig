@@ -1,0 +1,51 @@
+{
+  "date": "2026-11-11",
+  "project": "tichodroma-svc",
+  "localIncludedBuild": true,
+  "generatedPackage": "com.grinnotech.tichodroma.ai.prompt",
+  "jackson": "v3",
+  "tests": 36,
+  "suites": [
+    {
+      "suite": "com.grinnotech.tichodroma.patient.disability.importing.CertificateExtractionPromptMapperTest",
+      "tests": 4,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "suite": "com.grinnotech.tichodroma.patient.disability.importing.DisabilityCertificateAiAuditLogTest",
+      "tests": 6,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "suite": "com.grinnotech.tichodroma.patient.disability.importing.DisabilityCertificateAiDraftExtractorTest",
+      "tests": 18,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "suite": "com.grinnotech.tichodroma.patient.disability.importing.DisabilityCertificateImportServiceTest",
+      "tests": 8,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    }
+  ],
+  "checkstyle": "passed on the four changed Java production/test files",
+  "sourceCompilation": "passed",
+  "fullApplicationTestSuiteRun": false,
+  "dependentModuleTestsExcluded": [
+    "portal-notifications",
+    "forum",
+    "test-data",
+    "encryption"
+  ],
+  "modelCalls": 0,
+  "promptSha256": "77f8377df184677a1a4831ae432854e2a3d46a7dc7c0a5aea2bb18db505b990c",
+  "lockSha256": "c2fcec10f0d87ae1b1b7223ba173ceece45ec4d10c1ed6bb11ab0eb532fb8f79",
+  "auditTemplateVersion": "disability-certificate-v1 (unchanged until runtime stage)"
+}

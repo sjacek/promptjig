@@ -1,0 +1,20 @@
+{
+  "gradle": "9.0.0",
+  "java": 17,
+  "tests": 9,
+  "failures": 0,
+  "errors": 0,
+  "skipped": 0,
+  "runtimeIdentityChecked": true,
+  "cases": [
+    "explicitLockAndCheckCanRunTogetherWithoutMakingLockImplicit()",
+    "consumerActuallyUsesTheRequestedGradleAndJavaRuntime()",
+    "checkDetectsChangesAndLockRequiresANewVersionWithConfigurationCache()",
+    "publishedMarkerWorksWithoutInjectedPluginClasspathAndCarriesLicense()",
+    "baselineProtectsHistoryAndMissingBaselineIsNotSilentlySkipped()",
+    "jacksonRuntimeIsNotExposedToTheConsumerBuildscript()",
+    "lockAlwaysRunsAndLeavesExistingBytesUntouched()",
+    "validationReportsAreRestoredFromBuildCacheAfterRelocation()",
+    "pluginCanBeAppliedWithoutJavaOrPrompts()"
+  ]
+}

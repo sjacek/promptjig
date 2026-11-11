@@ -1,0 +1,70 @@
+{
+  "date": "2026-11-11",
+  "candidateVersion": "0.1.0",
+  "scope": "initial stage-2 Java generation and local service pilot acceptance",
+  "followUpEvidence": "comments-and-tests.json",
+  "authoringGradle": "9.9.1",
+  "authoringJava": 25,
+  "coreTests": 66,
+  "coreSuites": [
+    {
+      "suite": "io.github.sjacek.promptjig.core.ContractEngineTest",
+      "tests": 22,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "suite": "io.github.sjacek.promptjig.core.JavaSourceGeneratorTest",
+      "tests": 15,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "suite": "io.github.sjacek.promptjig.core.PromptContractTest",
+      "tests": 9,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "suite": "io.github.sjacek.promptjig.core.SchemaValidationTest",
+      "tests": 4,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "suite": "io.github.sjacek.promptjig.core.TemplateParametersTest",
+      "tests": 12,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "suite": "io.github.sjacek.promptjig.core.ValidationResultTest",
+      "tests": 4,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    }
+  ],
+  "consumerCells": 8,
+  "consumerTestsPerCell": 16,
+  "consumerTestExecutions": 128,
+  "runtimeIdentityChecked": true,
+  "generationExampleTests": 1,
+  "generationExampleFailures": 0,
+  "serviceTests": 36,
+  "serviceProof": "service-pilot.json",
+  "checks": "check assemble :core:spike :gradle-plugin:publishPlugins --validate-only --offline passed",
+  "javadoc": "Xdoclint:all and Werror passed",
+  "coreJarSha256": "2f53a21ccd2cfa80237c3ca0458687cea0d68d77379cf484adf7316d45492fba",
+  "pluginJarSha256": "1038550b44f14db49e0c62892cdcb4f38f06eee8ec85ab3455c1e8549f37dd61",
+  "pluginPortalUpload": false,
+  "gitCommit": false,
+  "gitPush": false,
+  "modelCalls": 0,
+  "deployment": false
+}

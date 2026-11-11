@@ -1,0 +1,72 @@
+{
+  "recordedAt" : "2026-11-10T20:02:10.663372Z",
+  "endpoint" : "http://localhost:12434/engines/v1/chat/completions",
+  "model" : "sha256:f799fb1ad223f00fc55cf4d6c12de7dc9b71d10ca427bb0ff7b644f49d9a7960",
+  "timeoutSeconds" : 600,
+  "cases" : [ {
+    "name" : "certificate-json-object",
+    "httpStatus" : 200,
+    "finishReason" : "stop",
+    "usage" : {
+      "completion_tokens" : 819,
+      "prompt_tokens" : 389,
+      "total_tokens" : 1208,
+      "prompt_tokens_details" : {
+        "cached_tokens" : 0
+      }
+    },
+    "schemaValid" : true,
+    "violations" : [ ],
+    "elapsedMillis" : 112462
+  }, {
+    "name" : "certificate-json-schema",
+    "httpStatus" : 200,
+    "finishReason" : "stop",
+    "usage" : {
+      "completion_tokens" : 819,
+      "prompt_tokens" : 389,
+      "total_tokens" : 1208,
+      "prompt_tokens_details" : {
+        "cached_tokens" : 284
+      }
+    },
+    "schemaValid" : true,
+    "violations" : [ ],
+    "elapsedMillis" : 106449
+  }, {
+    "name" : "constraint-json-object",
+    "httpStatus" : 200,
+    "finishReason" : "stop",
+    "usage" : {
+      "completion_tokens" : 393,
+      "prompt_tokens" : 53,
+      "total_tokens" : 446,
+      "prompt_tokens_details" : {
+        "cached_tokens" : 30
+      }
+    },
+    "schemaValid" : false,
+    "violations" : [ {
+      "keyword" : "enum",
+      "instancePointer" : "/marker"
+    } ],
+    "marker" : "PROMPT_ONLY",
+    "elapsedMillis" : 52009
+  }, {
+    "name" : "constraint-json-schema",
+    "httpStatus" : 200,
+    "finishReason" : "stop",
+    "usage" : {
+      "completion_tokens" : 392,
+      "prompt_tokens" : 53,
+      "total_tokens" : 445,
+      "prompt_tokens_details" : {
+        "cached_tokens" : 30
+      }
+    },
+    "schemaValid" : true,
+    "violations" : [ ],
+    "marker" : "CONTRACT_ONLY",
+    "elapsedMillis" : 62293
+  } ]
+}
