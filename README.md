@@ -4,6 +4,8 @@ Contract-first validation for Spring AI prompts. Detect contract/template
 mismatches during `check`, keep version fingerprints in an append-only lock,
 protect merged history with a CI baseline, and generate typed Java records
 from the contract schemas. [MIT licensed](LICENSE).
+The Spring AI runtime renders these contracts and reads model responses into
+generated types with safe validation findings.
 
 Candidate **0.1.0** is implemented locally; Plugin Portal publication is pending.
 The core targets Java 17; the plugin supports Gradle 9.0+ on a supported JDK 17+.
@@ -29,6 +31,11 @@ and [release procedure](docs/releasing.md). Enable `generate {}` to compile
 [generated Java inputs, outputs and contract constants](docs/code-generation.md).
 Validation and generation make no model calls.
 
+Use [`promptjig-spring-ai`](docs/spring-ai.md) for startup resource validation,
+system/user rendering and lenient or strict response reading. It targets
+Spring AI 2.0.x and Java 17+, with Jackson 2/3 bindings. Applications own model
+options, sensitivity policy and durable audit before response reading.
+
 ## Development probes
 
 Build and run the probes with JDK 21 or newer supported by Gradle (the recorded
@@ -40,8 +47,8 @@ stage-0 run used JDK 25.0.1). The core library continues to target Java 17:
 
 The `core` module reads the bundled v1 contract schema, checks template
 parameters using the ST4 AST and computes a framed SHA-256 fingerprint. It has
-no Spring, Gradle or Maven dependency. Spring AI is confined to the `spike`
-source set. All authored templates are UTF-8 classpath/file resources loaded
+no Spring, Gradle or Maven dependency. Spring AI is used by the `spring-ai`
+module and the development `spike` source set. All authored templates are UTF-8 classpath/file resources loaded
 through Spring `Resource` and `PromptTemplate` / `SystemPromptTemplate`.
 
 `core/src/spike/resources/prompts/e1/certificate-extraction.st` is an unchanged

@@ -1,2 +1,2 @@
 rootProject.name = 'promptjig'
-include 'core', 'gradle-plugin'
+include 'core', 'gradle-plugin', 'spring-ai'

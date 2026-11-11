@@ -1,0 +1,208 @@
+{
+  "date": "2026-11-11",
+  "version": "0.1.0",
+  "gradle": "9.9.1",
+  "java": "25.0.1",
+  "localBuild": {
+    "command": "clean check assemble :core:spike :gradle-plugin:publishPlugins --validate-only :core:publishAllPublicationsToStagingRepository :spring-ai:publishAllPublicationsToStagingRepository --console=plain",
+    "result": "BUILD SUCCESSFUL",
+    "duration": "4m 30s",
+    "tasksExecuted": 37,
+    "tasksFromCache": 11
+  },
+  "examples": [
+    {
+      "project": "examples/generation",
+      "result": "BUILD SUCCESSFUL",
+      "duration": "33s",
+      "tests": 1,
+      "configurationCache": "stored"
+    },
+    {
+      "project": "examples/gradle",
+      "result": "BUILD SUCCESSFUL",
+      "duration": "15s",
+      "configurationCache": "stored"
+    }
+  ],
+  "portal": {
+    "validation": "passed with locally configured keys; no upload",
+    "publicPageHttpStatus": 400,
+    "publicAvailabilityConfirmed": false
+  },
+  "github": {
+    "runId": 43092407604,
+    "sha": "3906fea67812b1fc517aec62705d662e44d3b9c3",
+    "url": "https://github.com/sjacek/promptjig/actions/runs/43092407604",
+    "jobs": [
+      {
+        "name": "core-and-packaging",
+        "id": 130772583708,
+        "result": "failure"
+      },
+      {
+        "name": "Gradle 9.9.1 / JDK 17",
+        "id": 130772584124,
+        "result": "success"
+      },
+      {
+        "name": "Gradle 9.0.0 / JDK 21",
+        "id": 130772584177,
+        "result": "success"
+      },
+      {
+        "name": "Gradle 9.1.0 / JDK 25",
+        "id": 130772584188,
+        "result": "success"
+      },
+      {
+        "name": "Gradle 9.1.0 / JDK 17",
+        "id": 130772584350,
+        "result": "success"
+      },
+      {
+        "name": "Gradle 9.1.0 / JDK 21",
+        "id": 130772584367,
+        "result": "success"
+      },
+      {
+        "name": "Gradle 9.9.1 / JDK 21",
+        "id": 130772584380,
+        "result": "success"
+      },
+      {
+        "name": "Gradle 9.9.1 / JDK 25",
+        "id": 130772584476,
+        "result": "success"
+      },
+      {
+        "name": "Gradle 9.0.0 / JDK 17",
+        "id": 130772584498,
+        "result": "success"
+      }
+    ],
+    "failure": "Missing publishing keys in regular CI publishPlugins --validate-only",
+    "localWorkflowFix": "Remove authenticated Portal validation from regular CI; give the release validation step its own secret environment",
+    "secrets": [],
+    "environments": [],
+    "tags": [],
+    "readPermission": "administrator confirmed",
+    "fixedWorkflowRun": false,
+    "repository": {
+      "public": true,
+      "fork": false,
+      "license": "MIT"
+    }
+  },
+  "workflowStaticValidation": "Jackson YAML parse and credential/order assertions passed",
+  "sourceState": "uncommitted local changes on top of 3906fea; user owns commits, tags and push",
+  "remoteUploadPerformed": false,
+  "servicePilot": "paused; no service changes/builds",
+  "testCounts": {
+    "core": 111,
+    "spring-ai": 28,
+    "gradle-plugin": 19
+  },
+  "suites": [
+    {
+      "module": "core",
+      "suite": "io.github.sjacek.promptjig.core.ContractEngineTest",
+      "tests": 22,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "module": "core",
+      "suite": "io.github.sjacek.promptjig.core.ContractResponseValidatorTest",
+      "tests": 31,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "module": "core",
+      "suite": "io.github.sjacek.promptjig.core.JavaSourceGeneratorTest",
+      "tests": 29,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "module": "core",
+      "suite": "io.github.sjacek.promptjig.core.PromptContractTest",
+      "tests": 9,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "module": "core",
+      "suite": "io.github.sjacek.promptjig.core.SchemaValidationTest",
+      "tests": 4,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "module": "core",
+      "suite": "io.github.sjacek.promptjig.core.TemplateParametersTest",
+      "tests": 12,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "module": "core",
+      "suite": "io.github.sjacek.promptjig.core.ValidationResultTest",
+      "tests": 4,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "module": "spring-ai",
+      "suite": "io.github.sjacek.promptjig.springai.PromptRuntimeEdgeCasesTest",
+      "tests": 16,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "module": "spring-ai",
+      "suite": "io.github.sjacek.promptjig.springai.PromptRuntimeTest",
+      "tests": 12,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "module": "gradle-plugin",
+      "suite": "io.github.sjacek.promptjig.gradle.PromptjigPluginTest",
+      "tests": 19,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    }
+  ],
+  "artifacts": [
+    {
+      "module": "core",
+      "license": true,
+      "sha256": "6c2ae451d1e4e87535219dc008e976e557b7f16e43d58cd28a50ced2d5e1423a",
+      "embeddedRuntime": false
+    },
+    {
+      "module": "gradle-plugin",
+      "license": true,
+      "sha256": "04f6cb1e2b404d2cce5d5659bef0f2c532370e2bbe37eb5cf7c7e12028320fb1",
+      "embeddedRuntime": true
+    },
+    {
+      "module": "spring-ai",
+      "license": true,
+      "sha256": "e7132ac453aae5d6974c3dc3563cc007d9908a1381110ee4ab46b178617645a7",
+      "embeddedRuntime": false
+    }
+  ]
+}

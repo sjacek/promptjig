@@ -106,7 +106,7 @@ public final class JavaSourceGenerator {
         }
 
         String constants(String stem, String resource) throws IOException {
-            String schema = PromptContract.JSON.writeValueAsString(canonical(contract.outputSchema()));
+            String schema = contract.outputSchemaJson();
             // A single compile-time constant must fit the JVM CONSTANT_Utf8 limit, also when it contains non-ASCII text.
             if (modifiedUtf8Length(schema) > 65535) throw new IllegalArgumentException("OUTPUT_SCHEMA_JSON exceeds the JVM string constant limit");
             String id = contract.document().path("id").asText();
@@ -310,18 +310,6 @@ public final class JavaSourceGenerator {
         Map<String, JsonNode> result = new TreeMap<>();
         object.properties().forEach(entry -> result.put(entry.getKey(), entry.getValue()));
         return result;
-    }
-
-    private static JsonNode canonical(JsonNode node) {
-        if (node.isObject()) {
-            var result = PromptContract.JSON.createObjectNode();
-            sorted(node).forEach((key, value) -> result.set(key, canonical(value)));
-            return result;
-        }
-        if (node.isArray()) {
-            var result = PromptContract.JSON.createArrayNode(); node.forEach(child -> result.add(canonical(child))); return result;
-        }
-        return node;
     }
 
     private static boolean validPackage(String name) {

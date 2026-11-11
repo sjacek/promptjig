@@ -1,14 +1,6 @@
-import org.gradle.api.publish.maven.MavenPom
-import org.gradle.api.publish.maven.MavenPomDeveloper
-import org.gradle.api.publish.maven.MavenPomDeveloperSpec
-import org.gradle.api.publish.maven.MavenPomLicense
-import org.gradle.api.publish.maven.MavenPomLicenseSpec
-import org.gradle.api.publish.maven.MavenPomScm
-import org.gradle.api.publish.maven.MavenPublication
-
 plugins { id 'maven-publish' }
 
-description = 'Build-tool-independent prompt contract validation, immutable version locks, typed Java generation and source-located diagnostics.'
+description = 'Build-tool-independent prompt contracts, typed Java generation, immutable version locks and safe response normalization.'
 java { withJavadocJar() }
 
 sourceSets {
@@ -24,6 +16,10 @@ configurations {
 }
 
 dependencies {
+    compileOnly(libs.lombok)
+    annotationProcessor(libs.lombok)
+    testCompileOnly(libs.lombok)
+    testAnnotationProcessor(libs.lombok)
     api(platform(libs.jackson.bom.get()))
     api(libs.jackson.databind)
     implementation(libs.jackson.yaml)

@@ -1,6 +1,8 @@
 name: Publish plugin
 
 on:
+  # A push/tag never uploads by itself; the owner dispatches a reviewed, existing tag explicitly.
+  # The owner selects a commit with green Compatibility; this workflow does not query its previous run status.
   workflow_dispatch:
     inputs:
       tag:
@@ -15,11 +17,13 @@ jobs:
   publish:
     runs-on: ubuntu-latest
     environment: plugin-portal
+    # Keep publishing keys scoped to the two Portal steps, not checkout, build or the tag guard.
     steps:
       - uses: actions/checkout@v4
         with:
           ref: ${{ inputs.tag }}
           fetch-depth: 0
+          # Full tag history is required by the guard; checkout must not leave Git credentials in this tree.
           persist-credentials: false
       - run: chmod +x gradlew
       - uses: actions/setup-java@v4
@@ -28,18 +32,35 @@ jobs:
           java-version: '25'
       - uses: gradle/actions/setup-gradle@v4
       - name: Verify immutable release reference
+        id: verify_release
         shell: bash
         env:
           RELEASE_TAG: ${{ inputs.tag }}
         run: |
           set -euo pipefail
+          # Quiet, uncached output is the version only; an empty value must not admit a tag named "v".
           version="$(./gradlew -q printVersion --no-configuration-cache)"
+          test -n "$version"
           test "$RELEASE_TAG" = "v$version"
-          test "$(git rev-parse --verify "refs/tags/$RELEASE_TAG^{commit}")" = "$(git rev-parse HEAD)"
+          # Resolve separately so either Git failure stops immediately; ^{commit} accepts both tag kinds.
+          tag_commit="$(git rev-parse --verify "refs/tags/$RELEASE_TAG^{commit}")"
+          head_commit="$(git rev-parse HEAD)"
+          test "$tag_commit" = "$head_commit"
+          # Check tracked files and the index before any build or authenticated Portal call.
           git diff --exit-code
           git diff --cached --exit-code
-      - run: ./gradlew check assemble :core:spike :gradle-plugin:publishPlugins --validate-only --console=plain
+      - name: Build and verify reviewed sources
+        id: build
+        run: ./gradlew check assemble :core:spike --console=plain
+      - name: Validate Plugin Portal publication without upload
+        id: validate_portal
+        run: ./gradlew :gradle-plugin:publishPlugins --validate-only --console=plain
+        env:
+          GRADLE_PUBLISH_KEY: ${{ secrets.GRADLE_PUBLISH_KEY }}
+          GRADLE_PUBLISH_SECRET: ${{ secrets.GRADLE_PUBLISH_SECRET }}
       - name: Publish reviewed plugin to Plugin Portal
+        id: publish_portal
+        # Default success() gating is intentional: a failed tag guard, build or validation blocks upload.
         run: ./gradlew :gradle-plugin:publishPlugins --console=plain
         env:
           GRADLE_PUBLISH_KEY: ${{ secrets.GRADLE_PUBLISH_KEY }}

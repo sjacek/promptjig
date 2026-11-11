@@ -1,0 +1,7 @@
+#!/usr/bin/env bash
+set -euo pipefail
+# This stub reports a controlled version and never starts a Gradle build.
+printf 'gradle\n' >> "$GUARD_CALLS"
+[[ "$#" == 3 && "$1" == '-q' && "$2" == 'printVersion' && "$3" == '--no-configuration-cache' ]] || exit 90
+if [[ "${TEST_GRADLE_EXIT:-0}" != 0 ]]; then exit "$TEST_GRADLE_EXIT"; fi
+printf '%s\n' "${TEST_VERSION-0.1.0}"

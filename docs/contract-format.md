@@ -22,9 +22,8 @@ and anonymous subtemplates are inspected through the pinned ST4 4.3.4 AST.
 Root names used across all messages must match `input.schema.properties`.
 Unknown and unused input names are errors; a single message may use no variables.
 `contract` is reserved, cannot be an input property, and need not be used. It
-describes a future runtime contract view; stage 1 validates its root name rather
-than providing a Spring AI renderer. The known Spring AI 2.0.2 issue with ST4
-options such as `separator` is described in the [stage-0 report](stage0-report.md).
+provides runtime output fields and enum values. Core validates its root name;
+the [Spring AI runtime](spring-ai.md) supplies its contents while rendering.
 
 Both schemas use a restricted JSON Schema Draft 2020-12 vocabulary:
 
@@ -40,9 +39,9 @@ Both schemas use a restricted JSON Schema Draft 2020-12 vocabulary:
 
 External references, arbitrary unions and composition keywords such as
 `oneOf`/`anyOf` are unsupported. Schema retrieval never uses the network.
-`output.format` is `json`; `output.strict` is an optional runtime policy for
-the later response-reader stage. Stage 1 checks the definition, not actual
-model responses.
+`output.format` is `json`; `output.strict: true` rejects responses with any
+schema violation. The default reader applies the documented repairs and reports
+each one. Build-time tasks check definitions without making model calls.
 
 ## Frozen fingerprint framing
 

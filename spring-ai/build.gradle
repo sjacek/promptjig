@@ -1,0 +1,41 @@
+plugins { id 'maven-publish' }
+
+description = 'Validated prompt resources and typed response reading for Spring AI; model policy and audit remain application responsibilities.'
+java { withJavadocJar() }
+sourceSets.test.resources.srcDir '../core/src/spike/resources'
+
+dependencies {
+    api project(':core')
+    api libs.spring.ai.model
+    implementation libs.spring.ai.template.st
+    // Maven consumers need this BOM directly: dependencyManagement is not inherited from the core dependency.
+    implementation platform(libs.jackson.bom.get())
+    implementation libs.jackson.jsr310
+    implementation platform(libs.jackson3.bom.get())
+    implementation libs.jackson3.databind
+    compileOnly libs.jspecify
+    compileOnly libs.lombok
+    annotationProcessor libs.lombok
+    testCompileOnly libs.lombok
+    testCompileOnly libs.jspecify.get()
+    testAnnotationProcessor libs.lombok
+    testImplementation platform(libs.junit.bom.get())
+    testImplementation libs.junit.jupiter
+    testRuntimeOnly libs.junit.platform.launcher
+}
+
+publishing {
+    publications.register('springAi', MavenPublication) {
+        from components.java
+        artifactId = 'promptjig-spring-ai'
+        pom {
+            name = 'Promptjig Spring AI'
+            description = project.description
+            url = 'https://github.com/sjacek/promptjig'
+            licenses { license { name = 'MIT License'; url = 'https://opensource.org/license/mit' } }
+            developers { developer { id = 'sjacek'; name = 'Jacek Sztajnke' } }
+            scm { url = 'https://github.com/sjacek/promptjig'; connection = 'scm:git:https://github.com/sjacek/promptjig.git' }
+        }
+    }
+    repositories { maven { name = 'staging'; url = layout.buildDirectory.dir('staging-repository') } }
+}

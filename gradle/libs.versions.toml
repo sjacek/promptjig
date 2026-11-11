@@ -7,8 +7,10 @@ jspecify = "1.0.0"
 junit = "5.14.4"
 spring-ai = "2.0.2"
 plugin-publish = "2.2.1"
+lombok = "1.18.48"
 
 [libraries]
+lombok = { module = "org.projectlombok:lombok", version.ref = "lombok" }
 jackson-bom = { module = "com.fasterxml.jackson:jackson-bom", version.ref = "jackson" }
 jackson-databind = { module = "com.fasterxml.jackson.core:jackson-databind" }
 jackson-jsr310 = { module = "com.fasterxml.jackson.datatype:jackson-datatype-jsr310" }

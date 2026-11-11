@@ -1,0 +1,62 @@
+promptContract: 1
+id: runtime.rendering
+version: 1
+messages:
+  - role: system
+    template: rendering.system.st
+  - role: user
+    template: rendering.user.st
+input:
+  schema:
+    type: object
+    additionalProperties: false
+    required: [values, suffix]
+    properties:
+      values:
+        type: array
+        items:
+          type: object
+          additionalProperties: false
+          required: [name]
+          properties:
+            name: {type: string}
+      suffix: {type: string}
+      title: {type: [string, 'null']}
+output:
+  format: json
+  schema:
+    type: object
+    additionalProperties: false
+    required: [tags]
+    properties:
+      text: {type: [string, 'null']}
+      # jAsyncAPI inspects every $ref from the file root; this contract resolves from output.schema instead.
+      tags:
+        # noinspection AsyncAPIReference
+        $ref: '#/$defs/tags'
+      choice:
+        # noinspection AsyncAPIReference
+        $ref: '#/$defs/choiceAlias'
+      enabled:
+        type: [boolean, 'null']
+        # Null intentionally accompanies booleans; YAML suppression attaches to this key, not a list item.
+        # noinspection YAMLIncompatibleTypes
+        enum:
+          - true
+          - false
+          - null
+    $defs:
+      tags:
+        type: [array, 'null']
+        items:
+          # noinspection AsyncAPIReference
+          $ref: '#/$defs/tag'
+      tag:
+        type: [string, 'null']
+        enum: [alpha, beta, null]
+      choiceAlias:
+        # noinspection AsyncAPIReference
+        $ref: '#/$defs/choice'
+      choice:
+        type: [string, 'null']
+        enum: [First, Second, null]

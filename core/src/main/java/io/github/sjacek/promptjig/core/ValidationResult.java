@@ -13,7 +13,11 @@ import java.util.List;
  * @param contracts number of discovered contract files, including invalid files
  */
 public record ValidationResult(List<Diagnostic> diagnostics, int contracts) {
-    /** Normalizes the diagnostic collection for deterministic reports. */
+    /**
+     * Normalizes the diagnostic collection for deterministic reports.
+     * @param diagnostics findings to sort and deduplicate
+     * @param contracts number of discovered contract files
+     */
     public ValidationResult {
         diagnostics = diagnostics.stream().distinct().sorted().toList();
     }

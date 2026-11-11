@@ -1,0 +1,21 @@
+#!/usr/bin/env bash
+set -euo pipefail
+# Only read commands used by the actual guard are admitted; no real repository is consulted or changed.
+if [[ "$#" == 3 && "$1" == 'rev-parse' && "$2" == '--verify' ]]; then
+    [[ "$3" == "refs/tags/${RELEASE_TAG}^{commit}" ]] || exit 90
+    printf 'tag\n' >> "$GUARD_CALLS"
+    if [[ "${TEST_TAG_EXIT:-0}" != 0 ]]; then exit "$TEST_TAG_EXIT"; fi
+    printf '%s\n' "${TEST_TAG_COMMIT:-aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa}"
+elif [[ "$#" == 2 && "$1" == 'rev-parse' && "$2" == 'HEAD' ]]; then
+    printf 'head\n' >> "$GUARD_CALLS"
+    if [[ "${TEST_HEAD_EXIT:-0}" != 0 ]]; then exit "$TEST_HEAD_EXIT"; fi
+    printf '%s\n' "${TEST_HEAD_COMMIT:-aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa}"
+elif [[ "$#" == 2 && "$1" == 'diff' && "$2" == '--exit-code' ]]; then
+    printf 'worktree\n' >> "$GUARD_CALLS"
+    exit "${TEST_WORKTREE_EXIT:-0}"
+elif [[ "$#" == 3 && "$1" == 'diff' && "$2" == '--cached' && "$3" == '--exit-code' ]]; then
+    printf 'index\n' >> "$GUARD_CALLS"
+    exit "${TEST_INDEX_EXIT:-0}"
+else
+    exit 90
+fi

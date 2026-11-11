@@ -43,6 +43,9 @@ configurations {
     }
 }
 
+// Keep YAML workflow checks independent of the TestKit JVM's deliberately Jackson-free classpath.
+sourceSets { workflowTest }
+
 dependencies {
     compileOnly(project(path: ':core'))
     compileOnly(libs.jspecify.get())
@@ -51,7 +54,28 @@ dependencies {
     testImplementation(libs.junit.jupiter)
     testImplementation gradleTestKit()
     testRuntimeOnly(libs.junit.platform.launcher)
+    workflowTestImplementation(platform(libs.jackson.bom.get()))
+    workflowTestImplementation(libs.jackson.yaml)
+    workflowTestImplementation(platform(libs.junit.bom.get()))
+    workflowTestImplementation(libs.junit.jupiter)
+    workflowTestCompileOnly(libs.lombok)
+    workflowTestAnnotationProcessor(libs.lombok)
+    workflowTestRuntimeOnly(libs.junit.platform.launcher)
 }
+
+// Test the real workflow documents; copying them makes CI edits tracked, relocatable test inputs.
+tasks.named('processWorkflowTestResources', ProcessResources) {
+    from(rootProject.layout.projectDirectory.dir('.github/workflows')) { into 'workflows' }
+}
+
+tasks.register('workflowTest', Test) {
+    description = 'Verify CI/publishing boundaries and execute the tag guard offline, without Portal keys or Git mutations.'
+    group = 'verification'
+    testClassesDirs = sourceSets.workflowTest.output.classesDirs
+    classpath = sourceSets.workflowTest.runtimeClasspath
+    maxHeapSize = '256m'
+}
+tasks.named('check') { dependsOn tasks.named('workflowTest') }
 
 // Nested runtime JARs keep Jackson/ST4 off the consumer's build-script classpath.
 tasks.register('runtimeBundle', Zip) {

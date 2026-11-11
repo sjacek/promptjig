@@ -1,0 +1,103 @@
+{
+  "date": "2026-11-11",
+  "scope": "Follow-up to actual IDE warnings after first source correction",
+  "java": "25.0.1",
+  "gradle": "9.9.1",
+  "command": ":core:test :core:javadoc :spring-ai:check :spring-ai:assemble --console=plain",
+  "result": "BUILD SUCCESSFUL",
+  "duration": "45s",
+  "tests": 139,
+  "suites": [
+    {
+      "module": "core",
+      "suite": "io.github.sjacek.promptjig.core.ContractEngineTest",
+      "tests": 22,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "module": "core",
+      "suite": "io.github.sjacek.promptjig.core.ContractResponseValidatorTest",
+      "tests": 31,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "module": "core",
+      "suite": "io.github.sjacek.promptjig.core.JavaSourceGeneratorTest",
+      "tests": 29,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "module": "core",
+      "suite": "io.github.sjacek.promptjig.core.PromptContractTest",
+      "tests": 9,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "module": "core",
+      "suite": "io.github.sjacek.promptjig.core.SchemaValidationTest",
+      "tests": 4,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "module": "core",
+      "suite": "io.github.sjacek.promptjig.core.TemplateParametersTest",
+      "tests": 12,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "module": "core",
+      "suite": "io.github.sjacek.promptjig.core.ValidationResultTest",
+      "tests": 4,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "module": "spring-ai",
+      "suite": "io.github.sjacek.promptjig.springai.PromptRuntimeEdgeCasesTest",
+      "tests": 16,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "module": "spring-ai",
+      "suite": "io.github.sjacek.promptjig.springai.PromptRuntimeTest",
+      "tests": 12,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    }
+  ],
+  "changes": [
+    "Removed JSpecify annotations on local variables; kept inferred types and explicit null checks",
+    "Checked nullable decoded Object before Class.cast to non-null-bounded T",
+    "Replaced wrong JSON inspection ID with actual AsyncAPIReference tool ID",
+    "Moved YAMLIncompatibleTypes suppression from sequence item to enum key"
+  ],
+  "inspectionEvidence": {
+    "yamlSuppressionSource": "Installed org.jetbrains.yaml.YAMLlInspectionSuppressorKt: parent YAMLKeyValue traversal, preceding key comments",
+    "toolId": "AsyncAPIReference",
+    "exactMessageResource": "messages/asyncapiBundle.properties: inspection.reference.pointerNotFound",
+    "toolIdSource": "Installed plugin META-INF descriptors: localInspection shortName",
+    "fullIdeInspectionExecuted": false,
+    "plugin": "jasyncapi-idea-plugin 5.1.0",
+    "ide": "IntelliJ IDEA 2026.3 (263.7307.200)"
+  },
+  "schemaSemantics": "Unchanged: schema-local references and boolean/null enum",
+  "otherModulesAndMatrixRepeated": false,
+  "servicePilot": "remains paused",
+  "remotePublication": false
+}

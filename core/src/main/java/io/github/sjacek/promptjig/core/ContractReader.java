@@ -26,13 +26,32 @@ final class ContractReader {
 
     static @Nullable PromptContract read(Path project, Path source, Path file, List<Diagnostic> diagnostics,
                                          Map<String, SourceDocument> ids) {
-        int initialErrors = diagnostics.size();
         String name = project.relativize(file).toString().replace('\\', '/');
-        SourceDocument document;
         try {
             if (!file.toRealPath().startsWith(source.toRealPath())) throw new IOException("Contract escapes source directory");
-            document = SourceDocument.read(name, Files.readString(file));
+            return read(name, Files.readString(file), template -> {
+                Path path = file.getParent().resolve(template);
+                // Windows otherwise accepts case-only misspellings that fail in Linux or a JAR.
+                try (var siblings = Files.list(file.getParent())) {
+                    if (siblings.noneMatch(sibling -> sibling.getFileName().toString().equals(template)))
+                        throw new IOException("Template name must match its exact case");
+                }
+                if (!path.toRealPath().getParent().equals(file.getParent().toRealPath()))
+                    throw new IOException("Template escapes its contract directory");
+                return Files.readString(path);
+            }, diagnostics, ids);
         } catch (IOException exception) {
+            diagnostics.add(syntax("contract-schema", name, exception));
+            return null;
+        }
+    }
+
+    static @Nullable PromptContract read(String name, String text, PromptTemplateSource templatesSource,
+                                         List<Diagnostic> diagnostics, Map<String, SourceDocument> ids) {
+        int initialErrors = diagnostics.size();
+        SourceDocument document;
+        try { document = SourceDocument.read(name, text); }
+        catch (IOException exception) {
             diagnostics.add(syntax("contract-schema", name, exception));
             return null;
         }
@@ -59,20 +78,12 @@ final class ContractReader {
         int messageIndex = 0;
         for (var message : document.root.path("messages")) {
             String template = message.path("template").asText();
-            Path path = file.getParent().resolve(template);
-            String templateName = project.relativize(path).toString().replace('\\', '/');
+            String templateName = name.substring(0, name.lastIndexOf('/') + 1) + template;
             String pointer = "/messages/" + messageIndex++ + "/template";
             try {
-                // Windows resolves case-only misspellings that would fail in Linux or a JAR.
-                try (var siblings = Files.list(file.getParent())) {
-                    if (siblings.noneMatch(sibling -> sibling.getFileName().toString().equals(template)))
-                        throw new IOException("Template name must match its exact case");
-                }
-                if (!path.toRealPath().getParent().equals(file.getParent().toRealPath()))
-                    throw new IOException("Template escapes its contract directory");
-                String text = Files.readString(path);
-                templates.put(template, text);
-                var analysis = TemplateParameters.analyze(text);
+                String templateText = templatesSource.read(template);
+                templates.put(template, templateText);
+                var analysis = TemplateParameters.analyze(templateText);
                 for (var problem : analysis.problems()) diagnostics.add(new Diagnostic("template-parameters", Diagnostic.Severity.ERROR,
                         templateName, problem.line(), problem.column(), "", problem.message()));
                 for (var parameter : analysis.parameters()) {

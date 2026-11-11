@@ -1,0 +1,123 @@
+{
+  "date": "2026-11-11",
+  "scope": "Reported Gradle notation, nullness, resource and YAML inspection warnings",
+  "command": ":core:test :core:javadoc :spring-ai:check :spring-ai:assemble --console=plain",
+  "runs": [
+    {
+      "java": "25.0.1",
+      "duration": "51s",
+      "gradle": "9.9.1",
+      "result": "BUILD SUCCESSFUL"
+    },
+    {
+      "java": "17.0.21",
+      "duration": "44s",
+      "gradle": "9.9.1",
+      "result": "BUILD SUCCESSFUL"
+    }
+  ],
+  "testCounts": {
+    "core": 111,
+    "spring-ai": 28
+  },
+  "suites": [
+    {
+      "module": "core",
+      "suite": "io.github.sjacek.promptjig.core.ContractEngineTest",
+      "tests": 22,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "module": "core",
+      "suite": "io.github.sjacek.promptjig.core.ContractResponseValidatorTest",
+      "tests": 31,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "module": "core",
+      "suite": "io.github.sjacek.promptjig.core.JavaSourceGeneratorTest",
+      "tests": 29,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "module": "core",
+      "suite": "io.github.sjacek.promptjig.core.PromptContractTest",
+      "tests": 9,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "module": "core",
+      "suite": "io.github.sjacek.promptjig.core.SchemaValidationTest",
+      "tests": 4,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "module": "core",
+      "suite": "io.github.sjacek.promptjig.core.TemplateParametersTest",
+      "tests": 12,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "module": "core",
+      "suite": "io.github.sjacek.promptjig.core.ValidationResultTest",
+      "tests": 4,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "module": "spring-ai",
+      "suite": "io.github.sjacek.promptjig.springai.PromptRuntimeEdgeCasesTest",
+      "tests": 16,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "module": "spring-ai",
+      "suite": "io.github.sjacek.promptjig.springai.PromptRuntimeTest",
+      "tests": 12,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    }
+  ],
+  "fixes": [
+    "Explicit version-catalog BOM dependency values",
+    "Non-null parameters and nullable codec results",
+    "Precise checked Jackson 2 exceptions; no checked Jackson 3 declarations",
+    "Nullable named attributes supplied through the nullable-aware TemplateRenderer boundary",
+    "Normalized tree checked once before binding",
+    "Explicit non-null test message and accepted-tree access",
+    "AutoCloseable test executor using Java-17-compatible shutdownNow",
+    "NullMarked overriding test types and method reference"
+  ],
+  "yaml": {
+    "suppressionScope": "Four individual refs and one enum null item",
+    "inspectionIds": [
+      "JsonSchemaRefReference",
+      "YAMLIncompatibleTypes"
+    ],
+    "documentation": [
+      "https://www.jetbrains.com/help/inspectopedia/JsonSchemaRefReference.html",
+      "https://www.jetbrains.com/help/inspectopedia/YAMLIncompatibleTypes.html"
+    ],
+    "dataSemantics": "Unchanged: schema-relative refs and boolean/null enum retained"
+  },
+  "ideInspectionsExecuted": false,
+  "verification": "Source corrections, compilation, tests, Javadoc with Werror and packaging; no claim of an automated IntelliJ inspection pass",
+  "servicePilot": "remains paused; no service changes/builds",
+  "remotePublication": false
+}

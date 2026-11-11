@@ -21,7 +21,16 @@ public record Diagnostic(String rule, Severity severity, String file, int line, 
         INFO
     }
 
-    /** Normalizes separators and unavailable source coordinates. */
+    /**
+     * Normalizes separators and unavailable source coordinates.
+     * @param rule stable rule identifier
+     * @param severity effect on validation
+     * @param file portable source location
+     * @param line one-based line, clamped to one
+     * @param column one-based column, clamped to one
+     * @param pointer structured-source location
+     * @param message safe explanation
+     */
     public Diagnostic {
         file = file.replace('\\', '/');
         line = Math.max(1, line);
