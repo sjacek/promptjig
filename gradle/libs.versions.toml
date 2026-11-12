@@ -1,5 +1,5 @@
 [versions]
-promptjig = "0.1.0"
+promptjig = "0.2.0"
 jackson = "2.22.4"
 jackson3 = "3.1.8"
 json-schema-validator = "2.0.8"

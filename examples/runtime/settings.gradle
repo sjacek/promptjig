@@ -1,5 +1,13 @@
 pluginManagement {
     repositories { gradlePluginPortal() }
+    // Resolve the implementation module through the composite substitutions below, including unreleased versions.
+    // A marker lookup alone could silently use the Portal's old plugin alongside a newer local runtime.
+    resolutionStrategy {
+        eachPlugin {
+            if (requested.id.id == 'io.github.sjacek.promptjig')
+                useModule("io.github.sjacek.promptjig:promptjig-gradle-plugin:${requested.version}")
+        }
+    }
 }
 
 // One included build supplies both the plugin and runtime; registering it twice can discard substitutions.

@@ -383,7 +383,8 @@ class PromptjigPluginTest {
         Files.writeString(project.resolve("settings.gradle"), "pluginManagement { repositories { maven { url = uri('"
                 + Path.of(System.getProperty("promptjig.stagingRepository")).toUri() + "') } } }\nrootProject.name = 'published-consumer'\n");
         Files.writeString(project.resolve("build.gradle"), Files.readString(project.resolve("build.gradle"))
-                .replace("id 'io.github.sjacek.promptjig'", "id 'io.github.sjacek.promptjig' version '0.1.0'"));
+                .replace("id 'io.github.sjacek.promptjig'", "id 'io.github.sjacek.promptjig' version '"
+                        + System.getProperty("promptjig.candidateVersion") + "'"));
         BuildResult result = runner(project, "promptContractsLock", "check", "--offline").withPluginClasspath(java.util.List.of()).build();
         assertEquals(TaskOutcome.SUCCESS, outcome(result, ":promptContractsValidate"));
         try (var jar = new java.util.jar.JarFile(System.getProperty("promptjig.pluginArtifact"))) {

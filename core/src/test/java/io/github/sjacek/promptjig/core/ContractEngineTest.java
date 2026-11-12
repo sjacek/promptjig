@@ -111,6 +111,34 @@ class ContractEngineTest {
     }
 
     @Test
+    void optingIntoRepairsRequiresANewVersionForAFrozenContract() throws Exception {
+        Path file = fixture("prompts");
+        assertTrue(update(request()).valid());
+        Path baseline = directory.resolve("baseline.json");
+        Files.copy(request().lockFile(), baseline);
+        byte[] frozen = Files.readAllBytes(baseline);
+        var checked = new ValidationRequest(directory, request().sourceDirectory(), request().lockFile(), baseline);
+        var node = document(file);
+        ((ObjectNode) node.path("output")).put("strict", false);
+        write(file, node);
+        // Preserving 0.1 repairs is an authored change even though the response schema stays identical.
+        assertEquals(Set.of("lock"), rules(engine.validate(checked)));
+        assertFalse(update(checked).valid());
+        assertArrayEquals(frozen, Files.readAllBytes(request().lockFile()));
+        node.put("version", 2);
+        write(file, node);
+        assertTrue(update(checked).valid());
+        assertTrue(engine.validate(checked).valid());
+        var previous = PromptContract.JSON.readTree(baseline.toFile()).path("prompts")
+                .path("patient.disability.certificate-extraction").path("1");
+        var versions = PromptContract.JSON.readTree(request().lockFile().toFile()).path("prompts")
+                .path("patient.disability.certificate-extraction");
+        assertEquals(previous, versions.path("1"));
+        assertEquals(PromptContract.load(file).fingerprint(), versions.path("2").asText());
+        assertArrayEquals(frozen, Files.readAllBytes(baseline));
+    }
+
+    @Test
     void missingOrMalformedBaselineIsAnErrorEvenWhenCurrentContractMatches() throws Exception {
         fixture("prompts");
         assertTrue(update(request()).valid());

@@ -66,7 +66,10 @@ contract's version/fingerprint at startup. Model options receive the contract's
 bare schema; Spring AI adds the OpenAI `json_schema` envelope. Existing model
 options are preserved when adding that schema.
 
-`output.strict: false` allows nullable-field repairs with findings. Invalid dates,
+`output.strict: false` explicitly allows nullable-field repairs with findings.
+This example already selects repairing mode, so its contract and lock do not
+change for runtime 0.2.0. Omitting this field in 0.2.0 rejects every schema violation.
+Invalid dates,
 unknown enum values and wrongly typed nullable fields become null; unknown
 properties are removed. Malformed JSON and incompatible root structures reject
 the response. Backend strict schema mode and reader strictness are independent.

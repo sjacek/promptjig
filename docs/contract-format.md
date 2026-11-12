@@ -39,9 +39,18 @@ Both schemas use a restricted JSON Schema Draft 2020-12 vocabulary:
 
 External references, arbitrary unions and composition keywords such as
 `oneOf`/`anyOf` are unsupported. Schema retrieval never uses the network.
-`output.format` is `json`; `output.strict: true` rejects responses with any
-schema violation. The default reader applies the documented repairs and reports
-each one. Build-time tasks check definitions without making model calls.
+`output.format` is `json`. Starting with runtime 0.2.0, omitted `output.strict`
+and explicit `true` reject responses with any schema violation. Repairs require
+explicit `output.strict: false`; each repair is reported. Valid nullable values
+are accepted in either mode. Build-time tasks check definitions without making
+model calls; backend `json_schema` strictness is a separate caller setting.
+
+The 0.1 development runtime repaired responses when `output.strict` was omitted.
+Before upgrading, review such contracts and explicitly select `false` wherever
+repairs are required. Adding that field changes the fingerprint and requires a
+new version for an entry protected by your CI baseline. For an unfrozen entry,
+follow your repository's policy before regenerating its lock. The runtime default
+does not insert a field into the authored contract or change its fingerprint.
 
 ## Frozen fingerprint framing
 

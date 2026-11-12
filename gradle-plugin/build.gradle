@@ -120,6 +120,7 @@ publishing {
 
 tasks.named('test') {
     maxHeapSize = '512m'
+    systemProperty 'promptjig.candidateVersion', project.version.toString()
     systemProperty 'promptjig.testGradleHome', gradle.gradleHomeDir.absolutePath
     systemProperty 'promptjig.testGradleVersion', providers.gradleProperty('testGradleVersion').getOrElse('')
     systemProperty 'promptjig.testJavaHome', providers.gradleProperty('testJavaHome').getOrElse('')

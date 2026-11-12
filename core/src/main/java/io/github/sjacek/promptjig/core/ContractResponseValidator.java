@@ -42,6 +42,8 @@ public record ContractResponseValidator(@NonNull JsonNode schema) {
      * Invalid nullable leaves become null, invalid array elements and unknown properties are removed,
      * and missing required nullable fields/arrays are filled. Missing optional fields stay absent.
      * Structural errors and failed final validation reject the whole response without returning a partial tree.
+     * This low-level API always requires an explicit policy; the Spring AI runtime resolves output.strict
+     * and, since 0.2.0, defaults an omitted setting to true.
      * @param rawJson complete model response, never a markdown envelope
      * @param strict whether every violation rejects the response
      * @return accepted tree and safe findings, or findings with no tree

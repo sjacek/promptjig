@@ -72,7 +72,9 @@ public record PromptRuntime(@NonNull PromptJsonBinding binding) {
      * Reads a response only after the caller has durably audited its raw content.
      * Schema rejection never invokes binding. Binding receives only a schema-valid normalized object;
      * a binding exception, null return or incompatible type rejects the result without exposing its cause.
-     * Accepted results may contain repair findings and still require application audit and human review.
+     * Since 0.2.0, omitted output.strict and explicit true reject every schema violation.
+     * Only explicit output.strict: false permits repairs. Such accepted results may contain repair findings
+     * and still require application audit and human review. Backend json_schema strictness is independent.
      * @param contract registered contract
      * @param rawJson complete JSON response
      * @param type generated output type
@@ -82,7 +84,8 @@ public record PromptRuntime(@NonNull PromptJsonBinding binding) {
     public <T> PromptReadResult<T> read(@NonNull RuntimePromptContract contract, @NonNull String rawJson, @NonNull Class<T> type) {
         var source = contract.contract();
         var result = ContractResponseValidator.builder().schema(source.outputSchema()).build()
-                .read(rawJson, source.document().path("output").path("strict").asBoolean(false));
+                // Do not inject this default into the authored document: its fingerprint must stay unchanged.
+                .read(rawJson, source.document().path("output").path("strict").asBoolean(true));
         var normalized = result.normalized();
         if (normalized == null) return PromptReadResult.<T>builder().violations(result.violations()).build();
         try {

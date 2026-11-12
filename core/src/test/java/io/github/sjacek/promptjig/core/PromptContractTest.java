@@ -3,6 +3,8 @@ package io.github.sjacek.promptjig.core;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.LinkedHashMap;
@@ -40,6 +42,35 @@ class PromptContractTest {
         Map<String, String> crlf = new LinkedHashMap<>();
         contract.templates().forEach((key, text) -> crlf.put(key, text.replace("\r\n", "\n").replace("\n", "\r\n")));
         assertEquals(contract.fingerprint(), new PromptContract(reversed, crlf).fingerprint());
+    }
+
+    @Test
+    void explicitReadPolicyChangesFingerprintWithoutChangingTheSchema() throws Exception {
+        var omitted = certificate();
+        ObjectNode document = omitted.document().deepCopy();
+        ((ObjectNode) document.path("output")).put("strict", false);
+        var repairing = new PromptContract(document.deepCopy(), omitted.templates());
+        ((ObjectNode) document.path("output")).put("strict", true);
+        var strict = new PromptContract(document, omitted.templates());
+        // A runtime default is not authored content; explicitly selecting a policy is a contract change.
+        assertEquals(omitted.outputSchema(), repairing.outputSchema());
+        assertEquals(omitted.outputSchema(), strict.outputSchema());
+        assertNotEquals(omitted.fingerprint(), repairing.fingerprint());
+        assertNotEquals(omitted.fingerprint(), strict.fingerprint());
+        assertNotEquals(repairing.fingerprint(), strict.fingerprint());
+        assertFalse(omitted.document().path("output").has("strict"));
+    }
+
+    @ParameterizedTest
+    @ValueSource(strings = {"\"false\"", "\"true\"", "null", "0", "[]", "{}"})
+    void strictPolicyMustBeAnAuthoredBoolean(String json) throws Exception {
+        var source = certificate();
+        ObjectNode document = source.document().deepCopy();
+        // Keep templates valid so this check cannot pass merely because a referenced resource is absent.
+        for (var template : source.templates().entrySet())
+            Files.writeString(temp.resolve(template.getKey()), template.getValue());
+        ((ObjectNode) document.path("output")).set("strict", PromptContract.JSON.readTree(json));
+        assertInvalid(document);
     }
 
     @Test

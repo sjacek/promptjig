@@ -38,6 +38,13 @@ class PromptRuntimeTest {
     private PromptRuntime runtime(String jackson) { return PromptRuntime.builder()
             .binding(jackson.equals("v2") ? PromptJsonBinding.jackson2() : PromptJsonBinding.jackson3()).build(); }
 
+    // Keep the shared stage-0 fixture and its frozen fingerprint intact; repairs are an explicit caller choice.
+    private RuntimePromptContract repairContract() {
+        var copy = contract().contract();
+        ((ObjectNode) copy.document().path("output")).put("strict", false);
+        return RuntimePromptContract.builder().contract(copy).build();
+    }
+
     @Test void rendersOrderedMessagesFromResourcesWithDerivedEnumsAndLiteralOcr() {
         var contract = contract();
         String ocr = "Synthetic Łódź {missing} {contract.output.fields} %s\nsecond line";
@@ -61,7 +68,7 @@ class PromptRuntimeTest {
             assertEquals(metadata.getField("OUTPUT_SCHEMA_JSON").get(null), runtime(jackson).responseFormat(contract()));
             assertEquals(metadata.getField("VERSION_REF").get(null), contract().versionRef());
             assertEquals(metadata.getField("FINGERPRINT").get(null), contract().fingerprint());
-            var result = runtime(jackson).read(contract(), """
+            var result = runtime(jackson).read(repairContract(), """
                     {"patientSurname":"Synthetic", "issuedAt":"2024-02-29", "validTo":"2025-02-30",
                      "certificateType":"PZON_CHILD", "degree":"INVALID", "permanent":"true",
                      "symbolCodes":["01-U","UNKNOWN",42], "extra-secret":"sensitive"}
@@ -83,7 +90,7 @@ class PromptRuntimeTest {
     @ParameterizedTest @ValueSource(strings = {"v2", "v3"})
     void rejectsBindingFailureAndStrictContractViolationsWithoutDataInDiagnostics(String jackson) {
         var runtime = runtime(jackson);
-        var badType = runtime.read(contract(), "{\"patientSurname\":\"secret\"}", String.class);
+        var badType = runtime.read(repairContract(), "{\"patientSurname\":\"secret\"}", String.class);
         assertFalse(badType.accepted());
         assertTrue(badType.violations().stream().anyMatch(v -> v.rule().equals("binding")));
         var copy = contract().contract(); ((ObjectNode) copy.document().path("output")).put("strict", true);
@@ -134,7 +141,7 @@ class PromptRuntimeTest {
     }
 
     @Test void concurrentCallsNeverShareTemplateInputOrReadState() throws Exception {
-        var contract = contract(); var runtime = runtime("v3");
+        var contract = repairContract(); var runtime = runtime("v3");
         try (var pool = PromptTestExecutor.builder().threads(4).build()) {
             var calls = java.util.stream.IntStream.range(0, 20).mapToObj(index -> pool.submit(() -> {
                 String input = "synthetic-" + index;
@@ -160,6 +167,9 @@ class PromptRuntimeTest {
         try (var loader = generated(jackson, true)) {
             var local = PromptContractRegistry.load(new FileSystemResource(directory.resolve("prompts/" + FILES.get(0))))
                     .get("patient.disability.certificate-extraction");
+            var copy = local.contract();
+            ((ObjectNode) copy.document().path("output")).put("strict", false);
+            local = RuntimePromptContract.builder().contract(copy).build();
             Class<?> type = loader.loadClass("testdata.generated.CertificateExtractionOutput");
             var result = runtime(jackson).read(local, """
                     {"timestamp":"2026-11-11T12:30:00+05:30","count":123456789012345678901234567890.0,

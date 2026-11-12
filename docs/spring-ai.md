@@ -1,7 +1,7 @@
 # Spring AI runtime
 
-`io.github.sjacek.promptjig:promptjig-spring-ai:0.1.0` targets Java 17+ and
-Spring AI 2.0.x (tested with 2.0.2). It is a library, without a model client,
+The 0.2.0 candidate, `io.github.sjacek.promptjig:promptjig-spring-ai:0.2.0`,
+targets Java 17+ and Spring AI 2.0.x (tested with 2.0.2). It is a library, without a model client,
 Boot auto-configuration, transport, logging or audit persistence. Remote Maven
 publication remains pending. Use the local checkout before publication:
 
@@ -21,7 +21,7 @@ not generate sources or check the version lock.
 
 ```toml
 [versions]
-promptjig = "0.1.0"
+promptjig = "0.2.0"
 [libraries]
 promptjig-runtime = { module = "io.github.sjacek.promptjig:promptjig-spring-ai", version.ref = "promptjig" }
 ```
@@ -114,9 +114,28 @@ if (!result.accepted()) {
 }
 ```
 
-The default policy follows the contract's restricted schema vocabulary:
+Since 0.2.0, the default policy rejects every schema violation before JSON
+binding. Omitted `output.strict` and explicit `true` have the same behavior.
+Rejection returns no typed value. Schema-valid responses, including explicitly
+allowed nulls, remain accepted without findings.
 
-| Response condition | Default outcome |
+Repairs require an explicit choice in the contract, for example:
+
+```yaml
+output:
+  format: json
+  strict: false
+  schema:
+    type: object
+    additionalProperties: false
+    properties:
+      title: {type: [string, 'null']}
+```
+
+The following outcomes apply only to that repairing mode and follow the
+contract's restricted schema vocabulary:
+
+| Response condition | Outcome with `output.strict: false` |
 | --- | --- |
 | Invalid JSON, duplicate keys, trailing content, non-object root | Reject whole response |
 | Invalid nullable scalar: type, enum, date, date-time or pattern | Replace with null |
@@ -133,9 +152,28 @@ does not permit null as a repair. Arrays retain valid elements in their original
 order. Integer values such as `1.0` are canonicalized without accepting numeric
 strings or fractional integers. Large integers/decimals retain precision.
 
-`output.strict: true` rejects any violation instead of returning repaired output.
 Rejected results have no typed value or partially repaired tree. Accepted
-results can still contain findings, so callers must inspect/audit them.
+results in repairing mode can still contain findings, so callers must inspect/audit
+them. This choice does not change input validation, which always rejects invalid
+input, or the backend's `response_format.json_schema.strict` option.
+
+### Upgrade from the 0.1 development runtime
+
+Previously, an omitted `output.strict` selected repairing mode. Review those
+contracts before using 0.2.0: leave the field absent to require valid responses,
+or explicitly set it to `false` to retain repairs. Explicit `true` and `false`
+keep their behavior. Direct core callers still pass the policy explicitly to
+`ContractResponseValidator.read(rawJson, strict)`.
+
+Adding `output.strict: false` changes the authored contract and fingerprint.
+For a frozen lock entry, increment the contract version and append a new entry.
+For an unfrozen entry, follow your repository's baseline policy when regenerating
+the lock; `promptContractsLock` never overwrites an existing fingerprint. The
+runtime does not rewrite contracts, lock history or previously stored audit data.
+Record the runtime version alongside contract identity when comparing old and
+new runs, because an unchanged contract without `strict` now selects a different
+read policy. Application audit requirements, data policy and fallback remain
+the caller's responsibility.
 
 `PromptJsonBinding.jackson2()` and `.jackson3()` use isolated strict mappers,
 including Java time support and preserved timestamp offsets. Choose the binding

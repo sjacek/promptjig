@@ -3,44 +3,43 @@
 Changes to Promptjig's features, compatibility and availability.
 Changes under **Unreleased** are not yet published.
 
-## Unreleased
+## Unreleased (0.2.0)
+
+### Changed
+
+- Model answers must now match the response contract by default. Answers with
+  invalid fields are rejected, allowing your application to handle the failure
+  instead of using a repaired answer.
+- If your application needs partially usable answers, add `output.strict: false`
+  before upgrading from the 0.1 development runtime. Each repair is reported so
+  you can show fields requiring review. Adding this setting changes the contract
+  fingerprint; follow the [upgrade guide](docs/spring-ai.md#upgrade-from-the-01-development-runtime)
+  to update its version and lock.
 
 ### Added
 
-- Try extracting event details with Promptjig and Spring AI in a small standalone
-  application. Start with the bundled synthetic demo or connect a local model
-  to process fictional public announcements.
-- Check how a local model handles online events, paid admission and missing
-  information. Evaluate all five sample announcements or repeat one selected
-  case, comparing the extracted facts with reviewed expected answers. Incorrect
-  facts, repaired answers and model failures are reported as failed cases.
-- See why a model stopped and whether it completed its answer. Inspect token
-  usage and adjust response limits for your machine. The local pilot now allows
-  longer answers and up to ten minutes per request by default; truncated answers
-  are rejected before their contents are evaluated.
-- Render system and user messages with `promptjig-spring-ai`, using validated
-  input parameters and enum values from the contract. Load contracts from the
-  application classpath, including packaged JARs; invalid contracts and duplicate
-  IDs fail loading at startup.
-- Read model responses into generated Java models. The default reader replaces
-  invalid nullable fields with null, removes invalid list entries and unknown
-  properties, and fills missing required nullable fields and arrays. Each repair
-  is reported. Malformed JSON and unrepairable structures reject the whole response.
-- Require a fully schema-compliant response with `output.strict: true`, which
-  rejects responses needing any repair.
-- Inspect response findings by JSON Pointer, rule, action, value type and length
-  without exposing extracted values or unknown property names.
-- Use response schemas, version identifiers, fingerprints and sensitivity labels
-  when configuring model requests and recording application audit evidence.
-  Your application controls model selection, data policy and audit storage.
+- Use `promptjig-spring-ai` to render messages from your contract and read model
+  answers into generated Java models. Invalid prompt resources are detected
+  when contracts are loaded.
+- Find out which response fields were rejected or repaired without including
+  extracted values or unexpected field names in validation findings. Contract
+  versions, fingerprints and sensitivity labels are available for your
+  application's audit records.
+- Try Promptjig in a small standalone Spring AI example using fictional public
+  event announcements. Start with the bundled demo or connect a local model.
+- Compare extracted facts with reviewed answers for five announcements, including
+  online events, paid admission and missing information. Run all cases or repeat
+  one; incorrect facts, repairs and model failures are reported as failed cases.
+- See whether a local model completed its answer, how many tokens it used and how
+  long it took. Adjust the response limit and timeout for your machine; the example
+  allows up to ten minutes per request by default and rejects truncated answers.
 
 ### Compatibility
 
 - Use the Spring AI runtime alongside ChatClient in applications that resolve
   Networknt JSON Schema Validator 3.x. Standalone applications using 2.x remain supported.
-- Validate decimal enum values at full precision with either validator family,
-  including values that differ beyond the precision of a Java `double`.
-
+- Check allowed decimal values without losing precision, including very long
+  decimal values.
 - The core and Spring AI runtime libraries require Java 17+. The runtime supports
   Spring AI 2.0.x and generated models for Jackson 2 or 3.
 - For core API callers, `PromptContract.load(Path)` now reports loading failures
@@ -53,10 +52,12 @@ Changes under **Unreleased** are not yet published.
 
 ### Fixed
 
-- Render item enum values for nullable array fields, including fields and items
-  defined through local references.
-- Render valid ST4 templates with list separators and anonymous subtemplates
-  without Spring AI's false parameter-validation errors.
+- Include the allowed list-item values in rendered prompts even when the list
+  permits null or its definition uses a local schema reference.
+- Use ST4 list separators and anonymous subtemplates without incorrect
+  unknown-parameter errors from Spring AI.
+- Run the standalone example against a local, unpublished Promptjig version
+  without requiring that plugin version to be available in the Gradle Plugin Portal.
 
 ### Known limitations
 

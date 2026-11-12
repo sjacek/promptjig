@@ -72,5 +72,5 @@ tasks.register('runLocalCase', JavaExec) {
     classpath = sourceSets.main.runtimeClasspath
     mainClass = application.mainClass
     jvmArgs application.applicationDefaultJvmArgs
-    args providers.gradleProperty('pilotCase').map { "--local-case=${it}" }.orElse('--local-case=online-event-testdata').get()
+    args providers.gradleProperty('pilotCase').map { "--local-case=${it}".toString() }.orElse('--local-case=online-event-testdata').get()
 }

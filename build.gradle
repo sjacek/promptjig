@@ -1,8 +1,9 @@
 plugins { id 'base' }
 
+def candidateVersion = libs.versions.promptjig.get()
 allprojects {
     group = 'io.github.sjacek.promptjig'
-    version = '0.1.0'
+    version = candidateVersion
     repositories { mavenCentral() }
 }
 

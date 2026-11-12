@@ -5,6 +5,10 @@ Published Gradle plugin: **0.1.0** in the
 availability confirmed on 2026-11-12. That version is immutable; further releases
 need a new build version, reviewed commit and release tag.
 Verification and local staging do not upload artifacts.
+The current candidate is **0.2.0**, including the change to strict response
+reading by default. Set the shared publication/runtime version in
+`gradle/libs.versions.toml` (`versions.promptjig`); the root build reads it for
+all project publications. This candidate has not been published.
 Commits, tags and pushes are performed by the owner; Codex does not commit or push.
 
 Latest local results and remaining release prerequisites:

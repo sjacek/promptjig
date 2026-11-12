@@ -128,9 +128,10 @@ class PromptRuntimeEdgeCasesTest {
             reads.incrementAndGet(); return Map.of();
         }).build();
         var runtime = PromptRuntime.builder().binding(binding).build();
-        var copy = contract().contract(); ((ObjectNode) copy.document().path("output")).put("strict", true);
-        var strict = RuntimePromptContract.builder().contract(copy).build();
-        for (var contract : List.of(contract(), strict)) {
+        var strict = contract(); // Omitted strict is the same rejection policy as explicit true since 0.2.0.
+        var copy = strict.contract(); ((ObjectNode) copy.document().path("output")).put("strict", false);
+        var repairing = RuntimePromptContract.builder().contract(copy).build();
+        for (var contract : List.of(repairing, strict)) {
             assertFalse(runtime.read(contract, "{", Map.class).accepted());
             assertFalse(runtime.read(contract, "{\"tags\":42}", Map.class).accepted());
         }
@@ -154,7 +155,9 @@ class PromptRuntimeEdgeCasesTest {
                 default -> throw new IOException("synthetic-secret");
             };
         }).build();
-        var result = PromptRuntime.builder().binding(binding).build().read(contract(),
+        var copy = contract().contract(); ((ObjectNode) copy.document().path("output")).put("strict", false);
+        var repairing = RuntimePromptContract.builder().contract(copy).build();
+        var result = PromptRuntime.builder().binding(binding).build().read(repairing,
                 "{\"text\":42,\"synthetic-secret-key\":\"synthetic-secret\"}", Map.class);
         assertFalse(result.accepted()); assertNull(result.value());
         assertTrue(result.violations().stream().anyMatch(v -> v.pointer().equals("/text") && v.action() == ResponseViolation.Action.NULLIFIED));
