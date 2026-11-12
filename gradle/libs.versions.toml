@@ -2,6 +2,7 @@
 jackson = "2.22.4"
 jackson3 = "3.1.8"
 json-schema-validator = "2.0.8"
+json-schema-validator3 = "3.0.9"
 st4 = "4.3.4"
 jspecify = "1.0.0"
 junit = "5.14.4"
@@ -18,12 +19,14 @@ jackson3-databind = { module = "tools.jackson.core:jackson-databind" }
 jackson-yaml = { module = "com.fasterxml.jackson.dataformat:jackson-dataformat-yaml" }
 jackson3-bom = { module = "tools.jackson:jackson-bom", version.ref = "jackson3" }
 json-schema-validator = { module = "com.networknt:json-schema-validator", version.ref = "json-schema-validator" }
+json-schema-validator3 = { module = "com.networknt:json-schema-validator", version.ref = "json-schema-validator3" }
 st4 = { module = "org.antlr:ST4", version.ref = "st4" }
 jspecify = { module = "org.jspecify:jspecify", version.ref = "jspecify" }
 junit-bom = { module = "org.junit:junit-bom", version.ref = "junit" }
 junit-jupiter = { module = "org.junit.jupiter:junit-jupiter" }
 junit-platform-launcher = { module = "org.junit.platform:junit-platform-launcher" }
 spring-ai-model = { module = "org.springframework.ai:spring-ai-model", version.ref = "spring-ai" }
+spring-ai-client-chat = { module = "org.springframework.ai:spring-ai-client-chat", version.ref = "spring-ai" }
 spring-ai-template-st = { module = "org.springframework.ai:spring-ai-template-st", version.ref = "spring-ai" }
 
 [plugins]

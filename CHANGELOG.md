@@ -48,6 +48,11 @@ locally through the included-build example.
 
 ### Compatibility
 
+- Use the Spring AI runtime alongside ChatClient in applications that resolve
+  Networknt JSON Schema Validator 3.x. Standalone applications using 2.x remain supported.
+- Validate decimal enum values at full precision with either validator family,
+  including values that differ beyond the precision of a Java `double`.
+
 - The Gradle plugin requires Gradle 9.0+ and a supported JDK 17+. You can use
   your own Jackson dependencies in build scripts without conflicts with the plugin.
 - The core and Spring AI runtime libraries require Java 17+. The runtime supports

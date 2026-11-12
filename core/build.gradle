@@ -13,7 +13,24 @@ sourceSets {
 configurations {
     spikeImplementation.extendsFrom implementation
     spikeRuntimeOnly.extendsFrom runtimeOnly
+    // Swap the validator only in this test classpath. Shipping dependencies retain their standalone versions.
+    validator3Runtime {
+        canBeConsumed = false
+        canBeResolved = true
+        extendsFrom testImplementation, testRuntimeOnly
+        attributes { attribute(Usage.USAGE_ATTRIBUTE, objects.named(Usage, Usage.JAVA_RUNTIME)) }
+    }
 }
+
+// Reuse compiled tests/resources, but fork a separate test JVM: the two validator versions share class names.
+// Running the complete suite also protects repairs, diagnostics and fingerprints when a host selects Jackson 3.
+tasks.register('testValidator3', Test) {
+    description = 'Runs the core behavior suite with Networknt 3 instead of its standalone Networknt 2 dependency.'
+    group = 'verification'
+    testClassesDirs = sourceSets.test.output.classesDirs
+    classpath = sourceSets.test.output + sourceSets.main.output + configurations.validator3Runtime
+}
+tasks.named('check') { dependsOn tasks.named('testValidator3') }
 
 dependencies {
     compileOnly(libs.lombok)
@@ -33,6 +50,10 @@ dependencies {
     testImplementation(libs.jackson3.databind)
     testImplementation(libs.jackson.jsr310)
     testRuntimeOnly(libs.junit.platform.launcher)
+    // Declare the dependency normally so IDE catalog usage detection sees it, and pin the tested version.
+    validator3Runtime(libs.json.schema.validator3) {
+        version { strictly(libs.versions.json.schema.validator3.get()) }
+    }
     // Align Spring AI's transitive Jackson 3 modules with the CVE-2026-110879 fix.
     spikeImplementation(platform(libs.jackson3.bom.get()))
     spikeImplementation(libs.spring.ai.model)

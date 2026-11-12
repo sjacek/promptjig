@@ -38,7 +38,7 @@ class PromptContractTest {
         java.util.Collections.reverse(fields);
         fields.forEach(key -> reversed.set(key, contract.document().path(key)));
         Map<String, String> crlf = new LinkedHashMap<>();
-        contract.templates().forEach((key, text) -> crlf.put(key, text.replace("\n", "\r\n")));
+        contract.templates().forEach((key, text) -> crlf.put(key, text.replace("\r\n", "\n").replace("\n", "\r\n")));
         assertEquals(contract.fingerprint(), new PromptContract(reversed, crlf).fingerprint());
     }
 

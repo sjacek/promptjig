@@ -55,7 +55,7 @@ final class ContractReader {
             diagnostics.add(syntax("contract-schema", name, exception));
             return null;
         }
-        var structural = FORMAT.validate(document.root);
+        var structural = SchemaValidation.validate(FORMAT, document.root);
         for (var violation : structural) {
             String pointer = violation.getInstanceLocation().toString();
             if (violation.getProperty() != null) pointer += "/" + SourceDocument.escape(violation.getProperty());

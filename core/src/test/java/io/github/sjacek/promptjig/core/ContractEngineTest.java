@@ -299,7 +299,8 @@ class ContractEngineTest {
         Path file = fixture("prompts");
         assertTrue(update(request()).valid());
         Path template = file.resolveSibling("certificate-extraction.user.st");
-        Files.writeString(template, Files.readString(template).replace("\n", "\r\n"));
+        // A Windows checkout may already contain CRLF; construct one CRLF per logical newline.
+        Files.writeString(template, Files.readString(template).replace("\r\n", "\n").replace("\n", "\r\n"));
         assertTrue(engine.validate(request()).valid());
     }
 

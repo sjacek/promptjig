@@ -21,6 +21,8 @@ dependencies {
     testAnnotationProcessor libs.lombok
     testImplementation platform(libs.junit.bom.get())
     testImplementation libs.junit.jupiter
+    // Exercise the host dependency conflict: ChatClient selects Networknt 3, while the standalone core uses 2.
+    testImplementation libs.spring.ai.client.chat
     testRuntimeOnly libs.junit.platform.launcher
 }
 

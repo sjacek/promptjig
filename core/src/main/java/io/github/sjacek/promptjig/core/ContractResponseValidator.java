@@ -61,7 +61,7 @@ public record ContractResponseValidator(@NonNull JsonNode schema) {
         JsonNode normalized = walk.repair(schema, original, "");
         if (!walk.fatal && !(strict && !walk.findings.isEmpty())) {
             // Guard against repairs that satisfy a type union but violate another keyword, including enum(null).
-            var remaining = walk.validator(schema).validate(normalized);
+            var remaining = SchemaValidation.validate(walk.validator(schema), normalized);
             if (!remaining.isEmpty()) walk.errors(remaining, normalized, "", REJECTED);
         }
         boolean accepted = !walk.fatal && !(strict && !walk.findings.isEmpty());
@@ -93,7 +93,7 @@ public record ContractResponseValidator(@NonNull JsonNode schema) {
         }
 
         // A nullable type alone is insufficient: enum can still exclude null.
-        private boolean nullable(JsonNode schema) { return validator(schema).validate(NullNode.getInstance()).isEmpty(); }
+        private boolean nullable(JsonNode schema) { return SchemaValidation.validate(validator(schema), NullNode.getInstance()).isEmpty(); }
 
         private ResponseViolation.Action disposition(ResponseViolation.Action repair) { return strict ? REJECTED : repair; }
 
@@ -141,13 +141,13 @@ public record ContractResponseValidator(@NonNull JsonNode schema) {
                     JsonNode item = value.get(index);
                     // An invalid item is discarded as a whole, even when individual leaves could be repaired.
                     // Use the original index for evidence; accepted elements may shift in the normalized array.
-                    var invalid = validator(schema.path("items")).validate(item);
+                    var invalid = SchemaValidation.validate(validator(schema.path("items")), item);
                     if (invalid.isEmpty()) array.add(repair(schema.path("items"), item, pointer + "/" + index));
                     else errors(invalid, item, pointer + "/" + index, REMOVED);
                 }
                 return array;
             }
-            var invalid = validator(schema).validate(value);
+            var invalid = SchemaValidation.validate(validator(schema), value);
             if (invalid.isEmpty()) {
                 // JSON Schema integer includes mathematically integral decimal notation, such as 1.0.
                 return type.equals("integer") ? PromptContract.JSON.getNodeFactory().numberNode(value.bigIntegerValue()) : value;

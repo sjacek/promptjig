@@ -108,7 +108,7 @@ public final class Stage0Probe {
 
         ObjectNode valid = (ObjectNode) JSON.readTree(resources.resolve("fixtures/valid-output.json").toFile());
         var schema = SchemaValidation.compile(contract.outputSchema());
-        if (!schema.validate(valid).isEmpty()) throw new IllegalStateException("Valid fixture rejected");
+        if (!SchemaValidation.validate(schema, valid).isEmpty()) throw new IllegalStateException("Valid fixture rejected");
         List<Map<String, Object>> cases = new ArrayList<>();
         ObjectNode bad = valid.deepCopy();
         bad.put("degree", "UNRECOGNIZED");
@@ -117,15 +117,15 @@ public final class Stage0Probe {
         bad.putArray("symbolCodes").add("BAD").add("05-R").add(42);
         bad.remove("patientSurname");
         bad.put("unknown/key~name", "synthetic");
-        cases.add(validationCase("mixed", schema.validate(bad)));
+        cases.add(validationCase("mixed", SchemaValidation.validate(schema, bad)));
         ObjectNode structural = valid.deepCopy();
         structural.put("symbolCodes", "05-R");
-        cases.add(validationCase("array-structure", schema.validate(structural)));
-        cases.add(validationCase("wrong-root", schema.validate(JSON.createArrayNode())));
+        cases.add(validationCase("array-structure", SchemaValidation.validate(schema, structural)));
+        cases.add(validationCase("wrong-root", SchemaValidation.validate(schema, JSON.createArrayNode())));
         // Nested local $ref and escaped keys: errors must point to instance nodes, not $defs.
         JsonNode nestedSchema = JSON.readTree(resources.resolve("fixtures/nested-schema.json").toFile());
         JsonNode nested = JSON.readTree(resources.resolve("fixtures/nested-invalid.json").toFile());
-        cases.add(validationCase("nested-ref", SchemaValidation.compile(nestedSchema).validate(nested)));
+        cases.add(validationCase("nested-ref", SchemaValidation.validate(SchemaValidation.compile(nestedSchema), nested)));
         report.put("validation", cases);
         report.put("elapsedMillis", (System.nanoTime() - start) / 1_000_000);
         Path output = project.resolve("core/build/reports/stage0");

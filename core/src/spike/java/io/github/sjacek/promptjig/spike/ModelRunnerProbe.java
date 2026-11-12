@@ -84,7 +84,7 @@ public final class ModelRunnerProbe {
                         String content = choice.path("message").path("content").asText();
                         try {
                             JsonNode tree = JSON.readTree(content);
-                            var errors = SchemaValidation.compile(schema).validate(tree);
+                            var errors = SchemaValidation.validate(SchemaValidation.compile(schema), tree);
                             result.put("schemaValid", errors.isEmpty());
                             result.put("violations", errors.stream().map(error -> Map.of("keyword", error.getKeyword(),
                                     "instancePointer", error.getInstanceLocation().toString())).toList());
