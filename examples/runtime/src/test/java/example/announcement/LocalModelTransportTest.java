@@ -21,12 +21,15 @@ import static org.junit.jupiter.api.Assertions.*;
 /** Real Spring AI/OpenAI serialization and error handling against loopback HTTP; no inference. */
 @Timeout(20)
 class LocalModelTransportTest {
-    @Test
-    void sdkSendsTheContractSchemaAndPinnedModelAndReadsTheResponse() throws Exception {
+    @ParameterizedTest
+    @ValueSource(ints = {1024, 4096, 8192})
+    void sdkSendsTheContractSchemaAndPinnedModelAndReadsTheResponse(int maxTokens) throws Exception {
         var json = JsonMapper.builder().build();
         byte[] reply = json.writeValueAsBytes(Map.of("id", "completion-testdata", "object", "chat.completion", "created", 0,
                 "model", LocalModelSettingsTest.DIGEST, "choices", List.of(Map.of("index", 0, "finish_reason", "stop",
-                        "message", Map.of("role", "assistant", "content", AnnouncementPilotTest.resource("responses/public-event-testdata.json"))))));
+                        "message", Map.of("role", "assistant", "content", AnnouncementPilotTest.resource("responses/public-event-testdata.json")))),
+                "usage", Map.of("prompt_tokens", 200, "completion_tokens", 84, "total_tokens", 284,
+                        "completion_tokens_details", Map.of("reasoning_tokens", 32))));
         var request = new AtomicReference<String>();
         var server = HttpServer.create(new InetSocketAddress("127.0.0.1", 0), 0);
         server.createContext("/engines/v1/chat/completions", exchange -> {
@@ -37,9 +40,10 @@ class LocalModelTransportTest {
             exchange.close();
         });
         server.start();
-        try (var session = settings(server).open()) {
+        try (var session = settings(server, maxTokens).open()) {
+            var diagnostics = new AtomicReference<ModelReplyDiagnostics>();
             var result = AnnouncementPilot.builder().model(session.model()).build()
-                    .extract(AnnouncementPilotTest.resource("documents/public-event-testdata.txt"));
+                    .extract(AnnouncementPilotTest.resource("documents/public-event-testdata.txt"), diagnostics::set);
             assertTrue(result.accepted(), result.violations().toString());
             assertTrue(result.violations().isEmpty());
             var raw = request.get();
@@ -48,7 +52,7 @@ class LocalModelTransportTest {
             if (wire == null) throw new AssertionError("Missing request JSON");
             assertEquals(LocalModelSettingsTest.DIGEST, wire.path("model").asString());
             assertEquals(0.0, wire.required("temperature").asDouble());
-            assertEquals(1024, wire.has("max_completion_tokens")
+            assertEquals(maxTokens, wire.has("max_completion_tokens")
                     ? wire.required("max_completion_tokens").asInt() : wire.required("max_tokens").asInt());
             assertEquals("json_schema", wire.at("/response_format/type").asString());
             assertTrue(wire.at("/response_format/json_schema/strict").asBoolean());
@@ -57,6 +61,42 @@ class LocalModelTransportTest {
             assertTrue(wire.at("/messages/0/content").asString().contains("IN_PERSON, ONLINE, HYBRID"));
             assertEquals("user", wire.at("/messages/1/role").asString());
             assertTrue(wire.at("/messages/1/content").asString().contains("{example}"));
+            var metadata = assertInstanceOf(ModelReplyDiagnostics.class, diagnostics.get());
+            assertTrue("stop".equalsIgnoreCase(metadata.finishReason()));
+            assertEquals(200, metadata.promptTokens());
+            assertEquals(84, metadata.completionTokens());
+            assertEquals(284, metadata.totalTokens());
+            assertEquals(32L, metadata.reasoningTokens());
+            assertFalse(metadata.truncated());
+        } finally {
+            server.stop(0);
+        }
+    }
+
+    @ParameterizedTest
+    @ValueSource(booleans = {false, true})
+    void lengthFinishReasonIsCapturedAndRejectedEvenWithSchemaValidText(boolean completeJson) throws Exception {
+        var json = JsonMapper.builder().build();
+        String content = completeJson ? AnnouncementPilotTest.resource("responses/public-event-testdata.json") : "";
+        byte[] reply = json.writeValueAsBytes(Map.of("id", "truncated-testdata", "object", "chat.completion", "created", 0,
+                "model", LocalModelSettingsTest.DIGEST, "choices", List.of(Map.of("index", 0, "finish_reason", "length",
+                        "message", Map.of("role", "assistant", "content", content))),
+                "usage", Map.of("prompt_tokens", 200, "completion_tokens", 1024, "total_tokens", 1224,
+                        "completion_tokens_details", Map.of("reasoning_tokens", 920))));
+        var calls = new AtomicInteger();
+        var server = responseServer(200, reply, calls);
+        var diagnostics = new AtomicReference<ModelReplyDiagnostics>();
+        try (var session = settings(server).open()) {
+            var pilot = AnnouncementPilot.builder().model(session.model()).build();
+            var failure = assertThrows(IllegalStateException.class,
+                    () -> pilot.extract("synthetic announcement-testdata", diagnostics::set));
+            assertEquals("Model response exceeded the configured token limit", failure.getMessage());
+            var metadata = assertInstanceOf(ModelReplyDiagnostics.class, diagnostics.get());
+            assertTrue(metadata.truncated());
+            assertEquals(1024, metadata.completionTokens());
+            assertEquals(920L, metadata.reasoningTokens());
+            assertEquals(content.length(), metadata.outputCharacters());
+            assertEquals(1, calls.get());
         } finally {
             server.stop(0);
         }
@@ -128,7 +168,7 @@ class LocalModelTransportTest {
         });
         server.start();
         var bounded = LocalModelSettings.builder().baseUrl("http://127.0.0.1:" + server.getAddress().getPort() + "/engines/v1")
-                .model(LocalModelSettingsTest.DIGEST).timeout(Duration.ofSeconds(1)).build();
+                .model(LocalModelSettingsTest.DIGEST).timeout(Duration.ofSeconds(1)).maxTokens(4096).build();
         try (var session = bounded.open()) {
             var pilot = AnnouncementPilot.builder().model(session.model()).build();
             // Allow scheduling margin while still failing well before the stub's ten-second response window.
@@ -156,7 +196,11 @@ class LocalModelTransportTest {
     }
 
     private static LocalModelSettings settings(HttpServer server) {
+        return settings(server, 4096);
+    }
+
+    private static LocalModelSettings settings(HttpServer server, int maxTokens) {
         return LocalModelSettings.builder().baseUrl("http://127.0.0.1:" + server.getAddress().getPort() + "/engines/v1")
-                .model(LocalModelSettingsTest.DIGEST).timeout(Duration.ofSeconds(5)).build();
+                .model(LocalModelSettingsTest.DIGEST).timeout(Duration.ofSeconds(5)).maxTokens(maxTokens).build();
     }
 }

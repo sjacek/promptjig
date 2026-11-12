@@ -14,13 +14,13 @@ import org.springframework.core.io.ClassPathResource;
 
 /**
  * Console entry point for the bundled fictional public announcement.
- * An explicit --local-model argument selects inference; environment settings alone cannot select it.
+ * Explicit local arguments select inference; environment settings alone cannot select it.
  */
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class PilotApplication {
     /**
      * Runs the demo using process environment/output; installed launchers use the same classpath resources.
-     * @param args no arguments for the synthetic demo, or exactly --local-model
+     * @param args no arguments for the synthetic demo, --local-model, --local-suite or --local-case=fixture-id
      * @throws Exception if configuration, transport or response validation prevents completion
      */
     public static void main(@NonNull String[] args) throws Exception {
@@ -30,8 +30,25 @@ public final class PilotApplication {
     // Explicit inputs keep CLI routing testable without changing global environment or System.out.
     // The output stream belongs to the caller; only an opened local model session is closed here.
     static void run(@NonNull String[] args, @NonNull Map<String, String> environment, @NonNull PrintStream output) throws Exception {
-        if (args.length > 1 || (args.length == 1 && !args[0].equals("--local-model"))) {
-            throw new IllegalArgumentException("Supported argument: --local-model");
+        boolean singleCase = args.length == 1 && args[0].startsWith("--local-case=");
+        String caseId = singleCase ? args[0].substring("--local-case=".length()) : "";
+        if (args.length > 1 || (singleCase && !AnnouncementScenarioSuite.CASES.contains(caseId))
+                || (args.length == 1 && !singleCase && !args[0].equals("--local-model") && !args[0].equals("--local-suite"))) {
+            throw new IllegalArgumentException("Supported arguments: --local-model, --local-suite or --local-case=known-fixture-id");
+        }
+        if (singleCase || (args.length == 1 && args[0].equals("--local-suite"))) {
+            var settings = LocalModelSettings.fromEnvironment(environment);
+            output.println("mode=local-suite; model=" + settings.model() + "; contract="
+                    + AnnouncementExtractionPromptContract.VERSION_REF + "; fingerprint="
+                    + AnnouncementExtractionPromptContract.FINGERPRINT + "; maxTokens=" + settings.maxTokens());
+            try (var session = settings.open()) {
+                var suite = AnnouncementScenarioSuite.builder().model(session.model()).build();
+                var results = singleCase ? suite.runCase(caseId, output) : suite.run(output);
+                long passed = results.stream().filter(AnnouncementScenarioSuite.ScenarioResult::passed).count();
+                output.println("cases=" + results.size() + "; passed=" + passed + "; failed=" + (results.size() - passed));
+                if (passed != results.size()) throw new IllegalStateException("Local announcement suite failed; inspect per-case evidence");
+            }
+            return;
         }
         String document = new ClassPathResource("documents/public-event-testdata.txt").getContentAsString(StandardCharsets.UTF_8);
         PromptReadResult<AnnouncementExtractionOutput> result;

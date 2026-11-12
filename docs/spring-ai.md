@@ -164,6 +164,21 @@ include contract identity, response schema, raw response and safe findings in
 the appropriate protected records. For annotation arguments, use the generated
 compile-time `VERSION_REF` constant.
 
-The `tichodroma-svc` pilot is paused at the user's request while service
-compilation is repaired. Library tests make no model calls and do not establish
-that service audit integration is complete.
+## Complementary pilots
+
+The [small standalone pilot](../examples/runtime/README.md) is used for experiments
+with models, prompts and request settings on fictional public announcements.
+Explicit local-model runs compare extracted facts with reviewed answers and
+record finish reasons, token usage and latency. Its default demo and required
+CI use deterministic responses.
+
+The resumed `tichodroma-svc` pilot verifies application integration, dependency
+compatibility, encrypted E1 audit, transactions, deadlines, circuit breakers and
+fallback. Its dedicated CI uses synthetic responses and loopback HTTP; existing
+E1 integration tests cover PostgreSQL boundaries. The service repository's
+`doc/PROMPTJIG_RUNTIME_PILOT.md` records the scope and verification commands.
+
+Maintain these separate acceptance criteria as the library develops. After
+core/runtime publication, verify both pilots against released dependencies.
+The service pilot remains opt-in until a separate reviewed adoption change;
+model-quality experiments continue in the standalone example.

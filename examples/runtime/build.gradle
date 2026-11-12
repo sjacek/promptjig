@@ -57,3 +57,20 @@ tasks.register('runLocal', JavaExec) {
     jvmArgs application.applicationDefaultJvmArgs
     args '--local-model'
 }
+// Keep real-model evaluation separate from check/CI and from the deterministic default demo.
+tasks.register('runLocalSuite', JavaExec) {
+    group = 'application'
+    description = 'Checks five fictional announcements against reviewed outputs using an explicit local model digest.'
+    classpath = sourceSets.main.runtimeClasspath
+    mainClass = application.mainClass
+    jvmArgs application.applicationDefaultJvmArgs
+    args '--local-suite'
+}
+tasks.register('runLocalCase', JavaExec) {
+    group = 'application'
+    description = 'Diagnoses one bundled announcement; select its ID with -PpilotCase=... .'
+    classpath = sourceSets.main.runtimeClasspath
+    mainClass = application.mainClass
+    jvmArgs application.applicationDefaultJvmArgs
+    args providers.gradleProperty('pilotCase').map { "--local-case=${it}" }.orElse('--local-case=online-event-testdata').get()
+}

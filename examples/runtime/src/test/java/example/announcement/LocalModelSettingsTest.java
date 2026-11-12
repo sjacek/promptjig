@@ -17,7 +17,8 @@ class LocalModelSettingsTest {
         var settings = LocalModelSettings.fromEnvironment(Map.of("PROMPTJIG_MODEL", DIGEST));
         assertEquals(DIGEST, settings.model());
         assertEquals("http://127.0.0.1:12434/engines/v1", settings.baseUrl());
-        assertEquals(Duration.ofSeconds(120), settings.timeout());
+        assertEquals(Duration.ofSeconds(600), settings.timeout());
+        assertEquals(4096, settings.maxTokens());
     }
 
     @ParameterizedTest
@@ -27,13 +28,13 @@ class LocalModelSettingsTest {
             "http://127.0.0.1:0/engines/v1", "http://127.0.0.1:65536/engines/v1", "http://127.0.0.1:12434/engines/v1#fragment-testdata"})
     void refusesEndpointsOutsideTheExplicitLocalModelRunnerBoundary(String endpoint) {
         assertThrows(IllegalArgumentException.class, () -> LocalModelSettings.builder().baseUrl(endpoint)
-                .model(DIGEST).timeout(Duration.ofSeconds(5)).build());
+                .model(DIGEST).timeout(Duration.ofSeconds(5)).maxTokens(4096).build());
     }
 
     @ParameterizedTest
     @ValueSource(strings = {"http://127.0.0.1:1/engines/v1", "http://localhost:12434/engines/v1", "http://[::1]:65535/engines/v1"})
     void acceptsSupportedLoopbackHostsAndPortBoundaries(String endpoint) {
-        var settings = LocalModelSettings.builder().baseUrl(endpoint).model(DIGEST).timeout(Duration.ofSeconds(5)).build();
+        var settings = LocalModelSettings.builder().baseUrl(endpoint).model(DIGEST).timeout(Duration.ofSeconds(5)).maxTokens(4096).build();
         assertEquals(endpoint, settings.baseUrl());
     }
 
@@ -57,5 +58,20 @@ class LocalModelSettingsTest {
     void boundsTheExplicitRequestTimeout(String seconds) {
         assertThrows(IllegalArgumentException.class, () -> LocalModelSettings.fromEnvironment(
                 Map.of("PROMPTJIG_MODEL", DIGEST, "PROMPTJIG_TIMEOUT_SECONDS", seconds)));
+    }
+
+    @ParameterizedTest
+    @ValueSource(ints = {1, 1024, 4096, 8192})
+    void honoursGenerationBudgetIncludingDiagnosticAndBoundaryValues(int tokens) {
+        var settings = LocalModelSettings.fromEnvironment(Map.of("PROMPTJIG_MODEL", DIGEST,
+                "PROMPTJIG_MAX_TOKENS", Integer.toString(tokens)));
+        assertEquals(tokens, settings.maxTokens());
+    }
+
+    @ParameterizedTest
+    @ValueSource(strings = {"0", "-1", "8193", "not-a-number", "2147483648"})
+    void rejectsInvalidGenerationBudgets(String tokens) {
+        assertThrows(IllegalArgumentException.class, () -> LocalModelSettings.fromEnvironment(Map.of(
+                "PROMPTJIG_MODEL", DIGEST, "PROMPTJIG_MAX_TOKENS", tokens)));
     }
 }

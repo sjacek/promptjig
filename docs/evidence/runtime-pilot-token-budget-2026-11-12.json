@@ -1,0 +1,255 @@
+{
+  "evidenceVersion": 1,
+  "recordedAtUtc": "2026-11-12T16:42:11.6177387Z",
+  "sourceRevisionAtRecording": "5d91eb7bc2f9db07c9f74662b987b47dcfc961c9",
+  "sourceIncludesUncommittedPilotChanges": true,
+  "originalEvidence": "runtime-pilot-local-model-2026-11-12.json",
+  "modelTag": "ai/qwen3.5:9b-q4_K_XL",
+  "contract": "events.announcement-extraction-v1",
+  "fingerprint": "sha256:1b9b411a389962e450869bd6b3d982c62a65533700fe42e674ffd283c23d1b7d",
+  "sensitivity": [
+    "PUBLIC"
+  ],
+  "execution": "Windows PowerShell, Windows JDK 25, Docker Model Runner with llama.cpp; loopback OpenAI-compatible API.",
+  "diagnosis": {
+    "confirmed": true,
+    "observedCause": "At 1024 completion tokens the online case returned finishReason LENGTH and zero final assistant characters. At 4096 all five cases returned STOP and matched reviewed outputs without repairs.",
+    "adjustment": "Generation budget raised from 1024 to 4096. All four added cases needed more than 1024 completion tokens; the largest used 3477. Default timeout raised from 120 to 600 seconds for local CPU inference; both compared runs explicitly used 600 seconds.",
+    "controlledSettings": "Same model digest, contract, templates, input documents, expected outputs, temperature 0 and zero retries. No automatic retry or prompt/schema change.",
+    "reasoningUsage": "The backend did not report separate reasoning-token counts. Only finish reason, token totals and final text length were captured; no reasoning text was stored."
+  },
+  "diagnosticAt1024": {
+    "command": "./gradlew -p examples/runtime runLocalCase -PpilotCase=online-event-testdata --configuration-cache --configuration-cache-problems=fail --console=plain --max-workers=2",
+    "settings": {
+      "startedAtUtc": "2026-11-12T16:09:47.9819421Z",
+      "model": "sha256:f799fb1ad223f00fc55cf4d6c12de7dc9b71d10ca427bb0ff7b644f49d9a7960",
+      "endpoint": "http://127.0.0.1:12434/engines/v1",
+      "temperature": 0,
+      "maxTokens": 1024,
+      "maxRetries": 0,
+      "timeoutSeconds": 600
+    },
+    "gradleExitCode": 1,
+    "gradleResult": "BUILD FAILED in 5m 6s",
+    "cases": [
+      {
+        "id": "online-event-testdata",
+        "expected": {
+          "date": "2027-01-15",
+          "format": "ONLINE",
+          "free": true,
+          "location": "https://spotkanie.example.org/mapy",
+          "title": "Mapy w przeglądarce"
+        },
+        "actual": null,
+        "accepted": false,
+        "findings": 0,
+        "matchesExpected": false,
+        "error": "IllegalStateException",
+        "elapsedMillis": 297618,
+        "diagnostics": {
+          "finishReason": "LENGTH",
+          "promptTokens": 200,
+          "completionTokens": 1024,
+          "totalTokens": 1224,
+          "reasoningTokens": null,
+          "outputCharacters": 0
+        }
+      }
+    ]
+  },
+  "rerunAt4096": {
+    "command": "./gradlew -p examples/runtime runLocalSuite --configuration-cache --configuration-cache-problems=fail --console=plain --max-workers=2",
+    "settings": {
+      "startedAtUtc": "2026-11-12T16:15:39.8121154Z",
+      "model": "sha256:f799fb1ad223f00fc55cf4d6c12de7dc9b71d10ca427bb0ff7b644f49d9a7960",
+      "endpoint": "http://127.0.0.1:12434/engines/v1",
+      "temperature": 0,
+      "maxTokens": 4096,
+      "maxRetries": 0,
+      "timeoutSeconds": 600
+    },
+    "summary": {
+      "cases": 5,
+      "passed": 5,
+      "failed": 0,
+      "findings": 0,
+      "attemptsPerCase": 1,
+      "gradleExitCode": 0,
+      "gradleResult": "BUILD SUCCESSFUL in 22m 12s"
+    },
+    "cases": [
+      {
+        "id": "public-event-testdata",
+        "expected": {
+          "date": "2026-12-10",
+          "format": "IN_PERSON",
+          "free": true,
+          "location": "Przykładowy Dom Kultury",
+          "title": "Wieczór z Javą"
+        },
+        "actual": {
+          "date": "2026-12-10",
+          "format": "IN_PERSON",
+          "free": true,
+          "location": "Przykładowy Dom Kultury",
+          "title": "Wieczór z Javą"
+        },
+        "accepted": true,
+        "findings": 0,
+        "matchesExpected": true,
+        "error": null,
+        "elapsedMillis": 131517,
+        "diagnostics": {
+          "finishReason": "STOP",
+          "promptTokens": 212,
+          "completionTokens": 1005,
+          "totalTokens": 1217,
+          "reasoningTokens": null,
+          "outputCharacters": 137
+        },
+        "passed": true,
+        "documentResource": "documents/public-event-testdata.txt",
+        "documentSha256": "sha256:0a9a4d06792a38baa8d5db2e288b7897db80595fbd41949416a04773363f234d",
+        "documentText": "Fikcyjne ogłoszenie publiczne — dane testowe.\nWieczór z Javą\nData: 10 grudnia 2026.\nMiejsce: Przykładowy Dom Kultury.\nSpotkanie stacjonarne. Wstęp bezpłatny.\nNa spotkaniu omówimy zapis {example} w szablonach.\n"
+      },
+      {
+        "id": "online-event-testdata",
+        "expected": {
+          "date": "2027-01-15",
+          "format": "ONLINE",
+          "free": true,
+          "location": "https://spotkanie.example.org/mapy",
+          "title": "Mapy w przeglądarce"
+        },
+        "actual": {
+          "date": "2027-01-15",
+          "format": "ONLINE",
+          "free": true,
+          "location": "https://spotkanie.example.org/mapy",
+          "title": "Mapy w przeglądarce"
+        },
+        "accepted": true,
+        "findings": 0,
+        "matchesExpected": true,
+        "error": null,
+        "elapsedMillis": 320261,
+        "diagnostics": {
+          "finishReason": "STOP",
+          "promptTokens": 200,
+          "completionTokens": 2255,
+          "totalTokens": 2455,
+          "reasoningTokens": null,
+          "outputCharacters": 150
+        },
+        "passed": true,
+        "documentResource": "documents/online-event-testdata.txt",
+        "documentSha256": "sha256:3d9fb2453ad676f8c400d23452f9b19d75563b3f6f052a18b7ea5cd816e69c4b",
+        "documentText": "Fikcyjne ogłoszenie publiczne — dane testowe.\nMapy w przeglądarce\nData: 15 stycznia 2027.\nWydarzenie odbędzie się wyłącznie online.\nMiejsce: https://spotkanie.example.org/mapy\nUdział jest bezpłatny.\n"
+      },
+      {
+        "id": "paid-event-testdata",
+        "expected": {
+          "date": "2027-02-20",
+          "format": "IN_PERSON",
+          "free": false,
+          "location": "Przykładowa Pracownia Papieru",
+          "title": "Warsztaty papierowych lampionów"
+        },
+        "actual": {
+          "date": "2027-02-20",
+          "format": "IN_PERSON",
+          "free": false,
+          "location": "Przykładowa Pracownia Papieru",
+          "title": "Warsztaty papierowych lampionów"
+        },
+        "accepted": true,
+        "findings": 0,
+        "matchesExpected": true,
+        "error": null,
+        "elapsedMillis": 152438,
+        "diagnostics": {
+          "finishReason": "STOP",
+          "promptTokens": 212,
+          "completionTokens": 1225,
+          "totalTokens": 1437,
+          "reasoningTokens": null,
+          "outputCharacters": 161
+        },
+        "passed": true,
+        "documentResource": "documents/paid-event-testdata.txt",
+        "documentSha256": "sha256:cd4d062103a379df43507cbc3dde489de7b1fde960066e76786fc86e8c152277",
+        "documentText": "Fikcyjne ogłoszenie publiczne — dane testowe.\nWarsztaty papierowych lampionów\nData: 20 lutego 2027.\nMiejsce: Przykładowa Pracownia Papieru.\nWarsztaty odbywają się stacjonarnie. Bilet wstępu kosztuje 45 zł.\n"
+      },
+      {
+        "id": "missing-details-testdata",
+        "expected": {
+          "date": null,
+          "format": null,
+          "free": null,
+          "location": null,
+          "title": "Klub pomysłów"
+        },
+        "actual": {
+          "date": null,
+          "format": null,
+          "free": null,
+          "location": null,
+          "title": "Klub pomysłów"
+        },
+        "accepted": true,
+        "findings": 0,
+        "matchesExpected": true,
+        "error": null,
+        "elapsedMillis": 211262,
+        "diagnostics": {
+          "finishReason": "STOP",
+          "promptTokens": 152,
+          "completionTokens": 1428,
+          "totalTokens": 1580,
+          "reasoningTokens": null,
+          "outputCharacters": 100
+        },
+        "passed": true,
+        "documentResource": "documents/missing-details-testdata.txt",
+        "documentSha256": "sha256:6db270825f730d5019614999178fa73519d912c5c020684e43a3b62651f0c352",
+        "documentText": "Fikcyjne ogłoszenie publiczne — dane testowe.\nKlub pomysłów\n"
+      },
+      {
+        "id": "missing-price-testdata",
+        "expected": {
+          "date": "2027-03-08",
+          "format": "IN_PERSON",
+          "free": null,
+          "location": "Przykładowa Galeria Sąsiedzka",
+          "title": "Rozmowy o fotografii"
+        },
+        "actual": {
+          "date": "2027-03-08",
+          "format": "IN_PERSON",
+          "free": null,
+          "location": "Przykładowa Galeria Sąsiedzka",
+          "title": "Rozmowy o fotografii"
+        },
+        "accepted": true,
+        "findings": 0,
+        "matchesExpected": true,
+        "error": null,
+        "elapsedMillis": 490706,
+        "diagnostics": {
+          "finishReason": "STOP",
+          "promptTokens": 194,
+          "completionTokens": 3477,
+          "totalTokens": 3671,
+          "reasoningTokens": null,
+          "outputCharacters": 149
+        },
+        "passed": true,
+        "documentResource": "documents/missing-price-testdata.txt",
+        "documentSha256": "sha256:c6d5bd88c6e935419b3566bb3840774aac104efca1f1cac0b571cba904544a3b",
+        "documentText": "Fikcyjne ogłoszenie publiczne — dane testowe.\nRozmowy o fotografii\nData: 8 marca 2027.\nMiejsce: Przykładowa Galeria Sąsiedzka.\nSpotkanie odbędzie się stacjonarnie.\n"
+      }
+    ]
+  },
+  "limitation": "Five reviewed fictional announcements demonstrate these cases only, not general model accuracy or repeatability."
+}

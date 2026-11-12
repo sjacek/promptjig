@@ -8,6 +8,7 @@ import io.github.sjacek.promptjig.springai.PromptJsonBinding;
 import io.github.sjacek.promptjig.springai.PromptReadResult;
 import io.github.sjacek.promptjig.springai.PromptRuntime;
 import io.github.sjacek.promptjig.springai.RuntimePromptContract;
+import java.util.function.Consumer;
 import lombok.Builder;
 import lombok.NonNull;
 import org.springframework.ai.chat.client.ChatClient;
@@ -58,9 +59,25 @@ public final class AnnouncementPilot {
      * @throws IllegalStateException when the chat response has no generation or usable text
      */
     public PromptReadResult<AnnouncementExtractionOutput> extract(@NonNull String documentText) {
+        return extract(documentText, diagnostics -> { });
+    }
+
+    /**
+     * Extracts with metadata reporting before truncation/empty-output checks and contract reading.
+     * No automatic retry is performed. A length-limited generation is rejected even if its text happens to be valid JSON.
+     * @param documentText public source supplied as a named template parameter
+     * @param diagnostics receives provider metadata once a call returns, including empty responses
+     * @return generated output or contract rejection findings
+     * @throws IllegalStateException for truncated, missing or blank output
+     */
+    public PromptReadResult<AnnouncementExtractionOutput> extract(@NonNull String documentText,
+            @NonNull Consumer<ModelReplyDiagnostics> diagnostics) {
         var messages = runtime.prompt(contract, new AnnouncementExtractionInput(documentText));
         // Spring AI adds the OpenAI envelope. The runtime supplies only the bare contract schema.
         var response = client.prompt(new Prompt(messages, responseOptions)).call().chatResponse();
+        var metadata = ModelReplyDiagnostics.from(response);
+        diagnostics.accept(metadata);
+        if (metadata.truncated()) throw new IllegalStateException("Model response exceeded the configured token limit");
         if (response == null) throw new IllegalStateException("Model returned no response");
         var generation = response.getResult();
         if (generation == null) throw new IllegalStateException("Model returned no generation");

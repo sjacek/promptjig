@@ -21,14 +21,16 @@ import org.springframework.ai.openai.http.okhttp.SpringAiOpenAiHttpClient;
  * @param baseUrl loopback HTTP base URL with explicit port and the Model Runner /engines/v1 path
  * @param model installed model's full lowercase sha256 digest
  * @param timeout per-request timeout between one and 600 seconds, inclusive
+ * @param maxTokens generation budget between one and 8192, including model reasoning
  */
 @Builder
-public record LocalModelSettings(@NonNull String baseUrl, @NonNull String model, @NonNull Duration timeout) {
+public record LocalModelSettings(@NonNull String baseUrl, @NonNull String model, @NonNull Duration timeout, int maxTokens) {
     /**
      * Validates the local endpoint shape, digest and timeout before a transport can be opened.
      * @param baseUrl absolute loopback Model Runner URL with explicit port
      * @param model full immutable model digest
      * @param timeout bounded request timeout
+     * @param maxTokens bounded generation budget
      */
     public LocalModelSettings {
         URI uri = URI.create(baseUrl);
@@ -43,6 +45,7 @@ public record LocalModelSettings(@NonNull String baseUrl, @NonNull String model,
         if (timeout.compareTo(Duration.ofSeconds(1)) < 0 || timeout.compareTo(Duration.ofSeconds(600)) > 0) {
             throw new IllegalArgumentException("Timeout must be between 1 and 600 seconds");
         }
+        if (maxTokens < 1 || maxTokens > 8192) throw new IllegalArgumentException("Max tokens must be between 1 and 8192");
     }
 
     /**
@@ -56,7 +59,8 @@ public record LocalModelSettings(@NonNull String baseUrl, @NonNull String model,
         String digest = environment.get("PROMPTJIG_MODEL");
         if (digest == null) throw new IllegalArgumentException("Set PROMPTJIG_MODEL to the installed local model digest");
         return builder().baseUrl(environment.getOrDefault("PROMPTJIG_BASE_URL", "http://127.0.0.1:12434/engines/v1"))
-                .model(digest).timeout(Duration.ofSeconds(Long.parseLong(environment.getOrDefault("PROMPTJIG_TIMEOUT_SECONDS", "120"))))
+                .model(digest).timeout(Duration.ofSeconds(Long.parseLong(environment.getOrDefault("PROMPTJIG_TIMEOUT_SECONDS", "600"))))
+                .maxTokens(Integer.parseInt(environment.getOrDefault("PROMPTJIG_MAX_TOKENS", "4096")))
                 .build();
     }
 
@@ -71,7 +75,7 @@ public record LocalModelSettings(@NonNull String baseUrl, @NonNull String model,
                 .apiKey("local-pilot-testdata").timeout(timeout).maxRetries(0).build());
         try {
             var chatModel = OpenAiChatModel.builder().openAiClient(sdk).openAiClientAsync(sdk.async())
-                    .options(OpenAiChatOptions.builder().model(model).temperature(0.0).maxTokens(1024)
+                    .options(OpenAiChatOptions.builder().model(model).temperature(0.0).maxTokens(maxTokens)
                             .maxRetries(0).timeout(timeout).build()).build();
             return Session.builder().client(sdk).model(chatModel).build();
         } catch (RuntimeException exception) {

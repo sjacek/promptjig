@@ -1,0 +1,155 @@
+{
+  "evidenceVersion": 1,
+  "recordedAtUtc": "2026-11-12T15:59:23.5979567Z",
+  "sourceBaseRevision": "5d91eb7bc2f9db07c9f74662b987b47dcfc961c9",
+  "sourceIncludesUncommittedSuiteChanges": true,
+  "command": "./gradlew -p examples/runtime runLocalSuite --configuration-cache --configuration-cache-problems=fail --console=plain --max-workers=2",
+  "settings": {
+    "startedAtUtc": "2026-11-12T15:40:42.3303415Z",
+    "model": "sha256:f799fb1ad223f00fc55cf4d6c12de7dc9b71d10ca427bb0ff7b644f49d9a7960",
+    "endpoint": "http://127.0.0.1:12434/engines/v1",
+    "temperature": 0,
+    "maxTokens": 1024,
+    "maxRetries": 0,
+    "timeoutSeconds": 600
+  },
+  "modelTag": "ai/qwen3.5:9b-q4_K_XL",
+  "contract": "events.announcement-extraction-v1",
+  "fingerprint": "sha256:1b9b411a389962e450869bd6b3d982c62a65533700fe42e674ffd283c23d1b7d",
+  "sensitivity": [
+    "PUBLIC"
+  ],
+  "input": "Bundled fictional public announcements only; no document URLs were fetched.",
+  "summary": {
+    "cases": 5,
+    "passed": 1,
+    "failed": 4,
+    "gradleExitCode": 1,
+    "gradleDuration": "17m 4s",
+    "attemptsPerCase": 1
+  },
+  "cases": [
+    {
+      "id": "public-event-testdata",
+      "expected": {
+        "date": "2026-12-10",
+        "format": "IN_PERSON",
+        "free": true,
+        "location": "Przykładowy Dom Kultury",
+        "title": "Wieczór z Javą"
+      },
+      "actual": {
+        "date": "2026-12-10",
+        "format": "IN_PERSON",
+        "free": true,
+        "location": "Przykładowy Dom Kultury",
+        "title": "Wieczór z Javą"
+      },
+      "accepted": true,
+      "findings": 0,
+      "matchesExpected": true,
+      "error": null,
+      "elapsedMillis": 307709,
+      "engineTaskId": 0,
+      "engineGeneratedTokens": 1005,
+      "sourceResource": "documents/public-event-testdata.txt",
+      "passed": true
+    },
+    {
+      "id": "online-event-testdata",
+      "expected": {
+        "date": "2027-01-15",
+        "format": "ONLINE",
+        "free": true,
+        "location": "https://spotkanie.example.org/mapy",
+        "title": "Mapy w przeglądarce"
+      },
+      "actual": null,
+      "accepted": false,
+      "findings": 0,
+      "matchesExpected": false,
+      "error": "IllegalStateException",
+      "elapsedMillis": 175196,
+      "engineTaskId": 1008,
+      "engineGeneratedTokens": 1024,
+      "sourceResource": "documents/online-event-testdata.txt",
+      "passed": false
+    },
+    {
+      "id": "paid-event-testdata",
+      "expected": {
+        "date": "2027-02-20",
+        "format": "IN_PERSON",
+        "free": false,
+        "location": "Przykładowa Pracownia Papieru",
+        "title": "Warsztaty papierowych lampionów"
+      },
+      "actual": null,
+      "accepted": false,
+      "findings": 0,
+      "matchesExpected": false,
+      "error": "IllegalStateException",
+      "elapsedMillis": 198344,
+      "engineTaskId": 2034,
+      "engineGeneratedTokens": 1024,
+      "sourceResource": "documents/paid-event-testdata.txt",
+      "passed": false
+    },
+    {
+      "id": "missing-details-testdata",
+      "expected": {
+        "date": null,
+        "format": null,
+        "free": null,
+        "location": null,
+        "title": "Klub pomysłów"
+      },
+      "actual": null,
+      "accepted": false,
+      "findings": 0,
+      "matchesExpected": false,
+      "error": "IllegalStateException",
+      "elapsedMillis": 162863,
+      "engineTaskId": 3060,
+      "engineGeneratedTokens": 1024,
+      "sourceResource": "documents/missing-details-testdata.txt",
+      "passed": false
+    },
+    {
+      "id": "missing-price-testdata",
+      "expected": {
+        "date": "2027-03-08",
+        "format": "IN_PERSON",
+        "free": null,
+        "location": "Przykładowa Galeria Sąsiedzka",
+        "title": "Rozmowy o fotografii"
+      },
+      "actual": null,
+      "accepted": false,
+      "findings": 0,
+      "matchesExpected": false,
+      "error": "IllegalStateException",
+      "elapsedMillis": 167003,
+      "engineTaskId": 4086,
+      "engineGeneratedTokens": 1024,
+      "sourceResource": "documents/missing-price-testdata.txt",
+      "passed": false
+    }
+  ],
+  "engineTimingEvidence": [
+    "[2026-11-12T15:45:48.977697100Z] 4.59.256.680 I slot print_timing: id  3 | task 0 |        eval time =  159769.72 ms /  1005 tokens (  158.97 ms per token,     6.29 tokens per second)",
+    "[2026-11-12T15:48:31.522728000Z] 7.41.979.586 I slot print_timing: id  3 | task 1008 |        eval time =  145174.64 ms /  1024 tokens (  141.77 ms per token,     7.05 tokens per second)",
+    "[2026-11-12T15:52:09.088153300Z] 11.19.576.035 I slot print_timing: id  3 | task 2034 |        eval time =  150927.35 ms /  1024 tokens (  147.39 ms per token,     6.78 tokens per second)",
+    "[2026-11-12T15:54:46.787941500Z] 13.56.951.494 I slot print_timing: id  3 | task 3060 |        eval time =  151247.75 ms /  1024 tokens (  147.70 ms per token,     6.77 tokens per second)",
+    "[2026-11-12T15:57:34.413857700Z] 16.44.890.899 I slot print_timing: id  3 | task 4086 |        eval time =  146257.89 ms /  1024 tokens (  142.83 ms per token,     7.00 tokens per second)"
+  ],
+  "diagnosis": {
+    "observed": [
+      "The original case matched all five reviewed fields without findings.",
+      "All four added cases raised IllegalStateException before an output could be compared.",
+      "Each failed generation used exactly the configured 1024-token budget."
+    ],
+    "inference": "The generation budget may be exhausted before final assistant content is available. This run did not capture API finish_reason, reasoning content or individual exception messages, so the exact failure cause remains unconfirmed.",
+    "limitation": "The four failed cases do not verify extraction of online/paid events or handling of unknown facts. No retry or prompt/schema change was used to replace failed results."
+  }
+}

@@ -9,6 +9,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
+import org.junit.jupiter.params.provider.ValueSource;
 import tools.jackson.databind.json.JsonMapper;
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -49,16 +50,18 @@ class PilotApplicationTest {
 
     private static Stream<Arguments> invalidArguments() {
         return Stream.of(new String[]{"--unknown-testdata"}, new String[]{""}, new String[]{"--local-model=tag"},
+                new String[]{"--local-case="}, new String[]{"--local-case=../unknown-testdata"},
                 new String[]{"--local-model", "extra-testdata"}, new String[]{"--local-model", "--local-model"})
                 .map(arguments -> Arguments.of((Object) arguments));
     }
 
-    @Test
-    void explicitLocalModeRequiresModelSettingsAndNeverFallsBackToTheSyntheticDemo() {
+    @ParameterizedTest
+    @ValueSource(strings = {"--local-model", "--local-suite", "--local-case=online-event-testdata"})
+    void explicitLocalModeRequiresModelSettingsAndNeverFallsBackToTheSyntheticDemo(String mode) {
         var bytes = new ByteArrayOutputStream();
         try (var output = new PrintStream(bytes, true, StandardCharsets.UTF_8)) {
             var failure = assertThrows(IllegalArgumentException.class,
-                    () -> PilotApplication.run(new String[]{"--local-model"}, Map.of(), output));
+                    () -> PilotApplication.run(new String[]{mode}, Map.of(), output));
             assertEquals("Set PROMPTJIG_MODEL to the installed local model digest", failure.getMessage());
         }
         assertEquals(0, bytes.size());

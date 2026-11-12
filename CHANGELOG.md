@@ -7,10 +7,17 @@ Changes under **Unreleased** are not yet published.
 
 ### Added
 
-- Try Promptjig with Spring AI in a small standalone application that reads a
-  fictional public event announcement into generated Java types. Run the
-  synthetic demo without an inference backend, inspect response repairs and
-  rejections, or explicitly select a local model by digest.
+- Try extracting event details with Promptjig and Spring AI in a small standalone
+  application. Start with the bundled synthetic demo or connect a local model
+  to process fictional public announcements.
+- Check how a local model handles online events, paid admission and missing
+  information. Evaluate all five sample announcements or repeat one selected
+  case, comparing the extracted facts with reviewed expected answers. Incorrect
+  facts, repaired answers and model failures are reported as failed cases.
+- See why a model stopped and whether it completed its answer. Inspect token
+  usage and adjust response limits for your machine. The local pilot now allows
+  longer answers and up to ten minutes per request by default; truncated answers
+  are rejected before their contents are evaluated.
 - Render system and user messages with `promptjig-spring-ai`, using validated
   input parameters and enum values from the contract. Load contracts from the
   application classpath, including packaged JARs; invalid contracts and duplicate
