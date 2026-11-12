@@ -7,7 +7,10 @@ from the contract schemas. [MIT licensed](LICENSE).
 The Spring AI runtime renders these contracts and reads model responses into
 generated types with safe validation findings.
 
-Candidate **0.1.0** is implemented locally; Plugin Portal publication is pending.
+Gradle plugin **0.1.0** is available in the
+[Gradle Plugin Portal](https://plugins.gradle.org/plugin/io.github.sjacek.promptjig/0.1.0).
+Standalone core/Spring AI runtime publication and the changes under **Unreleased**
+remain separate from that plugin release.
 The core targets Java 17; the plugin supports Gradle 9.0+ on a supported JDK 17+.
 Building the development probes requires JDK 21+; the wrapper uses Gradle 9.9.1.
 
@@ -15,12 +18,21 @@ See the [changelog](CHANGELOG.md) for user-visible changes and compatibility not
 
 ## Use the plugin
 
-After publication, apply `io.github.sjacek.promptjig` version `0.1.0`.
-Before publication, try the checked-in consumer with an explicit local build:
+Apply the published plugin:
+
+```groovy
+plugins {
+    id 'io.github.sjacek.promptjig' version '0.1.0'
+}
+```
+
+Try the checked-in validation consumer with the published release:
 
 ```powershell
-.\gradlew.bat -p examples/gradle check '-PpromptjigPluginBuild=../..'
+.\gradlew.bat -p examples/gradle check
 ```
+
+For plugin source development, add `-PpromptjigPluginBuild=../..` to that command.
 
 Place contracts and their `.st` resources under `src/main/resources/prompts`.
 Run `promptContractsLock` explicitly for a new version, then `check`. A changed

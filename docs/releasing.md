@@ -1,7 +1,10 @@
 # Release procedure
 
-Candidate: **0.1.0**. Verification and local staging do not upload artifacts.
-The repository must have a reviewed commit and release tag before publication.
+Published Gradle plugin: **0.1.0** in the
+[Plugin Portal](https://plugins.gradle.org/plugin/io.github.sjacek.promptjig/0.1.0),
+availability confirmed on 2026-11-12. That version is immutable; further releases
+need a new build version, reviewed commit and release tag.
+Verification and local staging do not upload artifacts.
 Commits, tags and pushes are performed by the owner; Codex does not commit or push.
 
 Latest local results and remaining release prerequisites:
@@ -91,27 +94,33 @@ the build plugin separately; it does not make the runtime coordinates available.
 
 ## Publish the reviewed tag
 
-The owner creates and pushes an immutable `v0.1.0` tag for the reviewed commit.
+For a new release, update the build version and have the owner create and push
+an immutable `v<version>` tag for the reviewed commit. Do not republish `0.1.0`.
 Configure the GitHub environment `plugin-portal` with protected deployment
 approval as appropriate and secrets `GRADLE_PUBLISH_KEY` / `GRADLE_PUBLISH_SECRET`.
 Never pass their values in command-line arguments, logs or repository files.
 
 Run the manual **Publish plugin** workflow with that tag. It checks that the tag
 matches the build's version and HEAD, reruns acceptance/metadata validation, and
-then invokes `:gradle-plugin:publishPlugins`. Plugin Portal approval may still
-be required for the first publication. Verify actual availability before
-removing the pending-publication notes or enabling default service consumption.
+then invokes `:gradle-plugin:publishPlugins`. The first release's Portal approval
+is complete. Verify actual availability of every new version after publishing;
+a successful upload alone does not establish public availability.
 The owner must select a commit whose **Compatibility** workflow is green. The
 release workflow does not query the outcome of an earlier Compatibility run;
 its own build rerun does not replace that eight-cell acceptance requirement.
 
 ## Service adoption
 
-The `tichodroma-svc` pilot remains an explicit `promptjigBuildDir` experiment,
-outside default build/CI and production extraction. Runtime integration is paused
-at the user's request while service compilation is repaired. A separate worktree
-has been prepared; audit `VERSION_REF`, response-schema capture and validation
-evidence have not been integrated or accepted.
+The `tichodroma-svc` runtime pilot uses an explicit `promptjigBuildDir` checkout
+and has its own mandatory `test:promptjig-pilot` CI job. Audit version/schema and
+validation evidence were verified by the service pilot; the
+[pipeline for commit 43324ce7](https://gitlab.com/tichodroma/tichodroma-svc/-/pipelines/3058477157)
+passed. Production activation remains a separate reviewed change.
+
+The [standalone public-announcement pilot](../examples/runtime/README.md) provides
+a smaller Spring AI consumer. Both runtime pilots still use source substitutions
+because Portal publication supplies the Gradle plugin rather than the separate
+`promptjig-core` and `promptjig-spring-ai` Maven artifacts.
 
 After independent pilot acceptance and verified artifact availability, a separate
 reviewed change can replace preview wiring with catalog-backed published

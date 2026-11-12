@@ -1,5 +1,18 @@
 # Gotowość buildu i publikacji 0.1.0
 
+Aktualizacja 2026-11-12: **plugin 0.1.0 został zaakceptowany i jest publicznie
+dostępny w [Gradle Plugin Portal](https://plugins.gradle.org/plugin/io.github.sjacek.promptjig/0.1.0).**
+Strona wersji zwraca HTTP 200. Zdalna publikacja osobnych bibliotek core/runtime
+pozostaje oddzielnym zadaniem. Konsument `examples/gradle` przeszedł `check`
+z pluginem pobranym z Portalu, bez `promptjigPluginBuild` ani included build:
+
+```powershell
+.\gradlew.bat -p examples/gradle check --refresh-dependencies --configuration-cache --configuration-cache-problems=fail --console=plain
+```
+
+Wynik: `BUILD SUCCESSFUL`, 1 min 56 s. Poniższe wyniki zachowują historyczny
+stan kontroli przed publikacją z 2026-11-11.
+
 Sprawdzenie 2026-11-11. **Build lokalny i uwierzytelniona walidacja Plugin Portal
 przechodzą. Wydanie przez GitHub wymaga jeszcze konfiguracji i zatwierdzonego
 tagu.** Nie wykonano uploadu, commita, taga ani push.

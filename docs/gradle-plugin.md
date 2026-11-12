@@ -1,7 +1,8 @@
 # Gradle plugin
 
-Candidate 0.1.0 is not yet published. The included-build example below works
-from a checkout. The public plugin declaration becomes available after release.
+Version 0.1.0 is available in the
+[Gradle Plugin Portal](https://plugins.gradle.org/plugin/io.github.sjacek.promptjig/0.1.0).
+The declaration below resolves the published plugin without a Promptjig checkout.
 
 ## Setup
 
@@ -21,11 +22,15 @@ lock outside resources so it does not enter the application JAR. Each contract
 references `.st` files in its own directory. The plugin also works without the
 Java plugin and applies Gradle's base lifecycle when necessary.
 
-For the checked-in example before publication:
+Run the checked-in example against the published release:
 
 ```powershell
-.\gradlew.bat -p examples/gradle check '-PpromptjigPluginBuild=../..'
+.\gradlew.bat -p examples/gradle check
 ```
+
+For source development, add `-PpromptjigPluginBuild=../..` to substitute the local
+plugin build. Standalone core/runtime Maven publication is separate from Portal
+availability; see the [runtime guide](spring-ai.md).
 
 ## Validate and version changes
 
