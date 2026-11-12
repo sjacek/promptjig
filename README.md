@@ -36,6 +36,14 @@ system/user rendering and lenient or strict response reading. It targets
 Spring AI 2.0.x and Java 17+, with Jackson 2/3 bindings. Applications own model
 options, sensitivity policy and durable audit before response reading.
 
+Try the [small standalone Spring AI pilot](examples/runtime/README.md) to extract
+a fictional public event announcement into generated Java types. Its default
+run uses synthetic responses; an explicit task can call a pinned local model.
+
+```powershell
+.\gradlew.bat -p examples/runtime check run --configuration-cache --configuration-cache-problems=fail
+```
+
 ## Development probes
 
 Build and run the probes with JDK 21 or newer supported by Gradle (the recorded
@@ -81,6 +89,7 @@ are under `core/build/test-results/test/`. See [the stage-0 report](docs/stage0-
 for findings and limitations.
 
 The Gradle validator, located diagnostics and immutable lock/baseline are part
-of stage 1; code generation is implemented in stage 2. The Spring AI runtime,
-response repair and the Maven adapter remain later stages. The stage-0 report records the original
-experiment; current behavior is documented in the guides above.
+of stage 1; code generation is implemented in stage 2. The Spring AI runtime and
+response repair implement stage 3. The Maven adapter remains later work. The
+stage-0 report records the original experiment; current behavior is documented
+in the guides above.

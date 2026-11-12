@@ -1,4 +1,5 @@
 [versions]
+promptjig = "0.1.0"
 jackson = "2.22.4"
 jackson3 = "3.1.8"
 json-schema-validator = "2.0.8"
@@ -27,7 +28,10 @@ junit-jupiter = { module = "org.junit.jupiter:junit-jupiter" }
 junit-platform-launcher = { module = "org.junit.platform:junit-platform-launcher" }
 spring-ai-model = { module = "org.springframework.ai:spring-ai-model", version.ref = "spring-ai" }
 spring-ai-client-chat = { module = "org.springframework.ai:spring-ai-client-chat", version.ref = "spring-ai" }
+spring-ai-openai = { module = "org.springframework.ai:spring-ai-openai", version.ref = "spring-ai" }
 spring-ai-template-st = { module = "org.springframework.ai:spring-ai-template-st", version.ref = "spring-ai" }
+promptjig-runtime = { module = "io.github.sjacek.promptjig:promptjig-spring-ai", version.ref = "promptjig" }
 
 [plugins]
+promptjig = { id = "io.github.sjacek.promptjig", version.ref = "promptjig" }
 plugin-publish = { id = "com.gradle.plugin-publish", version.ref = "plugin-publish" }

@@ -9,6 +9,8 @@ on:
 permissions:
   contents: read
 
+# These inputs match the v4 action.yml metadata of checkout, setup-java and upload-artifact.
+# Suppress the IDE false positives only on the affected with blocks.
 jobs:
   runtime-java17:
     runs-on: ubuntu-latest
@@ -16,6 +18,7 @@ jobs:
       - uses: actions/checkout@v4
       - run: chmod +x gradlew
       - uses: actions/setup-java@v4
+        # noinspection UndefinedParamsPresent
         with:
           distribution: temurin
           java-version: '17'
@@ -27,10 +30,12 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+        # noinspection UndefinedParamsPresent
         with:
           fetch-depth: 0
       - run: chmod +x gradlew
       - uses: actions/setup-java@v4
+        # noinspection UndefinedParamsPresent
         with:
           distribution: temurin
           java-version: '25'
@@ -57,6 +62,49 @@ jobs:
           fi
           ./gradlew -p examples/gradle check -PpromptjigPluginBuild=../.. "-Ppromptjig.baselineLockFile=$baseline" --configuration-cache --console=plain
 
+  runtime-pilot:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        # noinspection UndefinedParamsPresent
+        with:
+          fetch-depth: 0
+      - run: chmod +x gradlew
+      - uses: actions/setup-java@v4
+        # noinspection UndefinedParamsPresent
+        with:
+          distribution: temurin
+          java-version: '17'
+      - uses: gradle/actions/setup-gradle@v4
+      - name: Verify standalone Spring AI pilot and immutable contract history
+        env:
+          BASE_SHA: ${{ github.event.pull_request.base.sha || github.event.before }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          baseline="$RUNNER_TEMP/runtime-pilot-baseline.json"
+          if [[ -n "$BASE_SHA" && ! "$BASE_SHA" =~ ^0+$ ]]; then
+            git rev-parse --verify --end-of-options "$BASE_SHA^{commit}" >/dev/null
+            if git cat-file -e "$BASE_SHA:examples/runtime/prompt-contracts.lock.json"; then
+              git show "$BASE_SHA:examples/runtime/prompt-contracts.lock.json" > "$baseline"
+            else
+              printf '{"lockVersion":1,"prompts":{}}\n' > "$baseline"
+            fi
+          else
+            printf '{"lockVersion":1,"prompts":{}}\n' > "$baseline"
+          fi
+          ./gradlew -p examples/runtime check installDist "-Ppromptjig.baselineLockFile=$baseline" --configuration-cache --configuration-cache-problems=fail --console=plain
+      - name: Run the packaged synthetic demo
+        run: examples/runtime/build/install/promptjig-runtime-pilot/bin/promptjig-runtime-pilot
+      - uses: actions/upload-artifact@v4
+        if: always()
+        # noinspection UndefinedParamsPresent
+        with:
+          name: runtime-pilot-reports
+          path: |
+            examples/runtime/build/reports/
+            examples/runtime/build/test-results/
+
   consumer:
     name: Gradle ${{ matrix.gradle }} / JDK ${{ matrix.java }}
     runs-on: ubuntu-latest
@@ -73,6 +121,7 @@ jobs:
       - uses: actions/checkout@v4
       - run: chmod +x gradlew
       - uses: actions/setup-java@v4
+        # noinspection UndefinedParamsPresent
         with:
           distribution: temurin
           java-version: ${{ matrix.java }}
@@ -80,6 +129,7 @@ jobs:
         # Tests run on the authoring JDK below; TestKit receives the selected consumer JDK explicitly.
         run: echo "CONSUMER_JAVA_HOME=$JAVA_HOME" >> "$GITHUB_ENV"
       - uses: actions/setup-java@v4
+        # noinspection UndefinedParamsPresent
         with:
           distribution: temurin
           java-version: '25'
@@ -87,6 +137,7 @@ jobs:
       - run: ./gradlew :gradle-plugin:test -PtestGradleVersion=${{ matrix.gradle }} -PtestJavaHome="$CONSUMER_JAVA_HOME" --console=plain
       - uses: actions/upload-artifact@v4
         if: always()
+        # noinspection UndefinedParamsPresent
         with:
           name: reports-${{ matrix.gradle }}-jdk-${{ matrix.java }}
           path: gradle-plugin/build/reports/

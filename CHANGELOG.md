@@ -10,6 +10,10 @@ locally through the included-build example.
 
 ### Added
 
+- Try Promptjig with Spring AI in a small standalone application that reads a
+  fictional public event announcement into generated Java types. Run the
+  synthetic demo without an inference backend, inspect response repairs and
+  rejections, or explicitly select a local model by digest.
 - Define prompt inputs, expected JSON responses and `.st` message templates in
   YAML contracts. Run `promptContractsValidate` or `check` to catch invalid
   schemas, missing templates and unknown or unused parameters before calling a model.

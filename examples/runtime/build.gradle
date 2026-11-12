@@ -1,0 +1,59 @@
+plugins {
+    id 'application'
+    alias(libs.plugins.promptjig)
+}
+
+java {
+    sourceCompatibility = JavaVersion.VERSION_17
+    targetCompatibility = JavaVersion.VERSION_17
+}
+tasks.withType(JavaCompile).configureEach { options.release = 17; options.encoding = 'UTF-8' }
+application {
+    mainClass = 'example.announcement.PilotApplication'
+    applicationDefaultJvmArgs = ['-Dfile.encoding=UTF-8', '-Dstdout.encoding=UTF-8', '-Dstderr.encoding=UTF-8']
+}
+
+promptContracts {
+    generate {
+        packageName = 'example.announcement.generated'
+        jackson = 'v3'
+    }
+}
+
+dependencies {
+    implementation libs.promptjig.runtime
+    implementation libs.spring.ai.client.chat
+    implementation libs.spring.ai.openai
+    implementation platform(libs.jackson3.bom)
+    implementation libs.jackson3.databind
+    compileOnly libs.lombok
+    annotationProcessor libs.lombok
+    compileOnly libs.jspecify
+    testCompileOnly libs.jspecify
+    testImplementation platform(libs.junit.bom)
+    testImplementation libs.junit.jupiter
+    testRuntimeOnly libs.junit.platform.launcher
+}
+
+tasks.named('test') { useJUnitPlatform() }
+// The SDK has enough transitive JARs to exceed cmd.exe's command-line limit on deep Windows paths.
+// Keep the real task inputs; a wildcard FileCollection itself is invalid on Windows.
+tasks.named('startScripts', CreateStartScripts) {
+    doLast { CreateStartScripts launcher ->
+        def lines = launcher.windowsScript.readLines('UTF-8')
+        if (lines.count { it.startsWith('set CLASSPATH=') } != 1)
+            throw new GradleException('Unsupported Windows launcher classpath template')
+        launcher.windowsScript.setText(lines.collect { line ->
+            line.startsWith('set CLASSPATH=') ? 'set CLASSPATH=%APP_HOME%\\lib\\*' : line
+        }.join('\r\n') + '\r\n', 'UTF-8')
+    }
+}
+// The ordinary application and check use synthetic responses; inference requires this explicit task.
+tasks.register('runLocal', JavaExec) {
+    group = 'application'
+    description = 'Extracts the synthetic public announcement using an explicitly selected local model digest.'
+    classpath = sourceSets.main.runtimeClasspath
+    mainClass = application.mainClass
+    jvmArgs application.applicationDefaultJvmArgs
+    args '--local-model'
+}

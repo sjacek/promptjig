@@ -1,0 +1,18 @@
+pluginManagement {
+    repositories { gradlePluginPortal() }
+}
+
+// One included build supplies both the plugin and runtime; registering it twice can discard substitutions.
+def checkout = file(providers.gradleProperty('promptjigBuildDir').getOrElse('../..'))
+dependencyResolutionManagement {
+    repositories { mavenCentral() }
+    versionCatalogs { libs { from(files(new File(checkout, 'gradle/libs.versions.toml'))) } }
+}
+includeBuild(checkout) {
+    dependencySubstitution {
+        substitute module('io.github.sjacek.promptjig:promptjig-gradle-plugin') using project(':gradle-plugin')
+        substitute module('io.github.sjacek.promptjig:promptjig-core') using project(':core')
+        substitute module('io.github.sjacek.promptjig:promptjig-spring-ai') using project(':spring-ai')
+    }
+}
+rootProject.name = 'promptjig-runtime-pilot'

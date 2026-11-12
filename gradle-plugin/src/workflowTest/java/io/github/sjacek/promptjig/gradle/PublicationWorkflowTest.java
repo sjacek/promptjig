@@ -51,6 +51,27 @@ class PublicationWorkflowTest {
         assertTrue(command.contains(":spring-ai:check")); assertFalse(command.contains(":core:spike"));
     }
 
+    @Test void standaloneRuntimePilotRunsSyntheticChecksAndItsPackagedApplicationWithoutInference() throws Exception {
+        var pilot = workflow("compatibility").path("jobs").path("runtime-pilot");
+        assertFalse(pilot.isMissingNode());
+        assertFalse(pilot.has("if"));
+        assertFalse(pilot.has("continue-on-error"));
+        var commands = new StringBuilder();
+        boolean java17 = false;
+        for (var step : pilot.path("steps")) {
+            commands.append(step.path("run").asText()).append('\n');
+            if (step.path("uses").asText().startsWith("actions/setup-java@"))
+                java17 = step.path("with").path("java-version").asText().equals("17");
+        }
+        assertTrue(java17);
+        assertTrue(commands.toString().contains("-p examples/runtime check installDist"));
+        assertTrue(commands.toString().contains("--configuration-cache-problems=fail"));
+        assertTrue(commands.toString().contains("$BASE_SHA:examples/runtime/prompt-contracts.lock.json"));
+        assertTrue(commands.toString().contains("examples/runtime/build/install/promptjig-runtime-pilot/bin/promptjig-runtime-pilot"));
+        assertFalse(commands.toString().contains("runLocal"));
+        assertFalse(pilot.toString().contains("PROMPTJIG_MODEL"));
+    }
+
     @Test void consumerMatrixKeepsAllEightSupportedPairsAndDoesNotFailFast() throws Exception {
         var consumer = workflow("compatibility").path("jobs").path("consumer");
         assertFalse(consumer.path("strategy").path("fail-fast").asBoolean(true));
