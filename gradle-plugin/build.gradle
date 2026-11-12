@@ -53,6 +53,8 @@ dependencies {
     testImplementation(platform(libs.junit.bom.get()))
     testImplementation(libs.junit.jupiter)
     testImplementation gradleTestKit()
+    testCompileOnly libs.lombok
+    testAnnotationProcessor libs.lombok
     testRuntimeOnly(libs.junit.platform.launcher)
     workflowTestImplementation(platform(libs.jackson.bom.get()))
     workflowTestImplementation(libs.jackson.yaml)
@@ -126,11 +128,32 @@ tasks.named('test') {
     systemProperty 'promptjig.testJavaHome', providers.gradleProperty('testJavaHome').getOrElse('')
     systemProperty 'promptjig.jackson3Version', libs.versions.jackson3.get()
     systemProperty 'promptjig.annotationsJar', configurations.isolatedRuntime.files.find { it.name.startsWith('jackson-annotations-') }.absolutePath
-    systemProperty 'promptjig.testKitDir', rootProject.layout.projectDirectory.dir('.gradle-user-home/testkit').asFile.absolutePath
+    systemProperty 'promptjig.testKitDir', providers.environmentVariable('PROMPTJIG_TESTKIT_DIR')
+            .getOrElse(rootProject.layout.projectDirectory.dir('.gradle-user-home/testkit').asFile.absolutePath)
+    systemProperty 'promptjig.verificationMetadata', rootProject.file('gradle/verification-metadata.xml').absolutePath
+    inputs.file(rootProject.file('gradle/verification-metadata.xml')).withPathSensitivity(PathSensitivity.RELATIVE)
+    systemProperty 'promptjig.gradleDistributions', providers.environmentVariable('PROMPTJIG_GRADLE_DISTRIBUTIONS').getOrElse('')
     systemProperty 'promptjig.fixtureDirectory', rootProject.layout.projectDirectory.dir('examples/gradle').asFile.absolutePath
     inputs.files(rootProject.fileTree('examples/gradle') { exclude '**/build/**', '**/.gradle/**' })
             .withPathSensitivity(PathSensitivity.RELATIVE)
     dependsOn tasks.named('publishAllPublicationsToStagingRepository')
     systemProperty 'promptjig.stagingRepository', layout.buildDirectory.dir('staging-repository').get().asFile.absolutePath
     systemProperty 'promptjig.pluginArtifact', tasks.named('jar').flatMap { it.archiveFile }.get().asFile.absolutePath
+}
+
+// Compile the standalone helper, then resolve only synthetic fixture dependencies with each consumer distribution.
+// This task never schedules Test tasks or executes the functional fixtures' check/verification hooks.
+tasks.register('warmTestKitCache', JavaExec) {
+    description = 'Resolve TestKit consumer dependencies without executing tests.'
+    group = 'verification'
+    classpath = sourceSets.test.runtimeClasspath
+    mainClass = 'io.github.sjacek.promptjig.gradle.TestKitCacheWarmup'
+    args providers.environmentVariable('PROMPTJIG_TESTKIT_DIR')
+            .getOrElse(rootProject.file('.gradle-user-home/testkit').absolutePath)
+    args layout.buildDirectory.dir('cache-warmup/testkit').get().asFile.absolutePath
+    args rootProject.file('gradle/verification-metadata.xml').absolutePath
+    args providers.environmentVariable('PROMPTJIG_GRADLE_DISTRIBUTIONS').getOrElse('')
+    args providers.environmentVariable('WARMUP_JAVA_HOME').getOrElse(System.getProperty('java.home'))
+    args libs.versions.jackson3.get()
+    args providers.gradleProperty('testGradleVersions').getOrElse(gradle.gradleVersion).split(',')
 }

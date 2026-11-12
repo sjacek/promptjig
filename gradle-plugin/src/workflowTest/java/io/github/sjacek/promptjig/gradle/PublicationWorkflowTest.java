@@ -54,7 +54,8 @@ class PublicationWorkflowTest {
     @Test void standaloneRuntimePilotRunsSyntheticChecksAndItsPackagedApplicationWithoutInference() throws Exception {
         var pilot = workflow("compatibility").path("jobs").path("runtime-pilot");
         assertFalse(pilot.isMissingNode());
-        assertFalse(pilot.has("if"));
+        assertEquals("${{ !cancelled() }}", pilot.path("if").asText());
+        assertEquals("warm-cache", pilot.path("needs").asText());
         assertFalse(pilot.has("continue-on-error"));
         var commands = new StringBuilder();
         boolean java17 = false;

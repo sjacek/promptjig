@@ -40,11 +40,12 @@ class PromptjigPluginTest {
 
     private GradleRunner runner(Path project, String... tasks) {
         var arguments = new ArrayList<>(Arrays.asList(tasks));
-        arguments.addAll(java.util.List.of("--stacktrace", "--console=plain", "--configuration-cache", "--configuration-cache-problems=fail"));
+        arguments.addAll(java.util.List.of("--stacktrace", "--console=plain", "--dependency-verification=strict",
+                "--configuration-cache", "--configuration-cache-problems=fail"));
         String javaHome = System.getProperty("promptjig.testJavaHome", "");
         // TestKit's Tooling API does not select its daemon JVM from JAVA_HOME alone.
         if (!javaHome.isBlank()) arguments.add("-Dorg.gradle.java.home=" + javaHome);
-        var runner = GradleRunner.create().withProjectDir(project.toFile()).withArguments(arguments)
+        var runner = VerifiedTestKit.create(project, Path.of(System.getProperty("promptjig.verificationMetadata"))).withArguments(arguments)
                 .withPluginClasspath().withTestKitDir(new File(System.getProperty("promptjig.testKitDir")));
         if (!javaHome.isBlank()) {
             var environment = new java.util.HashMap<>(System.getenv());
@@ -52,8 +53,10 @@ class PromptjigPluginTest {
             runner.withEnvironment(environment);
         }
         String version = System.getProperty("promptjig.testGradleVersion", "");
-        return version.isBlank() ? runner.withGradleInstallation(new File(System.getProperty("promptjig.testGradleHome")))
-                : runner.withGradleVersion(version);
+        if (version.isBlank()) return runner.withGradleInstallation(new File(System.getProperty("promptjig.testGradleHome")));
+        String distributions = System.getProperty("promptjig.gradleDistributions", "");
+        return distributions.isBlank() ? runner.withGradleVersion(version)
+                : runner.withGradleInstallation(Path.of(distributions, "gradle-" + version).toFile());
     }
 
     private Path contract(Path project) {

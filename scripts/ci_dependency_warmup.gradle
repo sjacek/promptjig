@@ -1,0 +1,18 @@
+import org.gradle.api.artifacts.component.ModuleComponentIdentifier
+
+// Resolution only: project outputs are excluded, and no check/test/application tasks are scheduled.
+// This init script is deliberately used with --no-configuration-cache during preparation.
+allprojects {
+    tasks.register('ciResolveDependencies') {
+        doLast {
+            configurations.each { configuration ->
+                if (configuration.canBeResolved) {
+                    def downloads = configuration.incoming.artifactView {
+                        componentFilter { it instanceof ModuleComponentIdentifier }
+                    }.files.files
+                    println "Resolved ${downloads.size()} external artifacts: ${project.path}:${configuration.name}"
+                }
+            }
+        }
+    }
+}

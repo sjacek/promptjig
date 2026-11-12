@@ -9,13 +9,90 @@ on:
 permissions:
   contents: read
 
-# These inputs match the v4 action.yml metadata of checkout, setup-java and upload-artifact.
-# Suppress the IDE false positives only on the affected with blocks.
+env:
+  GRADLE_USER_HOME: ${{ github.workspace }}/build/ci-dependencies/gradle
+  PROMPTJIG_TESTKIT_DIR: ${{ github.workspace }}/build/ci-dependencies/testkit
+  PROMPTJIG_GRADLE_DISTRIBUTIONS: ${{ github.workspace }}/build/ci-tools/gradle
+
+# Inputs were checked against each action's metadata. The IDE may not resolve SHA-pinned actions;
+# suppress that inspection only on affected with blocks. Validate workflow changes with actionlint.
 jobs:
+  warm-cache:
+    name: Prepare verified dependencies
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+        # noinspection UndefinedParamsPresent
+        with:
+          persist-credentials: false
+      - uses: actions/setup-java@b843ebf9b913146b38da2eaa7aeddf76074ae1ad # v6
+        # noinspection UndefinedParamsPresent
+        with:
+          distribution: temurin
+          java-version: '21'
+      - name: Preserve the JDK supported by all TestKit distributions
+        run: echo "WARMUP_JAVA_HOME=$JAVA_HOME" >> "$GITHUB_ENV"
+      - uses: actions/setup-java@b843ebf9b913146b38da2eaa7aeddf76074ae1ad # v6
+        # noinspection UndefinedParamsPresent
+        with:
+          distribution: temurin
+          java-version: '25'
+      - uses: actions/setup-python@6d4fd22b20465ccc0f7354476588e8df7c9ca0e0 # v7
+        # noinspection UndefinedParamsPresent
+        with:
+          python-version: '3.12'
+      - name: Restore an exact or older compatible snapshot
+        id: dependencies
+        uses: actions/cache/restore@caa296126883cff596d87d8935842f9db880ef25 # v5
+        # noinspection UndefinedParamsPresent
+        with:
+          path: build/ci-dependencies.tar
+          key: dependencies-v1-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('**/*.gradle', '**/pom.xml', '**/libs.versions.toml', '**/gradle.properties', '**/gradle-wrapper.properties', '**/gradle-wrapper.jar', 'gradle/verification-metadata.xml', 'gradle/ci-dependencies.json', '.mvn/**', 'security/**', 'scripts/ci_dependency*', 'scripts/maven_verification.py', 'gradle-plugin/src/test/**/*.java', '.github/actions/**', '.github/workflows/compatibility.yml') }}
+          restore-keys: dependencies-v1-${{ runner.os }}-${{ runner.arch }}-
+      - name: Restore downloads and verify the reviewed policy
+        run: python3 -B scripts/ci_dependency_cache.py restore
+      - uses: gradle/actions/setup-gradle@8da46b539cd8fe6ab27ca75128919a18d757604c # v6
+        # noinspection UndefinedParamsPresent
+        with:
+          cache-disabled: true
+      # Always resolve, including exact hits: a snapshot may be incomplete. No test or fixture check tasks run.
+      - name: Fill dependency gaps and prepare all consumer distributions
+        run: python3 -B scripts/ci_dependency_cache.py warm
+      - name: Test snapshot security and cold/restored behavior
+        run: python3 -B -m unittest discover -s scripts -p 'test_ci_dependency*.py' -v
+      - name: Pack verified downloads only
+        run: python3 -B scripts/ci_dependency_cache.py pack
+      - name: Save only from the trusted default branch
+        if: github.event_name == 'push' && github.repository == 'sjacek/promptjig' && github.ref == format('refs/heads/{0}', github.event.repository.default_branch) && steps.dependencies.outputs.cache-hit != 'true'
+        uses: actions/cache/save@caa296126883cff596d87d8935842f9db880ef25 # v5
+        # noinspection UndefinedParamsPresent
+        with:
+          path: build/ci-dependencies.tar
+          key: ${{ steps.dependencies.outputs.cache-primary-key }}
+      - name: Share verified dependencies with every job in this run
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7
+        # noinspection UndefinedParamsPresent
+        with:
+          name: ci-dependencies
+          path: build/ci-dependencies.tar
+          if-no-files-found: error
+          retention-days: 1
+          compression-level: 0
+
   runtime-java17:
+    needs: warm-cache
+    if: ${{ !cancelled() }}
     runs-on: ubuntu-latest
     steps:
+      - name: Require successful dependency preparation
+        env:
+          DEPENDENCIES_RESULT: ${{ needs.warm-cache.result }}
+        run: test "$DEPENDENCIES_RESULT" = success || { echo '::error::Dependency preparation failed; tests must not be skipped.'; exit 1; }
       - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: ./.github/actions/restore-dependencies
       - run: chmod +x gradlew
       - uses: actions/setup-java@v4
         # noinspection UndefinedParamsPresent
@@ -23,16 +100,26 @@ jobs:
           distribution: temurin
           java-version: '17'
       - uses: gradle/actions/setup-gradle@v4
+        with:
+          cache-disabled: true
       # The development spike requires 21+, so exercise only Java-17 production modules here.
       - run: ./gradlew :core:test :core:javadoc :spring-ai:check :spring-ai:assemble --console=plain
 
   core-and-packaging:
+    needs: warm-cache
+    if: ${{ !cancelled() }}
     runs-on: ubuntu-latest
     steps:
+      - name: Require successful dependency preparation
+        env:
+          DEPENDENCIES_RESULT: ${{ needs.warm-cache.result }}
+        run: test "$DEPENDENCIES_RESULT" = success || { echo '::error::Dependency preparation failed; tests must not be skipped.'; exit 1; }
       - uses: actions/checkout@v4
         # noinspection UndefinedParamsPresent
         with:
           fetch-depth: 0
+          persist-credentials: false
+      - uses: ./.github/actions/restore-dependencies
       - run: chmod +x gradlew
       - uses: actions/setup-java@v4
         # noinspection UndefinedParamsPresent
@@ -40,6 +127,8 @@ jobs:
           distribution: temurin
           java-version: '25'
       - uses: gradle/actions/setup-gradle@v4
+        with:
+          cache-disabled: true
       # Portal validation requires publishing keys even with --validate-only; regular CI must work without secrets.
       - run: ./gradlew check assemble :core:spike --console=plain
       - run: ./gradlew -p examples/generation check -PpromptjigPluginBuild=../.. --configuration-cache --configuration-cache-problems=fail --console=plain
@@ -63,12 +152,20 @@ jobs:
           ./gradlew -p examples/gradle check -PpromptjigPluginBuild=../.. "-Ppromptjig.baselineLockFile=$baseline" --configuration-cache --console=plain
 
   runtime-pilot:
+    needs: warm-cache
+    if: ${{ !cancelled() }}
     runs-on: ubuntu-latest
     steps:
+      - name: Require successful dependency preparation
+        env:
+          DEPENDENCIES_RESULT: ${{ needs.warm-cache.result }}
+        run: test "$DEPENDENCIES_RESULT" = success || { echo '::error::Dependency preparation failed; tests must not be skipped.'; exit 1; }
       - uses: actions/checkout@v4
         # noinspection UndefinedParamsPresent
         with:
           fetch-depth: 0
+          persist-credentials: false
+      - uses: ./.github/actions/restore-dependencies
       - run: chmod +x gradlew
       - uses: actions/setup-java@v4
         # noinspection UndefinedParamsPresent
@@ -76,6 +173,8 @@ jobs:
           distribution: temurin
           java-version: '17'
       - uses: gradle/actions/setup-gradle@v4
+        with:
+          cache-disabled: true
       - name: Verify standalone Spring AI pilot and immutable contract history
         env:
           BASE_SHA: ${{ github.event.pull_request.base.sha || github.event.before }}
@@ -106,6 +205,8 @@ jobs:
             examples/runtime/build/test-results/
 
   consumer:
+    needs: warm-cache
+    if: ${{ !cancelled() }}
     name: Gradle ${{ matrix.gradle }} / JDK ${{ matrix.java }}
     runs-on: ubuntu-latest
     strategy:
@@ -118,7 +219,14 @@ jobs:
           - gradle: '9.0.0'
             java: '25'
     steps:
+      - name: Require successful dependency preparation
+        env:
+          DEPENDENCIES_RESULT: ${{ needs.warm-cache.result }}
+        run: test "$DEPENDENCIES_RESULT" = success || { echo '::error::Dependency preparation failed; tests must not be skipped.'; exit 1; }
       - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: ./.github/actions/restore-dependencies
       - run: chmod +x gradlew
       - uses: actions/setup-java@v4
         # noinspection UndefinedParamsPresent
@@ -134,6 +242,8 @@ jobs:
           distribution: temurin
           java-version: '25'
       - uses: gradle/actions/setup-gradle@v4
+        with:
+          cache-disabled: true
       - run: ./gradlew :gradle-plugin:test -PtestGradleVersion=${{ matrix.gradle }} -PtestJavaHome="$CONSUMER_JAVA_HOME" --console=plain
       - uses: actions/upload-artifact@v4
         if: always()

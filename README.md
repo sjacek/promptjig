@@ -61,6 +61,10 @@ run uses synthetic responses; an explicit task can call a pinned local model.
 
 ## Development probes
 
+CI prepares verified dependency downloads once and shares them with all test
+jobs, including pull requests from forks. See [CI dependency snapshots](docs/ci-dependency-cache.md)
+for the cache scope, invalidation, strict checksum policy and troubleshooting.
+
 Build and run the probes with JDK 21 or newer supported by Gradle (the recorded
 stage-0 run used JDK 25.0.1). The core library continues to target Java 17:
 

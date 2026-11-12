@@ -31,6 +31,9 @@ jobs:
           distribution: temurin
           java-version: '25'
       - uses: gradle/actions/setup-gradle@v4
+        with:
+          # Publishing is deliberately separate from the download-only compatibility snapshot.
+          cache-disabled: true
       - name: Verify immutable release reference
         id: verify_release
         shell: bash
