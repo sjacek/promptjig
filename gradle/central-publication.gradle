@@ -1,0 +1,34 @@
+import org.gradle.api.configuration.BuildFeatures
+import javax.inject.Inject
+
+// Access the public Gradle service through injection instead of deprecated StartParameter flags.
+abstract class CentralPublicationBuildFeatures {
+    @Inject
+    abstract BuildFeatures getBuildFeatures()
+}
+
+// Applied only by the two runtime libraries. The Portal plugin remains a separate publication.
+// Ordinary builds/staging never read signing material or require publication credentials.
+if (providers.gradleProperty('centralRelease').getOrElse('false') == 'true') {
+    def configurationCache = objects.newInstance(CentralPublicationBuildFeatures).buildFeatures.configurationCache
+    if (configurationCache.active.get() || !gradle.startParameter.projectProperties.containsKey('centralRelease')) {
+        throw new GradleException('Central signing requires explicit -PcentralRelease=true --no-configuration-cache')
+    }
+    apply plugin: 'signing'
+    def signingKey = providers.environmentVariable('MAVEN_GPG_KEY').orNull
+    def signingPassword = providers.environmentVariable('MAVEN_GPG_PASSPHRASE').orNull
+    if (!signingKey || !signingPassword) {
+        throw new GradleException('Central signing requires MAVEN_GPG_KEY and MAVEN_GPG_PASSPHRASE')
+    }
+    signing {
+        useInMemoryPgpKeys(signingKey, signingPassword)
+        sign publishing.publications
+    }
+    // A new invocation must sign with its current key, never reuse signatures made with another key.
+    tasks.withType(Sign).configureEach { outputs.upToDateWhen { false } }
+    // A distinct repository prevents unsigned local staging from being mistaken for release output.
+    publishing.repositories.maven {
+        name = 'centralStaging'
+        url = layout.buildDirectory.dir('central-staging')
+    }
+}

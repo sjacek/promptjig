@@ -1,5 +1,9 @@
 # Gotowość buildu i publikacji 0.1.0
 
+Przygotowanie wydania bibliotek 0.2.0 opisuje aktualna
+[procedura Maven Central](maven-central.md). Poniższy raport zachowuje wyniki
+historycznych kontroli 0.1.0; nie potwierdza publikacji bibliotek 0.2.0.
+
 Aktualizacja 2026-11-12: **plugin 0.1.0 został zaakceptowany i jest publicznie
 dostępny w [Gradle Plugin Portal](https://plugins.gradle.org/plugin/io.github.sjacek.promptjig/0.1.0).**
 Strona wersji zwraca HTTP 200. Zdalna publikacja osobnych bibliotek core/runtime

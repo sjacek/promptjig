@@ -21,6 +21,10 @@ Changes under **Unreleased** are not yet published.
 - Use `promptjig-spring-ai` to render messages from your contract and read model
   answers into generated Java models. Invalid prompt resources are detected
   when contracts are loaded.
+- Prepare signed core and Spring AI library packages for Maven Central, including
+  sources and Javadocs. The manual release workflow checks the tested release
+  commit and can resume an accepted deployment without uploading it again.
+  Public availability will be confirmed after the first library release.
 - Find out which response fields were rejected or repaired without including
   extracted values or unexpected field names in validation findings. Contract
   versions, fingerprints and sensitivity labels are available for your

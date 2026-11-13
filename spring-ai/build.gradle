@@ -35,9 +35,11 @@ publishing {
             description = project.description
             url = 'https://github.com/sjacek/promptjig'
             licenses { license { name = 'MIT License'; url = 'https://opensource.org/license/mit' } }
-            developers { developer { id = 'sjacek'; name = 'Jacek Sztajnke' } }
+            developers { developer { id = 'sjacek'; name = 'Jacek Sztajnke'; url = 'https://github.com/sjacek' } }
             scm { url = 'https://github.com/sjacek/promptjig'; connection = 'scm:git:https://github.com/sjacek/promptjig.git' }
         }
     }
     repositories { maven { name = 'staging'; url = layout.buildDirectory.dir('staging-repository') } }
 }
+
+apply from: rootProject.file('gradle/central-publication.gradle')

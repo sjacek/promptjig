@@ -18,6 +18,8 @@ The core targets Java 17; the plugin supports Gradle 9.0+ on a supported JDK 17+
 Building the development probes requires JDK 21+; the wrapper uses Gradle 9.9.1.
 
 See the [changelog](CHANGELOG.md) for user-visible changes and compatibility notes.
+Library maintainers can prepare a [signed Maven Central release](docs/maven-central.md)
+independently of the Gradle Plugin Portal publication.
 
 ## Use the plugin
 

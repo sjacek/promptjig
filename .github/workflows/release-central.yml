@@ -1,0 +1,138 @@
+name: Publish runtime libraries
+
+on:
+  # Tags and pushes never publish automatically. Select an existing reviewed release tag.
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: Existing reviewed stable release tag, for example v0.2.0
+        required: true
+        type: string
+      deployment_id:
+        description: Resume an accepted Central deployment without signing or uploading again (optional UUID)
+        required: false
+        type: string
+
+permissions:
+  contents: read
+  actions: read
+
+concurrency:
+  group: central-${{ inputs.tag }}
+  cancel-in-progress: false
+
+jobs:
+  verify:
+    if: github.repository == 'sjacek/promptjig'
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    outputs:
+      commit: ${{ steps.verify_release.outputs.commit }}
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+        # noinspection UndefinedParamsPresent
+        with:
+          ref: ${{ inputs.tag }}
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-java@b843ebf9b913146b38da2eaa7aeddf76074ae1ad # v6
+        # noinspection UndefinedParamsPresent
+        with:
+          distribution: temurin
+          java-version: '25'
+      - uses: actions/setup-python@6d4fd22b20465ccc0f7354476588e8df7c9ca0e0 # v7
+        # noinspection UndefinedParamsPresent
+        with:
+          python-version: '3.12'
+      - uses: gradle/actions/setup-gradle@8da46b539cd8fe6ab27ca75128919a18d757604c # v6
+        # noinspection UndefinedParamsPresent
+        with:
+          cache-disabled: true
+      - run: chmod +x gradlew
+      - name: Verify immutable release reference
+        id: verify_release
+        shell: bash
+        env:
+          RELEASE_TAG: ${{ inputs.tag }}
+        run: |
+          set -euo pipefail
+          # Quiet, uncached output is the version only; an empty value must not admit a tag named "v".
+          version="$(./gradlew -q printVersion --no-configuration-cache)"
+          test -n "$version"
+          test "$RELEASE_TAG" = "v$version"
+          # Resolve separately so either Git failure stops immediately; ^{commit} accepts both tag kinds.
+          tag_commit="$(git rev-parse --verify "refs/tags/$RELEASE_TAG^{commit}")"
+          head_commit="$(git rev-parse HEAD)"
+          test "$tag_commit" = "$head_commit"
+          # Check tracked files and the index before any build or authenticated Portal call.
+          git diff --exit-code
+          git diff --cached --exit-code
+          echo "commit=$head_commit" >> "$GITHUB_OUTPUT"
+      - name: Require every Compatibility job on the exact release commit
+        id: verify_ci
+        env:
+          RELEASE_TAG: ${{ inputs.tag }}
+          RELEASE_COMMIT: ${{ steps.verify_release.outputs.commit }}
+          MAVEN_DEPLOYMENT_ID: ${{ inputs.deployment_id }}
+          GITHUB_TOKEN: ${{ github.token }}
+        run: python3 -B scripts/central_publication.py ci
+
+  publish:
+    needs: verify
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    environment: maven-central
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+        # noinspection UndefinedParamsPresent
+        with:
+          # Use the verified SHA, so moving a tag cannot change the reviewed sources between jobs.
+          ref: ${{ needs.verify.outputs.commit }}
+          persist-credentials: false
+      - uses: actions/setup-java@b843ebf9b913146b38da2eaa7aeddf76074ae1ad # v6
+        # noinspection UndefinedParamsPresent
+        with:
+          distribution: temurin
+          java-version: '25'
+      - uses: actions/setup-python@6d4fd22b20465ccc0f7354476588e8df7c9ca0e0 # v7
+        # noinspection UndefinedParamsPresent
+        with:
+          python-version: '3.12'
+      - uses: gradle/actions/setup-gradle@8da46b539cd8fe6ab27ca75128919a18d757604c # v6
+        # noinspection UndefinedParamsPresent
+        with:
+          # Never restore build state or save a credentialed Gradle home to a shared cache.
+          cache-disabled: true
+      - run: chmod +x gradlew
+      - name: Recheck both library publications without credentials
+        id: build
+        if: inputs.deployment_id == ''
+        run: |
+          ./gradlew check assemble :core:spike :core:publishAllPublicationsToStagingRepository :spring-ai:publishAllPublicationsToStagingRepository --dependency-verification=strict --console=plain
+          python3 -B scripts/central_publication.py verify-staging
+          python3 -B -m unittest discover -s scripts -p 'test_central_publication.py' -v
+      - name: Sign both libraries into an isolated local repository
+        id: sign
+        if: inputs.deployment_id == ''
+        env:
+          MAVEN_GPG_KEY: ${{ secrets.MAVEN_GPG_KEY }}
+          MAVEN_GPG_PASSPHRASE: ${{ secrets.MAVEN_GPG_PASSPHRASE }}
+        run: ./gradlew :core:publishAllPublicationsToCentralStagingRepository :spring-ai:publishAllPublicationsToCentralStagingRepository -PcentralRelease=true --no-configuration-cache --no-daemon --no-build-cache --dependency-verification=strict --console=plain
+      - name: Upload once or resume the existing deployment
+        id: publish_central
+        env:
+          RELEASE_TAG: ${{ inputs.tag }}
+          RELEASE_COMMIT: ${{ needs.verify.outputs.commit }}
+          MAVEN_DEPLOYMENT_ID: ${{ inputs.deployment_id }}
+          MAVEN_CENTRAL_USERNAME: ${{ secrets.MAVEN_CENTRAL_USERNAME }}
+          MAVEN_CENTRAL_PASSWORD: ${{ secrets.MAVEN_CENTRAL_PASSWORD }}
+        run: python3 -B scripts/central_publication.py publish
+      - name: Preserve deployment identity for status-only recovery
+        if: always()
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7
+        # noinspection UndefinedParamsPresent
+        with:
+          name: central-publication-${{ github.run_id }}-${{ github.run_attempt }}
+          path: build/central-publication/state.json
+          if-no-files-found: ignore
+          retention-days: 30

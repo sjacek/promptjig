@@ -145,6 +145,13 @@ jobs:
           cache-disabled: true
       # Portal validation requires publishing keys even with --validate-only; regular CI must work without secrets.
       - run: ./gradlew check assemble :core:spike --console=plain
+      - name: Verify Maven Central library payloads without signing or upload
+        run: |
+          ./gradlew :core:publishAllPublicationsToStagingRepository :spring-ai:publishAllPublicationsToStagingRepository --dependency-verification=strict --console=plain
+          python3 -B scripts/central_publication.py verify-staging
+          python3 -B -m unittest discover -s scripts -p 'test_central_publication.py' -v
+      - name: Verify real Gradle signatures using a disposable test key
+        run: python3 -B -m unittest discover -s scripts -p 'test_central_signing.py' -v
       - run: ./gradlew -p examples/generation check -PpromptjigPluginBuild=../.. --configuration-cache --configuration-cache-problems=fail --console=plain
       - name: Protect example lock history against the target branch
         env:

@@ -1,0 +1,71 @@
+{
+  "date": "2026-11-13",
+  "scope": "Local preparation and offline verification; no upload or production signing key used",
+  "baseCommit": "f1e40b601fce3314450d7cbfb472b3491d768314",
+  "version": "0.2.0",
+  "coordinates": [
+    "io.github.sjacek.promptjig:promptjig-core:0.2.0",
+    "io.github.sjacek.promptjig:promptjig-spring-ai:0.2.0"
+  ],
+  "testedSourceSha256": {
+    "build.gradle": "c18d518d5f2cf7b9911e57d23bb7d0f639a919a7417140bc97b8ec19b1cfc860",
+    "core/build.gradle": "7bb9f172380e515de42868d9b03342e2fe477602549212173f748133fb19b5d6",
+    "spring-ai/build.gradle": "bebc4e72c20a7aa82e0ec69405c1d2209a77ba2be3629cbc54445d7d6c838939",
+    "gradle/central-publication.gradle": "0872b3bccd6cf02a19701e0966d2268704a371eb479480cd8c791fc13a63c05e",
+    ".github/workflows/compatibility.yml": "e115ee04b97420567c950928f3de851b8c470119a5a8b78f645c028f31d3f92c",
+    ".github/workflows/release-central.yml": "2d6b25bec6f9f391c762b1b7b1394892081b81bcaeca30553e93a9ef1ab01307",
+    "gradle-plugin/src/workflowTest/java/io/github/sjacek/promptjig/gradle/CentralPublicationWorkflowTest.java": "fcc7eefc143d4010723f4036a35637cb1ae2253988e68a977820cbd7829c5af8",
+    "scripts/central_publication.py": "47ffbbb0c9b84d2bbf38554a8bafb74b254b6d587d574474f04b094715de6837",
+    "scripts/test_central_publication.py": "35608e122418fa53359ee4658d57b1ed4bd33e71562898f27fd3c332ce000459",
+    "scripts/test_central_signing.py": "66e8d578ea0bb9c2ba26c4636482a17d3a36097da617a8ce9e7304cf6743b356"
+  },
+  "linux": {
+    "environment": "Native Ubuntu WSL, Python 3.14.4, Temurin 25.0.5+8, Gradle 9.9.1",
+    "protocolTests": {
+      "tests": 29,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    "workflowTests": {
+      "tests": 31,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    "realSigningTests": {
+      "tests": 1,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    "signing": "Disposable passphrase-protected RSA signing key; all ten actual Gradle signatures verified with GPG",
+    "signingGuards": "Missing signing material and enabled configuration cache both rejected before signing",
+    "unsignedPayloads": 10,
+    "signedBundleEntries": 60,
+    "bundleContents": "Two library JARs, sources, Javadocs, POMs and Gradle metadata; signatures and four checksum sidecars per payload",
+    "secrets": "Private key/passphrase excluded from bundle; only fake tokens used against injected HTTP transports",
+    "build": "check assemble :core:spike passed offline with strict verification; unchanged tasks reused up-to-date/build-cache outputs",
+    "configurationCache": "Normal staging/workflow tasks passed with problems=fail and reused their configuration cache; signing disables it"
+  },
+  "windows": {
+    "protocolTests": {
+      "tests": 29,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 1
+    },
+    "ide": "IntelliJ Gradle sync completed; File Problems shows No problems in central-publication.gradle after declaring the wrapper injection JAR on the root buildscript classpath",
+    "skippedReason": "Physical symlink creation requires Windows privileges",
+    "staging": "Both unsigned publications and workflow tests passed",
+    "actionlint": "1.7.12 passed all three workflows"
+  },
+  "remote": {
+    "newWorkflowRun": "Pending owner commit/push; the green base-commit workflow does not verify these uncommitted changes",
+    "centralUpload": "Not performed",
+    "productionKeyAcceptance": "Not verified",
+    "githubSecretConfiguration": "Not read or changed",
+    "publicResolution": "Must be checked after actual publication"
+  },
+  "git": "No commit, tag or push performed"
+}

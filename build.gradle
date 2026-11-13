@@ -1,3 +1,11 @@
+// Make Gradle's injection annotations visible to IDE analysis of applied script plugins too.
+// Reuse the pinned wrapper's own API JAR instead of adding a separately versioned dependency.
+buildscript {
+    dependencies {
+        classpath files(fileTree(new File(gradle.gradleHomeDir, 'lib')) { include 'javax.inject-*.jar' })
+    }
+}
+
 plugins { id 'base' }
 
 def candidateVersion = libs.versions.promptjig.get()

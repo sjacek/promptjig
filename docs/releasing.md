@@ -93,8 +93,12 @@ and MIT metadata:
 
 This stages `promptjig-core` and `promptjig-spring-ai` under their respective
 `build/staging-repository/` directories. It does not upload to Maven Central.
-Remote Central credentials/signing are not configured. Plugin Portal publishes
-the build plugin separately; it does not make the runtime coordinates available.
+The separate manual **Publish runtime libraries** workflow prepares signed
+packages and uploads them through the Central Publisher API. It is described in
+[Maven Central releases](maven-central.md), including required environment secrets,
+local verification, release guards and status-only recovery. These libraries have
+not yet been published. Plugin Portal publishes the build plugin separately; it
+does not make the runtime coordinates available.
 
 ## Publish the reviewed tag
 
