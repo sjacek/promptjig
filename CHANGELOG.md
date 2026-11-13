@@ -22,6 +22,11 @@ Changes under **Unreleased** are not yet published.
   example, without connecting a model. The Maven adapter is planned for 0.3.0
   and is not yet available from Maven Central.
 
+### Fixed
+
+- Verify Maven integrations with a patched archive decompressor, removing a known
+  JVM-crash vulnerability from the integration test tooling.
+
 ### Changed
 
 - Load Spring AI contracts from local resources with clearer startup failures:

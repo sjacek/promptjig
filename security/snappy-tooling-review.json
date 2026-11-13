@@ -1,0 +1,29 @@
+{
+  "schemaVersion": 1,
+  "reviewed": "2026-11-14",
+  "purpose": "Patch CVE-2024-36124 only in the native Maven Invoker class realm; includes official source archive",
+  "advisory": "https://github.com/dain/snappy/security/advisories/GHSA-8wh2-6qhj-h7j9",
+  "artifacts": [
+    {
+      "identity": "org.iq80.snappy:snappy:pom:0.5",
+      "sha256": "9aabefceec4fc7d7775f92987c1a87d5e9e3288ee4c2b1772119bd66630ff4f6",
+      "source": "https://repo.maven.apache.org/maven2/org/iq80/snappy/snappy/0.5/snappy-0.5.pom",
+      "sidecar": "sha1",
+      "sidecarValue": "95c9231dbd5e3ffabad94d1c97715254634332ed"
+    },
+    {
+      "identity": "org.iq80.snappy:snappy:jar:0.5",
+      "sha256": "55355f6cf2c7de9fc574ebaf0791a130c0199cc124e3f00ab45da05648f15873",
+      "source": "https://repo.maven.apache.org/maven2/org/iq80/snappy/snappy/0.5/snappy-0.5.jar",
+      "sidecar": "sha1",
+      "sidecarValue": "24815de5685d32953bfc5d925c364b95acbf4d20"
+    },
+    {
+      "identity": "org.iq80.snappy:snappy:jar:sources:0.5",
+      "sha256": "2576c810ec74c5a2993bc785c5cf61904c4b5d33bb0254d63f4885723a768fff",
+      "source": "https://repo.maven.apache.org/maven2/org/iq80/snappy/snappy/0.5/snappy-0.5-sources.jar",
+      "sidecar": "sha1",
+      "sidecarValue": "ec128c519c9d1df6b7a1f2f3e883c5f1f8566766"
+    }
+  ]
+}

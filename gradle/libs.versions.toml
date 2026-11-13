@@ -11,11 +11,13 @@ jsoup = "1.23.2"
 plexusUtils = "4.0.3"
 plexusArchiver = "4.13.0"
 commonsLang = "3.18.0"
-# Native Maven tooling POMs consume these two catalog pins through maven_integration.py.
+# Native Maven tooling POMs consume these catalog pins through maven_integration.py.
 # noinspection UnusedVersionCatalogEntry
 beanutils = "1.11.0"
 # noinspection UnusedVersionCatalogEntry
 plexusUtils3 = "3.6.2"
+# noinspection UnusedVersionCatalogEntry
+snappy = "0.5"
 # These pins are consumed by scripts/maven_integration.py and the rendered Invoker POM.
 # noinspection UnusedVersionCatalogEntry
 mavenCompiler = "3.16.0"

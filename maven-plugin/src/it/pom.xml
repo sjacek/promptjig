@@ -53,6 +53,8 @@
         <dependencies>
           <dependency><groupId>org.apache.groovy</groupId><artifactId>groovy</artifactId><version>@mavenGroovy@</version></dependency>
           <dependency><groupId>org.apache.commons</groupId><artifactId>commons-lang3</artifactId><version>@commonsLang@</version></dependency>
+          <!-- Patch the Invoker archive tooling's decompressor, not the fixture application's runtime. -->
+          <dependency><groupId>org.iq80.snappy</groupId><artifactId>snappy</artifactId><version>@snappy@</version></dependency>
         </dependencies>
       </plugin>
       <plugin><artifactId>maven-dependency-plugin</artifactId><version>@mavenDependency@</version>

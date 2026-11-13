@@ -48,6 +48,17 @@ patches affect their real plugin realms, including warmup and fixtures; the
 standalone Maven example uses the same resources patch. Gradlex 1.0.3 retains its compatible Plugin Tools API; these pins
 do not force build-tool versions onto a consuming application's runtime.
 
+The Invoker's archive tooling explicitly selects Snappy **0.5**, the fix for
+[CVE-2024-36124](https://github.com/dain/snappy/security/advisories/GHSA-8wh2-6qhj-h7j9).
+Its pin is rendered from the same catalog into the non-inherited Invoker plugin
+dependencies for warmup, native inventory and acceptance tests. It is not an
+application dependency. `security/snappy-tooling-review.json` records official
+JAR/POM/source downloads and sidecar comparisons; the three SHA-256 entries are
+in `.mvn/checksums.sha256`. The existing Gradle IDE checksum policy is unchanged;
+its read-only official-download check also passes. Snappy 0.5 remains compatible
+with the supported JDKs (Java 8 bytecode); a future parent-tool upgrade can replace
+the legacy decompressor rather than changing consumer runtimes.
+
 ## Scanner and evidence validation
 
 `security/scan-policy.json` pins Grype **0.121.3**, all four scopes and a maximum

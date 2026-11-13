@@ -8,6 +8,22 @@ import maven_integration as integration
 
 
 class MavenToolingPatchesTest(unittest.TestCase):
+    def test_invoker_snappy_patch_stays_in_the_noninherited_tool_realm(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            model = ET.parse(integration.render(root, root / 'maven', root / 'repository', root / 'projects')).getroot()
+            invoker = next(plugin for plugin in model.findall('p:build/p:plugins/p:plugin', integration.NS)
+                if plugin.findtext('p:artifactId', namespaces=integration.NS) == 'maven-invoker-plugin')
+            snappy = next(dependency for dependency in invoker.findall('p:dependencies/p:dependency', integration.NS)
+                if dependency.findtext('p:groupId', namespaces=integration.NS) == 'org.iq80.snappy'
+                and dependency.findtext('p:artifactId', namespaces=integration.NS) == 'snappy')
+            version = snappy.findtext('p:version', namespaces=integration.NS)
+            self.assertEqual(integration.versions()['snappy'], version)
+            self.assertGreaterEqual(tuple(map(int, version.split('.'))), (0, 5), 'CVE-2024-36124 affects versions below 0.5')
+            self.assertEqual('false', invoker.findtext('p:inherited', namespaces=integration.NS))
+            self.assertFalse(any(dependency.findtext('p:groupId', namespaces=integration.NS) == 'org.iq80.snappy'
+                for dependency in model.findall('p:dependencies/p:dependency', integration.NS)))
+
     def test_rendered_active_realms_keep_catalog_patches_and_the_compatible_plexus_api(self):
         with tempfile.TemporaryDirectory() as directory:
             root = Path(directory)

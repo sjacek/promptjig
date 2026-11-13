@@ -606,7 +606,10 @@ org.gradle.plugin:compatibility-plugin:jar:1.1.0 265babc477a39dd4d7919467a301a0c
 org.hdrhistogram:HdrHistogram:jar:2.2.2 22d1d4316c4ec13a68b559e98c8256d69071593731da96136640f864fa14fad8
 org.hdrhistogram:HdrHistogram:pom:2.2.2 2623346537f706f22059b9117209cb0681b0241145b35c75d2c5e3ec41826766
 org.iq80.snappy:snappy:jar:0.4 46a0c87d504ce9d6063e1ff6e4d20738feb49d8abf85b5071a7d18df4f11bac9
+org.iq80.snappy:snappy:jar:0.5 55355f6cf2c7de9fc574ebaf0791a130c0199cc124e3f00ab45da05648f15873
+org.iq80.snappy:snappy:jar:sources:0.5 2576c810ec74c5a2993bc785c5cf61904c4b5d33bb0254d63f4885723a768fff
 org.iq80.snappy:snappy:pom:0.4 a709ce17111e4149d9b79a5295644e0cd5a8355aec4b2ef4c0436aba7b25d08a
+org.iq80.snappy:snappy:pom:0.5 9aabefceec4fc7d7775f92987c1a87d5e9e3288ee4c2b1772119bd66630ff4f6
 org.jboss.weld:weld-api-bom:pom:1.0 8f74dc3a67c107376168b9f7b1b94e317e172768d398f826330931a02ff57b98
 org.jboss.weld:weld-api-parent:pom:1.0 1fb0dbd26fba2b009a75355e87620256b0689cb46f124f4836bc66fc296942c1
 org.jboss.weld:weld-parent:pom:6 74ab64d978a3415cab65c3639b7c5ba5a20599ca5578251b748dd81c882a6088

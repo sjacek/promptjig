@@ -53,12 +53,12 @@ the base commit, nor an independent audit.
 
 | Check | Observed result | Local evidence |
 | --- | --- | --- |
-| Four candidate distributions, four scopes each | 16/16 accepted; no High/Critical; one Medium retained in Maven build tooling | `build/security/reports/summary.json`, per-scope SBOM/findings/status and `build/security/native/` |
+| Four candidate distributions, four scopes each | After the 14 November Snappy patch: 16/16 accepted, no reported findings at any severity | `build/security/reports/summary.json`, per-scope SBOM/findings/status and `build/security/native/` |
 | Scanner control | Metadata-only vulnerable Log4j fixture produced the expected Critical finding and blocking native exit | `build/security/reports/positive-control.*` |
 | Python regression suite | 132 tests passed on Linux, including real Gradle signing with a disposable fixture key | `build/security/local-linux-checks/python-tests.log`, `result.json` and frozen `source-inputs.json` |
 | Gradle adapter and workflow regression suites | 22 functional tests and 34 workflow tests passed; configuration-cache check passed | `gradle-plugin/build/test-results/test/` and `workflowTest/` |
 | Native Maven consumers | Maven 3.9.16/JDK 21 and 4.0.0-rc-7/JDK 25 each passed 14 Invoker scenarios, including the standalone example, plus checksum controls | `maven-plugin/build/reports/maven/3.9.16-jdk-21/` and `4.0.0-rc-7-jdk-25/` |
-| Dependency integrity | Correct bytes accepted; modified cached bytes and missing expected checksums rejected by native Gradle/Maven verification; original trust preserved | Native Gradle test XML, Maven summaries and the two reviewed tooling receipts in `security/` |
+| Dependency integrity | Correct bytes accepted; modified cached bytes and missing expected checksums rejected by native Gradle/Maven verification; original trust preserved | Native Gradle test XML, Maven summaries and the reviewed tooling receipts in `security/` |
 | IDE source/SDK coverage | Read-only enforcement and official-download verification passed for 214 source/SDK artifacts and one exact unpublished-source record | `build/ide-dependency-verification/`; concurrent IDE work is preserved separately |
 | Local Central packages | Three publications / 15 payloads accepted; strict verification and Javadoc checks passed | `{core,spring-ai,maven-plugin}/build/staging-repository/`; no upload |
 | Published registry artifacts | Fresh Portal 0.1.0 and Central core/Spring AI 0.2.0 audits passed; all three runtime scans reported no findings | `build/security/published/summary.json`, `scan-summary.json` and per-distribution evidence |
@@ -110,12 +110,42 @@ sidecars. The receipts are `security/descriptor-tooling-review.json` and
 `security/maven-tooling-review.json`; no existing trusted hash was replaced.
 The Maven API compile/test graph is patched without replacing the host's runtime.
 
-One **Medium** finding remains visible: `org.iq80.snappy:snappy:0.4`,
-`GHSA-8wh2-6qhj-h7j9`, in native Maven Invoker build tooling; the database lists
-0.5 as fixed. It does not reach a published library runtime. No suppression or
-severity override was used. Evaluate the compatible tool update separately;
-the implemented acceptance threshold blocks High/Critical, including unfixed
-findings.
+The initial **Medium** finding was `org.iq80.snappy:snappy:0.4`,
+`GHSA-8wh2-6qhj-h7j9` / `CVE-2024-36124`, in native Maven Invoker archive tooling.
+On **14 November** it was patched to **0.5** through an explicit, non-inherited
+Invoker plugin dependency rendered from `libs.versions.toml`. Both native Maven
+3.9.16 and 4.0.0-rc-7 realm inventories now select only 0.5; Snappy is absent
+from all four published runtime graphs. No suppression or severity override was
+used. Three additional Maven SHA-256 entries cover independently downloaded
+POM/JAR/sources; `security/snappy-tooling-review.json` retains official URLs and
+sidecar comparisons. No existing trusted checksum was replaced.
+
+The follow-up is based on commit `1ed15b63031adfd1ebd9720763edf612b4527a11`
+plus the uncommitted remediation, rather than attributing it to the original
+base commit. Native acceptance was repeated: all 14 scenarios on each of
+Maven 3.9.16/JDK 21 and 4.0.0-rc-7/JDK 25 passed, including corrupt-JAR/POM and
+missing-checksum rejection controls. All 29 security-script tests passed,
+including the regression that keeps the Snappy fix in the tool realm and out of
+application dependencies. The repeated Grype 0.121.3 scan with the same recorded
+database accepted all 16 scopes with **zero reported findings at any severity**;
+the positive control still produced its expected blocking finding. Native
+inventories and candidate/source hashes were revalidated at the end of the scan.
+These are local results; the uncommitted fix still requires fresh CI after push.
+The frozen Linux offline snapshots above predate this
+native tooling patch; no new `strace` run is claimed for it.
+
+The first local attempt incorrectly ran Maven acceptance alongside inventory
+generation, which re-extracts the same disposable Maven distribution. Its
+failure evidence is retained under
+`build/security/snappy-review/failed-parallel-attempt/`; the rerun serialized
+these operations. A stale requested commit was also rejected after the owner's
+HEAD advanced; report preparation was repeated against the actual new HEAD.
+
+Auto-review rejected running the IDE checksum updater because it could modify
+concurrent baseline work. The read-only official-download check passed for all
+214 source/SDK artifacts and the one exact unpublished-source record. This
+native Maven change adds no Gradle binary dependency; its own source archive is
+covered explicitly by the Maven receipt and checksum policy.
 
 The inventory is not a complete audit of the Maven/Gradle executable, JDK or OS.
 In particular, stock Maven 3.9.16 bundles Guava 33.6.0, reported High by this DB;
@@ -141,8 +171,8 @@ the new commit before release. Only selected combinations were rerun locally.
 
 ## Next release steps
 
-1. Finish/review the concurrent IDE dependency changes together with the policy
-   diff, then let the owner commit and push the reviewed candidate.
+1. Review the Snappy remediation, source/binary checksum receipt and any remaining
+   concurrent changes, then let the owner commit and push the reviewed candidate.
 2. Require a fresh green 20-job Compatibility run for that exact commit. Inspect
    retained scanner findings, offline traces, checksum controls and matrix test
    counts; do not substitute the older green main run.
