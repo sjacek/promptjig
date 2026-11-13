@@ -1,0 +1,22 @@
+import groovy.json.JsonOutput
+
+// Maintenance/CI only. Inspect the running Wrapper rather than pinning its Groovy version twice.
+gradle.projectsEvaluated {
+    rootProject.tasks.register('ideDependencyInventory') {
+        notCompatibleWithConfigurationCache('Records the current Gradle distribution for the IDE integrity gate.')
+        doLast {
+            String version = GroovySystem.version
+            String group = version.tokenize('.')[0].toInteger() >= 4 ? 'org.apache.groovy' : 'org.codehaus.groovy'
+            def modules = new File(gradle.gradleHomeDir, 'lib').listFiles().findAll {
+                it.name.startsWith('groovy-') && it.name.endsWith("-${version}.jar")
+            }.collect { [group: group, name: it.name - "-${version}.jar", version: version] }.sort { it.name }
+            if (!modules || !modules.any { it.name == 'groovy' }) {
+                throw new GradleException('Cannot identify the Gradle SDK Groovy modules')
+            }
+            File output = rootProject.layout.buildDirectory.file('ide-dependency-verification/sdk.json').get().asFile
+            output.parentFile.mkdirs()
+            output.setText(JsonOutput.prettyPrint(JsonOutput.toJson([
+                schemaVersion: 1, gradleVersion: gradle.gradleVersion, modules: modules])), 'UTF-8')
+        }
+    }
+}

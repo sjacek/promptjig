@@ -1,0 +1,49 @@
+import groovy.json.JsonOutput
+import org.gradle.api.artifacts.component.ModuleComponentIdentifier
+import org.gradle.api.artifacts.component.ProjectComponentIdentifier
+import org.gradle.api.artifacts.result.ResolvedDependencyResult
+import java.security.MessageDigest
+
+// Native consumer resolution only: never schedule tests, applications or fixture hooks.
+allprojects {
+    tasks.register('securityConsumerInventory') {
+        notCompatibleWithConfigurationCache('Retains the current native resolution graph.')
+        doLast {
+            def describe = { id ->
+                if (id instanceof ModuleComponentIdentifier)
+                    return [kind: 'module', group: id.group, name: id.module, version: id.version]
+                if (id instanceof ProjectComponentIdentifier) return [kind: 'project', path: id.projectPath]
+                throw new GradleException('Unknown consumer component')
+            }
+            def graphs = configurations.toList().findAll {
+                it.canBeResolved && (it.name in ['compileClasspath', 'runtimeClasspath', 'testCompileClasspath', 'testRuntimeClasspath']
+                    || it.name.startsWith('securityPublished'))
+            }.collect { configuration ->
+                def resolution = configuration.incoming.resolutionResult
+                def components = resolution.allComponents.collect { component ->
+                    [id: component.id.displayName, identity: describe(component.id), dependencies: component.dependencies.collect {
+                        if (!(it instanceof ResolvedDependencyResult)) throw new GradleException('Unresolved consumer dependency')
+                        it.selected.id.displayName
+                    }.unique().sort()]
+                }
+                def artifacts = configuration.incoming.artifactView {
+                    componentFilter { it instanceof ModuleComponentIdentifier }
+                }.artifacts.artifacts.collect { artifact ->
+                    def hash = MessageDigest.getInstance('SHA-256')
+                    artifact.file.withInputStream { input ->
+                        byte[] buffer = new byte[65536]; int count
+                        while ((count = input.read(buffer)) != -1) hash.update(buffer, 0, count)
+                    }
+                    [component: artifact.id.componentIdentifier.displayName, identity: describe(artifact.id.componentIdentifier),
+                     name: artifact.file.name, file: artifact.file.absolutePath, sha256: hash.digest().encodeHex().toString()]
+                }
+                [project: rootProject.name + project.path, configuration: configuration.name, source: 'native-consumer-gradle-' + gradle.gradleVersion,
+                 root: resolution.rootComponent.get().id.displayName, components: components, artifacts: artifacts]
+            }
+            if (graphs.isEmpty()) throw new GradleException('No consumer configurations found')
+            File output = file(providers.gradleProperty('securityOutput').get())
+            output.parentFile.mkdirs()
+            output.setText(JsonOutput.prettyPrint(JsonOutput.toJson(graphs)), 'UTF-8')
+        }
+    }
+}

@@ -1,0 +1,56 @@
+{
+  "schemaVersion": 1,
+  "reviewed": "2026-11-13",
+  "actions": {
+    "actions/checkout": {
+      "sha": "3d3c42e5aac5ba805825da76410c181273ba90b1",
+      "tag": "v7"
+    },
+    "actions/setup-java": {
+      "sha": "b843ebf9b913146b38da2eaa7aeddf76074ae1ad",
+      "tag": "v6"
+    },
+    "actions/setup-python": {
+      "sha": "6d4fd22b20465ccc0f7354476588e8df7c9ca0e0",
+      "tag": "v7"
+    },
+    "gradle/actions/setup-gradle": {
+      "sha": "8da46b539cd8fe6ab27ca75128919a18d757604c",
+      "tag": "v6"
+    },
+    "actions/upload-artifact": {
+      "sha": "cf430e030ddbb5b0abf93d22962f4752f3646cd9",
+      "tag": "v7"
+    },
+    "actions/download-artifact": {
+      "sha": "37930b1c2abaa49bbe596cd826c3c89aef350131",
+      "tag": "v7"
+    },
+    "actions/cache/restore": {
+      "sha": "caa296126883cff596d87d8935842f9db880ef25",
+      "tag": "v5"
+    },
+    "actions/cache/save": {
+      "sha": "caa296126883cff596d87d8935842f9db880ef25",
+      "tag": "v5"
+    },
+    "actions/jekyll-build-pages": {
+      "sha": "44a6e6beabd48582f863aeeb6cb2151cc1716697",
+      "tag": "v1"
+    },
+    "actions/upload-pages-artifact": {
+      "sha": "7b1f4a764d45c48632c6b24a0339c27f5614fb0b",
+      "tag": "v4"
+    },
+    "actions/deploy-pages": {
+      "sha": "d6db90164ac5ed86f2b6aed7e0febac5b3c0c03e",
+      "tag": "v4"
+    },
+    "anchore/scan-action/download-grype": {
+      "sha": "27805bf3b4e84b4a5c980df22ed233c00390a439",
+      "tag": "v7.4.2"
+    }
+  },
+  "wrapperJarSha256": "621008afc4f5d59357fcf06ffa644dd5aade5e091bdc363742710445f73cdaf8",
+  "wrapperVersion": "9.9.1"
+}

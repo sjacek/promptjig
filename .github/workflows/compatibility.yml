@@ -48,7 +48,7 @@ jobs:
         # noinspection UndefinedParamsPresent
         with:
           path: build/ci-dependencies.tar
-          key: dependencies-v1-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('**/*.gradle', '**/pom.xml', '**/libs.versions.toml', '**/gradle.properties', '**/gradle-wrapper.properties', '**/gradle-wrapper.jar', 'gradle/verification-metadata.xml', 'gradle/ci-dependencies.json', '.mvn/**', 'security/**', 'scripts/ci_dependency*', 'scripts/maven_*.py', 'gradle-plugin/src/test/**/*.java', 'maven-plugin/src/it/**', 'examples/maven/**', '.github/actions/**', '.github/workflows/compatibility.yml') }}
+          key: dependencies-v1-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('**/*.gradle', '**/pom.xml', '**/libs.versions.toml', '**/gradle.properties', '**/gradle-wrapper.properties', '**/gradle-wrapper.jar', 'gradle/verification-metadata.xml', 'gradle/ide-source-availability.json', 'scripts/ide_dependency*', 'gradle/ci-dependencies.json', '.mvn/**', 'security/**', 'scripts/ci_dependency*', 'scripts/maven_*.py', 'gradle-plugin/src/test/**/*.java', 'maven-plugin/src/it/**', 'examples/maven/**', '.github/actions/**', '.github/workflows/compatibility.yml') }}
           restore-keys: dependencies-v1-${{ runner.os }}-${{ runner.arch }}-
       - name: Restore downloads and verify the reviewed policy
         run: python3 -B scripts/ci_dependency_cache.py restore
@@ -56,6 +56,10 @@ jobs:
         # noinspection UndefinedParamsPresent
         with:
           cache-disabled: true
+      - name: Verify IDE source and Gradle SDK checksums
+        run: python3 -B scripts/ide_dependency_verification.py check --verify-downloads
+      - name: Test IDE dependency update safeguards
+        run: python3 -B -m unittest discover -s scripts -p 'test_ide_dependency_verification.py' -v
       # Always resolve, including exact hits: a snapshot may be incomplete. No test or fixture check tasks run.
       - name: Fill dependency gaps and prepare all consumer distributions
         run: python3 -B scripts/ci_dependency_cache.py warm
@@ -94,6 +98,105 @@ jobs:
           if-no-files-found: ignore
           retention-days: 7
 
+  dependency-security:
+    needs: warm-cache
+    if: ${{ !cancelled() }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - name: Require successful dependency preparation
+        env:
+          DEPENDENCIES_RESULT: ${{ needs.warm-cache.result }}
+        run: test "$DEPENDENCIES_RESULT" = success || { echo '::error::Dependency preparation failed; security must not be skipped.'; exit 1; }
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+        with:
+          persist-credentials: false
+      - uses: ./.github/actions/restore-dependencies
+      - uses: actions/setup-java@b843ebf9b913146b38da2eaa7aeddf76074ae1ad # v6
+        with:
+          distribution: temurin
+          java-version: '21'
+      - run: echo "WARMUP_JAVA_HOME=$JAVA_HOME" >> "$GITHUB_ENV"
+      - uses: actions/setup-java@b843ebf9b913146b38da2eaa7aeddf76074ae1ad # v6
+        with:
+          distribution: temurin
+          java-version: '25'
+      - uses: gradle/actions/setup-gradle@8da46b539cd8fe6ab27ca75128919a18d757604c # v6
+        with:
+          cache-disabled: true
+      - name: Verify immutable build inputs and evidence failure handling
+        run: |
+          python3 -B scripts/dependency_policy.py
+          python3 -B -m unittest discover -s scripts -p 'test_security*.py' -v
+      - name: Resolve producer, TestKit, examples and native Maven scopes without tests
+        run: |
+          chmod +x gradlew
+          python3 -B scripts/security_inventory.py
+          python3 -B scripts/security_reports.py prepare --commit "$GITHUB_SHA"
+      - id: policy
+        run: python3 -B scripts/security_reports.py policy
+      - name: Install pinned scanner
+        id: grype
+        uses: anchore/scan-action/download-grype@27805bf3b4e84b4a5c980df22ed233c00390a439 # v7.4.2
+        # Inputs verified against this pinned action's metadata; the IDE cannot resolve them.
+        # noinspection UndefinedParamsPresent
+        with:
+          grype-version: ${{ steps.policy.outputs.scanner-release-tag }}
+          cache-db: false
+      - name: Refresh the database and scan every blocking scope, including unfixed findings
+        env:
+          GRYPE_BIN: ${{ steps.grype.outputs.cmd }}
+        run: python3 -B scripts/security_reports.py scan --scanner "$GRYPE_BIN" --refresh
+      - name: Retain native graphs, SBOMs, all findings and failed evidence
+        if: always()
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7
+        with:
+          name: dependency-security-${{ github.run_id }}-${{ github.run_attempt }}
+          path: |
+            build/security/native/*.json
+            build/security/native/consumers/*-gradle.json
+            build/security/native/consumers/**/native.json
+            build/security/native/consumers/**/plugins.txt
+            build/security/native/consumers/**/tree.json
+            build/security/native/consumers/**/resolution.log
+            build/security/native/consumers/**/pom.xml
+            build/security/reports/
+          if-no-files-found: error
+          retention-days: 30
+
+  offline-security:
+    needs: warm-cache
+    if: ${{ !cancelled() }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 35
+    steps:
+      - name: Require successful dependency preparation
+        env:
+          DEPENDENCIES_RESULT: ${{ needs.warm-cache.result }}
+        run: test "$DEPENDENCIES_RESULT" = success || { echo '::error::Dependency preparation failed; offline acceptance must not be skipped.'; exit 1; }
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+        with:
+          persist-credentials: false
+      - uses: ./.github/actions/restore-dependencies
+      - name: Prepare the pinned-base observer image before measurement
+        run: docker build -f testing/security/Dockerfile -t promptjig-security-audit:local testing/security
+      - name: Run candidate libraries, baseline checks, generated consumers and synthetic runtime offline
+        run: python3 -B scripts/offline_security.py
+      - name: Preserve raw traces, isolation configuration and native test results even after failure
+        if: always()
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7
+        with:
+          name: offline-security-${{ github.run_id }}-${{ github.run_attempt }}
+          path: |
+            build/security/offline/*/evidence/
+            build/security/offline/*/container.log
+            build/security/offline/*/container-policy.json
+            build/security/offline/*/source-inputs.json
+            build/security/offline/latest.json
+            build/security/offline/summary.json
+          if-no-files-found: error
+          retention-days: 30
+
   runtime-java17:
     needs: warm-cache
     if: ${{ !cancelled() }}
@@ -103,17 +206,17 @@ jobs:
         env:
           DEPENDENCIES_RESULT: ${{ needs.warm-cache.result }}
         run: test "$DEPENDENCIES_RESULT" = success || { echo '::error::Dependency preparation failed; tests must not be skipped.'; exit 1; }
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
         with:
           persist-credentials: false
       - uses: ./.github/actions/restore-dependencies
       - run: chmod +x gradlew
-      - uses: actions/setup-java@v4
+      - uses: actions/setup-java@b843ebf9b913146b38da2eaa7aeddf76074ae1ad # v6
         # noinspection UndefinedParamsPresent
         with:
           distribution: temurin
           java-version: '17'
-      - uses: gradle/actions/setup-gradle@v4
+      - uses: gradle/actions/setup-gradle@8da46b539cd8fe6ab27ca75128919a18d757604c # v6
         with:
           cache-disabled: true
       # The development spike requires 21+, so exercise only Java-17 production modules here.
@@ -128,19 +231,19 @@ jobs:
         env:
           DEPENDENCIES_RESULT: ${{ needs.warm-cache.result }}
         run: test "$DEPENDENCIES_RESULT" = success || { echo '::error::Dependency preparation failed; tests must not be skipped.'; exit 1; }
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
         # noinspection UndefinedParamsPresent
         with:
           fetch-depth: 0
           persist-credentials: false
       - uses: ./.github/actions/restore-dependencies
       - run: chmod +x gradlew
-      - uses: actions/setup-java@v4
+      - uses: actions/setup-java@b843ebf9b913146b38da2eaa7aeddf76074ae1ad # v6
         # noinspection UndefinedParamsPresent
         with:
           distribution: temurin
           java-version: '25'
-      - uses: gradle/actions/setup-gradle@v4
+      - uses: gradle/actions/setup-gradle@8da46b539cd8fe6ab27ca75128919a18d757604c # v6
         with:
           cache-disabled: true
       # Portal validation requires publishing keys even with --validate-only; regular CI must work without secrets.
@@ -181,19 +284,19 @@ jobs:
         env:
           DEPENDENCIES_RESULT: ${{ needs.warm-cache.result }}
         run: test "$DEPENDENCIES_RESULT" = success || { echo '::error::Dependency preparation failed; tests must not be skipped.'; exit 1; }
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
         # noinspection UndefinedParamsPresent
         with:
           fetch-depth: 0
           persist-credentials: false
       - uses: ./.github/actions/restore-dependencies
       - run: chmod +x gradlew
-      - uses: actions/setup-java@v4
+      - uses: actions/setup-java@b843ebf9b913146b38da2eaa7aeddf76074ae1ad # v6
         # noinspection UndefinedParamsPresent
         with:
           distribution: temurin
           java-version: '17'
-      - uses: gradle/actions/setup-gradle@v4
+      - uses: gradle/actions/setup-gradle@8da46b539cd8fe6ab27ca75128919a18d757604c # v6
         with:
           cache-disabled: true
       - name: Verify standalone Spring AI pilot and immutable contract history
@@ -216,7 +319,7 @@ jobs:
           ./gradlew -p examples/runtime check installDist "-Ppromptjig.baselineLockFile=$baseline" --configuration-cache --configuration-cache-problems=fail --console=plain
       - name: Run the packaged synthetic demo
         run: examples/runtime/build/install/promptjig-runtime-pilot/bin/promptjig-runtime-pilot
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7
         if: always()
         # noinspection UndefinedParamsPresent
         with:
@@ -295,12 +398,12 @@ jobs:
         env:
           DEPENDENCIES_RESULT: ${{ needs.warm-cache.result }}
         run: test "$DEPENDENCIES_RESULT" = success || { echo '::error::Dependency preparation failed; tests must not be skipped.'; exit 1; }
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
         with:
           persist-credentials: false
       - uses: ./.github/actions/restore-dependencies
       - run: chmod +x gradlew
-      - uses: actions/setup-java@v4
+      - uses: actions/setup-java@b843ebf9b913146b38da2eaa7aeddf76074ae1ad # v6
         # noinspection UndefinedParamsPresent
         with:
           distribution: temurin
@@ -308,16 +411,16 @@ jobs:
       - name: Preserve consumer JDK
         # Tests run on the authoring JDK below; TestKit receives the selected consumer JDK explicitly.
         run: echo "CONSUMER_JAVA_HOME=$JAVA_HOME" >> "$GITHUB_ENV"
-      - uses: actions/setup-java@v4
+      - uses: actions/setup-java@b843ebf9b913146b38da2eaa7aeddf76074ae1ad # v6
         # noinspection UndefinedParamsPresent
         with:
           distribution: temurin
           java-version: '25'
-      - uses: gradle/actions/setup-gradle@v4
+      - uses: gradle/actions/setup-gradle@8da46b539cd8fe6ab27ca75128919a18d757604c # v6
         with:
           cache-disabled: true
       - run: ./gradlew :gradle-plugin:test -PtestGradleVersion=${{ matrix.gradle }} -PtestJavaHome="$CONSUMER_JAVA_HOME" --console=plain
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7
         if: always()
         # noinspection UndefinedParamsPresent
         with:

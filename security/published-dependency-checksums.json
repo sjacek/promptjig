@@ -1,0 +1,22 @@
+{
+  "schemaVersion": 1,
+  "purpose": "Historical resolution metadata only; isolated published audit, not the candidate trust baseline",
+  "artifacts": [
+    {
+      "group": "com.fasterxml.jackson.core",
+      "name": "jackson-databind",
+      "version": "2.22.1",
+      "file": "jackson-databind-2.22.1.module",
+      "sha256": "054f10501bd363e5fd88223b6a8280109f8bfa0c7610681e58669d5720b71ab2",
+      "source": "https://repo.maven.apache.org/maven2/com/fasterxml/jackson/core/jackson-databind/2.22.1/jackson-databind-2.22.1.module"
+    },
+    {
+      "group": "com.fasterxml.jackson.dataformat",
+      "name": "jackson-dataformat-yaml",
+      "version": "2.22.1",
+      "file": "jackson-dataformat-yaml-2.22.1.module",
+      "sha256": "f418430283e67ac37487e372d7abc2fbde763fe39e00ad3a63e8644356d1a46e",
+      "source": "https://repo.maven.apache.org/maven2/com/fasterxml/jackson/dataformat/jackson-dataformat-yaml/2.22.1/jackson-dataformat-yaml-2.22.1.module"
+    }
+  ]
+}

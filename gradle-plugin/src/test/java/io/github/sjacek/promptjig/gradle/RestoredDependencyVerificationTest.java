@@ -54,6 +54,21 @@ class RestoredDependencyVerificationTest {
             resolve(first, original, false, 0);
             assertTrue(Files.exists(first.resolve("resolved")));
 
+            // Correct cached bytes do not grant trust when a new build lacks the
+            // expected checksum. Reuse the download, but change the policy input.
+            Path missing = project("missing-checksum", repository, jar, pom);
+            Path metadata = missing.resolve("gradle/verification-metadata.xml");
+            Files.writeString(metadata, Files.readString(metadata).replaceAll(
+                    "<artifact name=\"cache-testdata-1.0.jar\">.*?</artifact>", ""));
+            String missingFailure = resolve(missing, original, true, 1);
+            assertTrue(missingFailure.contains("Dependency verification failed"), missingFailure);
+            assertFalse(Files.exists(missing.resolve("resolved")));
+            try (var reports = Files.walk(missing.resolve("build/reports/dependency-verification"))) {
+                var report = reports.filter(path -> path.getFileName().toString()
+                        .equals("dependency-verification-report.html")).findFirst().orElseThrow();
+                assertTrue(Files.readString(report).contains("Checksums are missing"), Files.readString(report));
+            }
+
             Path restored = directory.resolve("restored-home");
             Path modules = original.resolve("caches/modules-2");
             int corrupted = 0;

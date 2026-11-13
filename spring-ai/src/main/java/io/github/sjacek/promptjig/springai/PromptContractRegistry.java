@@ -52,6 +52,9 @@ public record PromptContractRegistry(@NonNull Map<String, RuntimePromptContract>
      * @throws IllegalArgumentException if reading, validation or uniqueness checks fail
      */
     public static PromptContractRegistry load(@NonNull ResourcePatternResolver resolver, @NonNull String pattern) {
+        if (pattern.matches("(?i)^[a-z][a-z0-9+.-]*:.*")
+                && !pattern.startsWith("classpath:") && unsupportedLocation(pattern))
+            throw new IllegalArgumentException("Prompt contracts must use local resources");
         try { return load(resolver.getResources(pattern)); }
         catch (IOException exception) { throw new IllegalArgumentException("Cannot scan prompt contract resources", exception); }
     }
@@ -67,7 +70,7 @@ public record PromptContractRegistry(@NonNull Map<String, RuntimePromptContract>
             try {
                 var contract = RuntimePromptContract.builder().contract(PromptContract.parse(
                         resource.getFilename() == null ? "contract.prompt.yaml" : resource.getFilename(),
-                        utf8(resource), name -> utf8(resource.createRelative(name)))).build();
+                        utf8(resource), name -> utf8(relativeTemplate(resource, name)))).build();
                 if (contracts.putIfAbsent(contract.id(), contract) != null)
                     throw new IllegalArgumentException("Duplicate prompt contract ID: " + contract.id());
             } catch (IOException exception) { throw new IllegalArgumentException("Cannot read prompt contract resource", exception); }
@@ -85,12 +88,56 @@ public record PromptContractRegistry(@NonNull Map<String, RuntimePromptContract>
         if (result == null) throw new IllegalArgumentException("Unknown prompt contract ID");
         return result;
     }
-    private static String utf8(Resource resource) throws IOException {
+    private static Resource relativeTemplate(@NonNull Resource contract, @NonNull String name) throws IOException {
+        Resource template = contract.createRelative(name);
+        // A basename can still name a symlink outside the contract's directory.
+        if (contract.isFile() && template.isFile()) {
+            var parent = contract.getFile().toPath().toRealPath().getParent();
+            var target = template.getFile().toPath().toRealPath();
+            if (!parent.equals(target.getParent()) || !target.getFileName().toString().equals(name))
+                throw new IllegalArgumentException("Prompt template must remain beside its contract");
+        }
+        return template;
+    }
+
+    private static String utf8(@NonNull Resource resource) throws IOException {
+        // Standard URL resources must never turn startup validation into a remote
+        // request, including a remote archive. Custom Resource implementations are
+        // application code and remain within the application's trust boundary.
+        try {
+            String location = resource.getURL().toExternalForm();
+            if (unsupportedLocation(location))
+                throw new IllegalArgumentException("Prompt contracts must use local resources");
+        } catch (java.io.FileNotFoundException noUrl) {
+            // ByteArrayResource and other in-memory resources have no URL.
+        }
         // Relative JAR resources may outlive a loader's own cache; avoid keeping deployment archives open.
         if (resource instanceof org.springframework.core.io.UrlResource url) url.setUseCaches(false);
         try (var stream = resource.getInputStream()) {
             return StandardCharsets.UTF_8.newDecoder().onMalformedInput(CodingErrorAction.REPORT)
                     .onUnmappableCharacter(CodingErrorAction.REPORT).decode(ByteBuffer.wrap(stream.readAllBytes())).toString();
+        }
+    }
+
+    private static boolean unsupportedLocation(@NonNull String location) {
+        if (location.startsWith("jar:")) {
+            location = location.substring(4);
+            int entry = location.indexOf("!/");
+            if (entry >= 0) location = location.substring(0, entry);
+        }
+        try {
+            // Resource patterns may contain unescaped spaces or Ant braces.
+            // Encode those delimiters without changing scheme/authority/path boundaries.
+            var uri = java.net.URI.create(location.replace(" ", "%20").replace("{", "%7B").replace("}", "%7D"));
+            // Spring Boot's nested: handler identifies a local outer archive.
+            // A remote file authority/UNC is excluded too: the JDK file handler
+            // may otherwise turn file://host/... into a network operation.
+            if (!"file".equals(uri.getScheme()) && !"nested".equals(uri.getScheme())) return true;
+            if (uri.isOpaque()) return !uri.getSchemeSpecificPart().matches("[A-Za-z]:/.*");
+            return uri.getRawAuthority() != null || uri.getPath() == null
+                    || !uri.getPath().startsWith("/") || uri.getPath().startsWith("//");
+        } catch (IllegalArgumentException invalidLocation) {
+            return true;
         }
     }
 }

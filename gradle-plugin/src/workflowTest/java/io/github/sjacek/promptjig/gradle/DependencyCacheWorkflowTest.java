@@ -99,7 +99,7 @@ class DependencyCacheWorkflowTest {
 
     @Test void everyConsumerRequiresWarmupAndRunsFailureGuardBeforeCheckingOutCode() throws Exception {
         var jobs = workflow().path("jobs");
-        for (String name : List.of("runtime-java17", "core-and-packaging", "runtime-pilot", "consumer", "maven")) {
+        for (String name : List.of("runtime-java17", "core-and-packaging", "runtime-pilot", "consumer", "maven", "dependency-security", "offline-security")) {
             var job = jobs.path(name);
             assertEquals("warm-cache", job.path("needs").asText());
             assertEquals("${{ !cancelled() }}", job.path("if").asText());

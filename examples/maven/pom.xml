@@ -23,7 +23,10 @@
       <executions><execution><goals><goal>validate</goal><goal>generate</goal></goals></execution></executions>
     </plugin>
     <plugin><artifactId>maven-compiler-plugin</artifactId><version>3.16.0</version></plugin>
-    <plugin><artifactId>maven-resources-plugin</artifactId><version>3.5.0</version></plugin>
+    <!-- Standalone Maven cannot read the producer's TOML catalog; regression tests keep this pin aligned. -->
+    <plugin><artifactId>maven-resources-plugin</artifactId><version>3.5.0</version>
+      <dependencies><dependency><groupId>org.codehaus.plexus</groupId><artifactId>plexus-utils</artifactId><version>3.6.2</version></dependency></dependencies>
+    </plugin>
     <plugin><artifactId>maven-jar-plugin</artifactId><version>3.5.1</version></plugin>
     <plugin><artifactId>maven-surefire-plugin</artifactId><version>3.6.1</version></plugin>
   </plugins></build>

@@ -1,3 +1,18 @@
+buildscript {
+    // Gradlex 1.0.3 embeds an older descriptor-tool graph. Align its build-only
+    // dependencies on reviewed patches; never force these versions on consumers.
+    configurations.classpath.resolutionStrategy.eachDependency {
+        def pins = [
+            'com.google.guava:guava': libs.versions.guava.get(),
+            'org.jsoup:jsoup': libs.versions.jsoup.get(),
+            'org.codehaus.plexus:plexus-utils': libs.versions.plexusUtils.get(),
+            'org.codehaus.plexus:plexus-archiver': libs.versions.plexusArchiver.get(),
+            'org.apache.commons:commons-lang3': libs.versions.commonsLang.get()]
+        if (pins.containsKey(requested.group + ':' + requested.name))
+            useVersion(pins[requested.group + ':' + requested.name])
+    }
+}
+
 plugins {
     id 'maven-publish'
     alias(libs.plugins.maven.plugin.development)
@@ -16,6 +31,12 @@ mavenPlugin {
 }
 
 dependencies {
+    constraints {
+        // Maven API's default transitive version is vulnerable. Patch the actual
+        // producer compile/test classpaths; this does not replace a consumer's Maven installation.
+        compileOnly(libs.guava)
+        testImplementation(libs.guava)
+    }
     implementation project(':core')
     compileOnly libs.maven.plugin.api
     compileOnly libs.maven.core
@@ -25,7 +46,7 @@ dependencies {
     testImplementation libs.maven.plugin.api
     testImplementation libs.maven.core
     testCompileOnly libs.maven.plugin.annotations
-    testImplementation platform(libs.junit.bom)
+    testImplementation platform(libs.junit.bom.get())
     testImplementation libs.junit.jupiter
     testCompileOnly libs.lombok
     testAnnotationProcessor libs.lombok
@@ -60,10 +81,11 @@ publishing {
             scm { url = 'https://github.com/sjacek/promptjig'; connection = 'scm:git:https://github.com/sjacek/promptjig.git' }
             withXml {
                 // Maven API belongs to the host class realm, never to the plugin's runtime dependencies.
-                def node = asNode()
+                Node node = asNode()
                 node.appendNode('prerequisites').appendNode('maven', '3.9.0')
+                Node dependenciesNode = node.getAt('dependencies').get(0) as Node
                 for (String artifact : ['maven-plugin-api', 'maven-core']) {
-                    def host = node.dependencies[0].appendNode('dependency')
+                    def host = dependenciesNode.appendNode('dependency')
                     host.appendNode('groupId', 'org.apache.maven')
                     host.appendNode('artifactId', artifact)
                     host.appendNode('version', providedMavenVersion)

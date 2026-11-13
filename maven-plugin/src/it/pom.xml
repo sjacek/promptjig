@@ -28,7 +28,10 @@
     <pluginManagement>
       <plugins>
         <plugin><artifactId>maven-compiler-plugin</artifactId><version>@mavenCompiler@</version></plugin>
-        <plugin><artifactId>maven-resources-plugin</artifactId><version>@mavenResources@</version></plugin>
+        <plugin><artifactId>maven-resources-plugin</artifactId><version>@mavenResources@</version>
+          <!-- Keep the compatible 3.x XML API while patching the plugin's real extraction dependency. -->
+          <dependencies><dependency><groupId>org.codehaus.plexus</groupId><artifactId>plexus-utils</artifactId><version>@plexusUtils3@</version></dependency></dependencies>
+        </plugin>
         <plugin><artifactId>maven-jar-plugin</artifactId><version>@mavenJar@</version></plugin>
         <plugin><artifactId>maven-surefire-plugin</artifactId><version>@mavenSurefire@</version></plugin>
       </plugins>
@@ -49,9 +52,12 @@
         </configuration>
         <dependencies>
           <dependency><groupId>org.apache.groovy</groupId><artifactId>groovy</artifactId><version>@mavenGroovy@</version></dependency>
+          <dependency><groupId>org.apache.commons</groupId><artifactId>commons-lang3</artifactId><version>@commonsLang@</version></dependency>
         </dependencies>
       </plugin>
-      <plugin><artifactId>maven-dependency-plugin</artifactId><version>@mavenDependency@</version></plugin>
+      <plugin><artifactId>maven-dependency-plugin</artifactId><version>@mavenDependency@</version>
+        <dependencies><dependency><groupId>commons-beanutils</groupId><artifactId>commons-beanutils</artifactId><version>@beanutils@</version></dependency></dependencies>
+      </plugin>
     </plugins>
   </build>
 </project>

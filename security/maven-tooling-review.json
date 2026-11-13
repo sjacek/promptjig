@@ -1,0 +1,19 @@
+{
+  "schemaVersion": 1,
+  "reviewed": "2026-11-13",
+  "purpose": "Native resources-plugin runtime patch; existing checksums preserved",
+  "artifacts": [
+    {
+      "identity": "org.codehaus.plexus:plexus-utils:pom:3.6.2",
+      "sha256": "5ee26b9f0529038802fc1c205a5ce55be5eff247af0a5e5b55cf831652c173ed",
+      "source": "https://repo.maven.apache.org/maven2/org/codehaus/plexus/plexus-utils/3.6.2/plexus-utils-3.6.2.pom",
+      "sidecar": "sha256"
+    },
+    {
+      "identity": "org.codehaus.plexus:plexus-utils:jar:3.6.2",
+      "sha256": "7c2cdf8b4a02a2ee3f0514b8d74ad5eb6e2365eeb073a5cabd6f2d61d8f871df",
+      "source": "https://repo.maven.apache.org/maven2/org/codehaus/plexus/plexus-utils/3.6.2/plexus-utils-3.6.2.jar",
+      "sidecar": "sha256"
+    }
+  ]
+}

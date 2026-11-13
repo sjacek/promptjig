@@ -6,6 +6,9 @@
    </configuration>
    <components>
       <component group="aopalliance" name="aopalliance" version="1.0">
+         <artifact name="aopalliance-1.0-sources.jar">
+            <sha256 value="e6ef91d439ada9045f419c77543ebe0416c3cdfc5b063448343417a3e4a72123" origin="Verified Maven Central source artifact and SHA1 sidecar for IDE import"/>
+         </artifact>
          <artifact name="aopalliance-1.0.jar">
             <sha256 value="0addec670fedcd3f113c5c8091d783280d23f75e3acb841b61a9cdb079376a08" origin="Reviewed official repository SHA1 sidecar"/>
          </artifact>
@@ -215,6 +218,9 @@
          </artifact>
       </component>
       <component group="com.github.luben" name="zstd-jni" version="1.5.6-3">
+         <artifact name="zstd-jni-1.5.6-3-sources.jar">
+            <sha256 value="7136c42f56d17c8b2c7be16fe7744c2c36b85c0c274750efe5050e283d9bd31f" origin="Verified official repository artifact and checksum sidecar for IDE import"/>
+         </artifact>
          <artifact name="zstd-jni-1.5.6-3.jar">
             <sha256 value="f72ede1b39258faf81277dc58de30c71cbae4253732558d2ce10b53d8b5763d5" origin="Reviewed official repository SHA1 sidecar"/>
          </artifact>
@@ -271,6 +277,9 @@
          </artifact>
       </component>
       <component group="com.google.code.findbugs" name="jsr305" version="3.0.2">
+         <artifact name="jsr305-3.0.2-sources.jar">
+            <sha256 value="1c9e85e272d0708c6a591dc74828c71603053b48cc75ae83cce56912a2aa063b" origin="Verified official repository artifact and checksum sidecar for IDE import"/>
+         </artifact>
          <artifact name="jsr305-3.0.2.jar">
             <sha256 value="766ad2a0783f2687962c8ad74ceecc38a28b9f72a2d085ee438b7813e928d0c7" origin="Reviewed official repository SHA1 sidecar"/>
          </artifact>
@@ -279,6 +288,9 @@
          </artifact>
       </component>
       <component group="com.google.errorprone" name="error_prone_annotations" version="2.26.1">
+         <artifact name="error_prone_annotations-2.26.1-sources.jar">
+            <sha256 value="32b1720fa97a3d7f24fc017014e285d812ff66a5b6c5c1819e165bfe6fdc2110" origin="Verified official repository artifact and checksum sidecar for IDE import"/>
+         </artifact>
          <artifact name="error_prone_annotations-2.26.1.jar">
             <sha256 value="de25f2d9a2156529bd765f51d8efdfc0dfa7301e04efb9cc75b7f10cf5d0e0fb" origin="Reviewed official repository SHA1 sidecar"/>
          </artifact>
@@ -308,6 +320,9 @@
          </artifact>
       </component>
       <component group="com.google.guava" name="failureaccess" version="1.0.2">
+         <artifact name="failureaccess-1.0.2-sources.jar">
+            <sha256 value="dd3bfa5e2ec5bc5397efb2c3cef044c192313ff77089573667ff97a60c6978e0" origin="Verified official repository artifact and checksum sidecar for IDE import"/>
+         </artifact>
          <artifact name="failureaccess-1.0.2.jar">
             <sha256 value="8a8f81cf9b359e3f6dfa691a1e776985c061ef2f223c9b2c80753e1b458e8064" origin="Reviewed official repository SHA1 sidecar"/>
          </artifact>
@@ -316,6 +331,9 @@
          </artifact>
       </component>
       <component group="com.google.guava" name="failureaccess" version="1.0.3">
+         <artifact name="failureaccess-1.0.3-sources.jar">
+            <sha256 value="6fef4dfd2eb9f961655f2a3c4ea87c023618d9fcbfb6b104c17862e5afe66b97" origin="Verified Maven Central source artifact and SHA1 sidecar for IDE import"/>
+         </artifact>
          <artifact name="failureaccess-1.0.3.pom">
             <sha256 value="c54beff37f6d42d43e14722d54a522c9ad51ef97fc5b79277e62a3ebf882f3bb" origin="Reviewed official repository SHA1 sidecar"/>
          </artifact>
@@ -329,6 +347,9 @@
          </artifact>
       </component>
       <component group="com.google.guava" name="guava" version="33.2.1-jre">
+         <artifact name="guava-33.2.1-jre-sources.jar">
+            <sha256 value="cce2aba265b7e1260c21f37af6d074bc2c322743dcedc27c573bc342b2d99c79" origin="Verified official repository artifact and checksum sidecar for IDE import"/>
+         </artifact>
          <artifact name="guava-33.2.1-jre.jar">
             <sha256 value="452b2d9787b7d366fa8cf5ed9a1c40404542d05effa7a598da03bbbbb76d9f31" origin="Reviewed official repository SHA1 sidecar"/>
          </artifact>
@@ -337,6 +358,9 @@
          </artifact>
       </component>
       <component group="com.google.guava" name="guava" version="33.6.0-jre">
+         <artifact name="guava-33.6.0-jre-sources.jar">
+            <sha256 value="eff31867dd63a92d63ca856127a424a6836418d8bfa044162cac20430abd3500" origin="Verified Maven Central source artifact and SHA1 sidecar for IDE import"/>
+         </artifact>
          <artifact name="guava-33.6.0-jre.module">
             <sha256 value="2baf73ce839ae48e4b9e0083e256b0e58fc3bf8fc78fc3fbe797bbc89011216e" origin="Reviewed official repository SHA512 sidecar"/>
          </artifact>
@@ -378,6 +402,9 @@
          </artifact>
       </component>
       <component group="com.google.inject" name="guice" version="5.1.0">
+         <artifact name="guice-5.1.0-sources.jar">
+            <sha256 value="79484227656350f8ea315198ed2ebdc8583e7ba42ecd90d367d66a7e491de52e" origin="Verified Maven Central source artifact and SHA1 sidecar for IDE import"/>
+         </artifact>
          <artifact name="guice-5.1.0.jar">
             <sha256 value="4130e50bfac48099c860f0d903b91860c81a249c90f38245f8fed58fc817bc26" origin="Reviewed official repository SHA1 sidecar"/>
          </artifact>
@@ -492,6 +519,9 @@
          </artifact>
       </component>
       <component group="com.thoughtworks.qdox" name="qdox" version="2.1.0">
+         <artifact name="qdox-2.1.0-sources.jar">
+            <sha256 value="5976e93e416bef84f73580fedad6c0c118a3234784082b2aae5cf17b735a874c" origin="Verified official repository source artifact and SHA1 sidecar for IDE import"/>
+         </artifact>
          <artifact name="qdox-2.1.0.jar">
             <sha256 value="804d51f9bae9e0a84889f3d1b79f5b6586aa91baaa33a8f2175a7b327bd9910e" origin="Reviewed official repository SHA1 sidecar"/>
          </artifact>
@@ -505,6 +535,9 @@
          </artifact>
       </component>
       <component group="commons-codec" name="commons-codec" version="1.17.0">
+         <artifact name="commons-codec-1.17.0-sources.jar">
+            <sha256 value="9869277d653510f670039b77945befe71c1ca34ef2e281855bd86e6605aab4a6" origin="Verified official repository artifact and checksum sidecar for IDE import"/>
+         </artifact>
          <artifact name="commons-codec-1.17.0.jar">
             <sha256 value="f700de80ac270d0344fdea7468201d8b9c805e5c648331c3619f2ee067ccfc59" origin="Reviewed official repository SHA1 sidecar"/>
          </artifact>
@@ -513,6 +546,9 @@
          </artifact>
       </component>
       <component group="commons-io" name="commons-io" version="2.16.1">
+         <artifact name="commons-io-2.16.1-sources.jar">
+            <sha256 value="fcfe84e39fb44e38a0ea0ab0815b53adea6fff89c7b72535bc42495f400cb9a1" origin="Verified official repository artifact and checksum sidecar for IDE import"/>
+         </artifact>
          <artifact name="commons-io-2.16.1.jar">
             <sha256 value="f41f7baacd716896447ace9758621f62c1c6b0a91d89acee488da26fc477c84f" origin="Reviewed official repository SHA1 sidecar"/>
          </artifact>
@@ -521,6 +557,9 @@
          </artifact>
       </component>
       <component group="commons-logging" name="commons-logging" version="1.2">
+         <artifact name="commons-logging-1.2-sources.jar">
+            <sha256 value="44347acfe5860461728e9cb33251e97345be36f8a0dfd5c5130c172559455f41" origin="Verified official repository source artifact and SHA1 sidecar for IDE import"/>
+         </artifact>
          <artifact name="commons-logging-1.2.jar">
             <sha256 value="daddea1ea0be0f56978ab3006b8ac92834afeefbd9b7e4e6316fca57df0fa636" origin="Reviewed official repository SHA1 sidecar"/>
          </artifact>
@@ -545,6 +584,9 @@
          </artifact>
       </component>
       <component group="io.airlift" name="aircompressor" version="0.27">
+         <artifact name="aircompressor-0.27-sources.jar">
+            <sha256 value="7f5952d138e9cff1445a961b90228680b5714145038648e02e4433490e5f078d" origin="Verified official repository artifact and checksum sidecar for IDE import"/>
+         </artifact>
          <artifact name="aircompressor-0.27.jar">
             <sha256 value="fdbef3137a28f63bb0cb93487803080ede746a4ec3d421e36c6f0c305c35e5e4" origin="Reviewed official repository SHA1 sidecar"/>
          </artifact>
@@ -558,6 +600,9 @@
          </artifact>
       </component>
       <component group="io.github.sjacek.promptjig" name="promptjig-core" version="0.2.0">
+         <artifact name="promptjig-core-0.2.0-sources.jar">
+            <sha256 value="9603785168684e57fa04784bb8051ab5beabd8b62b6168d33210ba8eebf14705" origin="Verified official repository artifact and checksum sidecar for IDE import"/>
+         </artifact>
          <artifact name="promptjig-core-0.2.0.jar">
             <sha256 value="e26361d732edbfd4a520b61f456d27517c80aa17281da707e40d892e0cf61448" origin="Reviewed Maven Central release with published SHA-256 and GPG signatures"/>
          </artifact>
@@ -569,6 +614,9 @@
          </artifact>
       </component>
       <component group="io.github.sjacek.promptjig" name="promptjig-gradle-plugin" version="0.1.0">
+         <artifact name="promptjig-gradle-plugin-0.1.0-sources.jar">
+            <sha256 value="1b4975c1bfc5888d69454d12c5c1b73ab4245119c74e05a37335efd124d9df4c" origin="Verified official repository artifact and checksum sidecar for IDE import"/>
+         </artifact>
          <artifact name="promptjig-gradle-plugin-0.1.0.jar">
             <sha256 value="86bcf79a75143d8338e24c3c4242a7a8b2a66605a012ca9968de4b12c6345deb" origin="Reviewed Plugin Portal release over HTTPS and published SHA-1 sidecar"/>
          </artifact>
@@ -580,6 +628,9 @@
          </artifact>
       </component>
       <component group="io.github.sjacek.promptjig" name="promptjig-spring-ai" version="0.2.0">
+         <artifact name="promptjig-spring-ai-0.2.0-sources.jar">
+            <sha256 value="81917dc5d56844a1288af406bfd227f354e59cdc90a771ae1f6a3d78fe1281ae" origin="Verified official repository artifact and checksum sidecar for IDE import"/>
+         </artifact>
          <artifact name="promptjig-spring-ai-0.2.0.jar">
             <sha256 value="4ed6f5caf2fc09141c1d3f3f1361494e46782136570542c1f371929e29be9746" origin="Reviewed Maven Central release with published SHA-256 and GPG signatures"/>
          </artifact>
@@ -678,6 +729,9 @@
          </artifact>
       </component>
       <component group="javax.annotation" name="jsr250-api" version="1.0">
+         <artifact name="jsr250-api-1.0-sources.jar">
+            <sha256 value="025c47d76c60199381be07012a0c5f9e74661aac5bd67f5aec847741c5b7f838" origin="Verified official repository source artifact and SHA1 sidecar for IDE import"/>
+         </artifact>
          <artifact name="jsr250-api-1.0.jar">
             <sha256 value="a1a922d0d9b6d183ed3800dfac01d1e1eb159f0e8c6f94736931c1def54a941f" origin="Reviewed official repository SHA1 sidecar"/>
          </artifact>
@@ -686,6 +740,9 @@
          </artifact>
       </component>
       <component group="javax.enterprise" name="cdi-api" version="1.0">
+         <artifact name="cdi-api-1.0-sources.jar">
+            <sha256 value="0e7c351dfe05759f84dc3eddaac1da4ef72578b494b53338829d34b12271374f" origin="Verified official repository source artifact and SHA1 sidecar for IDE import"/>
+         </artifact>
          <artifact name="cdi-api-1.0.jar">
             <sha256 value="1f10b2204cc77c919301f20ff90461c3df1b6e6cb148be1c2d22107f4851d423" origin="Reviewed official repository SHA1 sidecar"/>
          </artifact>
@@ -694,6 +751,9 @@
          </artifact>
       </component>
       <component group="javax.inject" name="javax.inject" version="1">
+         <artifact name="javax.inject-1-sources.jar">
+            <sha256 value="c4b87ee2911c139c3daf498a781967f1eb2e75bc1a8529a2e7b328a15d0e433e" origin="Verified Maven Central source artifact and SHA1 sidecar for IDE import"/>
+         </artifact>
          <artifact name="javax.inject-1.jar">
             <sha256 value="91c77044a50c481636c32d916fd89c9118a72195390452c81065080f957de7ff" origin="Reviewed official repository SHA1 sidecar"/>
          </artifact>
@@ -702,6 +762,9 @@
          </artifact>
       </component>
       <component group="net.sf.jtidy" name="jtidy" version="r938">
+         <artifact name="jtidy-r938-sources.jar">
+            <sha256 value="bde3ea2929bfa90214948717a4e87def90b7f74cbbf1780ea409fae6ae0936d0" origin="Verified official repository source artifact and SHA1 sidecar for IDE import"/>
+         </artifact>
          <artifact name="jtidy-r938.jar">
             <sha256 value="6fc03e51e73fa884f06e7eae0761e045e56fdeb4e146a4d952e3023cc9e3fb43" origin="Reviewed official repository SHA1 sidecar"/>
          </artifact>
@@ -808,6 +871,9 @@
          </artifact>
       </component>
       <component group="org.apache.commons" name="commons-compress" version="1.26.2">
+         <artifact name="commons-compress-1.26.2-sources.jar">
+            <sha256 value="89f2ac13872e1ac0024dc77573a0da8e8e0da2dda58973f19244f6e60f08d138" origin="Verified official repository artifact and checksum sidecar for IDE import"/>
+         </artifact>
          <artifact name="commons-compress-1.26.2.jar">
             <sha256 value="9168a03141d8fc7eda21a2360d83cc0412bcbb1d6204d992bd48c2573cb3c6b8" origin="Reviewed official repository SHA1 sidecar"/>
          </artifact>
@@ -816,6 +882,9 @@
          </artifact>
       </component>
       <component group="org.apache.commons" name="commons-lang3" version="3.17.0">
+         <artifact name="commons-lang3-3.17.0-sources.jar">
+            <sha256 value="5fdcac21ad329766054a95367d7583dfcdca737d221d5e01a5f2a198c04c6b18" origin="Verified official repository artifact and checksum sidecar for IDE import"/>
+         </artifact>
          <artifact name="commons-lang3-3.17.0.jar">
             <sha256 value="6ee731df5c8e5a2976a1ca023b6bb320ea8d3539fbe64c8a1d5cb765127c33b4" origin="Reviewed official repository SHA1 sidecar"/>
          </artifact>
@@ -937,6 +1006,9 @@
          </artifact>
       </component>
       <component group="org.apache.httpcomponents" name="httpclient" version="4.5.14">
+         <artifact name="httpclient-4.5.14-sources.jar">
+            <sha256 value="55b01f9f4cbec9ac646866a4b64b176570d79e293a556796b5b0263d047ef8e6" origin="Verified official repository source artifact and SHA1 sidecar for IDE import"/>
+         </artifact>
          <artifact name="httpclient-4.5.14.jar">
             <sha256 value="c8bc7e1c51a6d4ce72f40d2ebbabf1c4b68bfe76e732104b04381b493478e9d6" origin="Reviewed official repository SHA1 sidecar"/>
          </artifact>
@@ -960,6 +1032,9 @@
          </artifact>
       </component>
       <component group="org.apache.httpcomponents" name="httpcore" version="4.4.16">
+         <artifact name="httpcore-4.4.16-sources.jar">
+            <sha256 value="705f8cf3671093b6c1db16bbf6971a7ef400e3819784f1af53e5bc3e67b5a9a0" origin="Verified official repository source artifact and SHA1 sidecar for IDE import"/>
+         </artifact>
          <artifact name="httpcore-4.4.16.jar">
             <sha256 value="6c9b3dd142a09dc468e23ad39aad6f75a0f2b85125104469f026e52a474e464f" origin="Reviewed official repository SHA1 sidecar"/>
          </artifact>
@@ -983,6 +1058,9 @@
          </artifact>
       </component>
       <component group="org.apache.maven" name="maven-artifact" version="3.9.16">
+         <artifact name="maven-artifact-3.9.16-sources.jar">
+            <sha256 value="2f371e3df38790afdef942b244da7ec3d85ae1adee6b8f86aa4a296f25103ddc" origin="Verified Maven Central source artifact and SHA1 sidecar for IDE import"/>
+         </artifact>
          <artifact name="maven-artifact-3.9.16.pom">
             <sha256 value="85d313bbbdbce67e199aadb4336e100c40a147881142ea4368cdebeafc02baec" origin="Reviewed official repository SHA1 sidecar"/>
          </artifact>
@@ -991,6 +1069,9 @@
          </artifact>
       </component>
       <component group="org.apache.maven" name="maven-artifact" version="3.9.9">
+         <artifact name="maven-artifact-3.9.9-sources.jar">
+            <sha256 value="75dd90e3efd827f64005f314d09ee5778faee1c11c19c13922da4a4165bb46f7" origin="Verified official repository source artifact and SHA1 sidecar for IDE import"/>
+         </artifact>
          <artifact name="maven-artifact-3.9.9.jar">
             <sha256 value="30f015d1c1a393e19c18cd4f43532089c36d4ca328608ce3dda78b74d3d31515" origin="Reviewed official repository SHA1 sidecar"/>
          </artifact>
@@ -999,6 +1080,9 @@
          </artifact>
       </component>
       <component group="org.apache.maven" name="maven-builder-support" version="3.9.16">
+         <artifact name="maven-builder-support-3.9.16-sources.jar">
+            <sha256 value="2bf294607dc8fa487c96b9d4b3fd93c26d84d49518abd6795d2df5713117f541" origin="Verified Maven Central source artifact and SHA1 sidecar for IDE import"/>
+         </artifact>
          <artifact name="maven-builder-support-3.9.16.pom">
             <sha256 value="c8366af883eeec0e2fd13e14cd8245969284b6e66df131f7b7c03d270f72f613" origin="Reviewed official repository SHA1 sidecar"/>
          </artifact>
@@ -1007,6 +1091,9 @@
          </artifact>
       </component>
       <component group="org.apache.maven" name="maven-builder-support" version="3.9.9">
+         <artifact name="maven-builder-support-3.9.9-sources.jar">
+            <sha256 value="00cbf78985ccf2b486850160a02856dc043321aff649e7230741b9b456985691" origin="Verified official repository source artifact and SHA1 sidecar for IDE import"/>
+         </artifact>
          <artifact name="maven-builder-support-3.9.9.jar">
             <sha256 value="2ca4a967bdd12a9e85d40e012374f86e63d4a1030c199da4832e3d0a1c6770d8" origin="Reviewed official repository SHA1 sidecar"/>
          </artifact>
@@ -1015,6 +1102,9 @@
          </artifact>
       </component>
       <component group="org.apache.maven" name="maven-core" version="3.9.16">
+         <artifact name="maven-core-3.9.16-sources.jar">
+            <sha256 value="e503bfef8b198ff12fa77e69bd2009ffc59893789d4c6dcec1ef4b790bc2ece6" origin="Verified Maven Central source artifact and SHA1 sidecar for IDE import"/>
+         </artifact>
          <artifact name="maven-core-3.9.16.pom">
             <sha256 value="186f17628c5235d03e34c593122d05fdc1be9694440a54d8213b3f957d6379a4" origin="Reviewed official repository SHA1 sidecar"/>
          </artifact>
@@ -1023,6 +1113,9 @@
          </artifact>
       </component>
       <component group="org.apache.maven" name="maven-core" version="3.9.9">
+         <artifact name="maven-core-3.9.9-sources.jar">
+            <sha256 value="7511afaf127c99eb938efdfcac9c83565d9fb047d2e6770a3e89e48cd2c20494" origin="Verified official repository source artifact and SHA1 sidecar for IDE import"/>
+         </artifact>
          <artifact name="maven-core-3.9.9.jar">
             <sha256 value="7fab37fc6044f20ae004376ab8414373636cf51e26ad0b1efa6b3f1cd2bec503" origin="Reviewed official repository SHA1 sidecar"/>
          </artifact>
@@ -1042,6 +1135,9 @@
          </artifact>
       </component>
       <component group="org.apache.maven" name="maven-model" version="3.9.16">
+         <artifact name="maven-model-3.9.16-sources.jar">
+            <sha256 value="6ff47950263e16104be152995ca3ca404f5a815b16551bdd984a0279d5d2f188" origin="Verified Maven Central source artifact and SHA1 sidecar for IDE import"/>
+         </artifact>
          <artifact name="maven-model-3.9.16.pom">
             <sha256 value="64883ffcfd91ddaadb4181740236a823bfe0880e0c20f5beee74bc32a93914a7" origin="Reviewed official repository SHA1 sidecar"/>
          </artifact>
@@ -1050,6 +1146,9 @@
          </artifact>
       </component>
       <component group="org.apache.maven" name="maven-model" version="3.9.9">
+         <artifact name="maven-model-3.9.9-sources.jar">
+            <sha256 value="a7496f423acec6137a99baa09ad1cbc68f81f56b03685798824e1a9d2b4fd705" origin="Verified official repository source artifact and SHA1 sidecar for IDE import"/>
+         </artifact>
          <artifact name="maven-model-3.9.9.jar">
             <sha256 value="8f59b0a16fe9c933be749a60ae0705a0cb337bb5abaf38801b40b740ff775727" origin="Reviewed official repository SHA1 sidecar"/>
          </artifact>
@@ -1058,6 +1157,9 @@
          </artifact>
       </component>
       <component group="org.apache.maven" name="maven-model-builder" version="3.9.16">
+         <artifact name="maven-model-builder-3.9.16-sources.jar">
+            <sha256 value="0e4863cec9b014b8f428ebaed77f0f2c91381562ef1c4dd45e5de19f902c2d27" origin="Verified Maven Central source artifact and SHA1 sidecar for IDE import"/>
+         </artifact>
          <artifact name="maven-model-builder-3.9.16.pom">
             <sha256 value="6e2a59eadd77b244fe60fc60b7ed3a9b2dee704d44a4f5baca4f9d3be6e53e10" origin="Reviewed official repository SHA1 sidecar"/>
          </artifact>
@@ -1066,6 +1168,9 @@
          </artifact>
       </component>
       <component group="org.apache.maven" name="maven-model-builder" version="3.9.9">
+         <artifact name="maven-model-builder-3.9.9-sources.jar">
+            <sha256 value="edd3e4816841dd96339cc4fe53154bee818083b0070f11227a164996e3c5f84a" origin="Verified official repository source artifact and SHA1 sidecar for IDE import"/>
+         </artifact>
          <artifact name="maven-model-builder-3.9.9.jar">
             <sha256 value="a4377182ac2e5adfe16be3b3c81981a5ecddab014184de72ae1e522f04a77602" origin="Reviewed official repository SHA1 sidecar"/>
          </artifact>
@@ -1114,6 +1219,9 @@
          </artifact>
       </component>
       <component group="org.apache.maven" name="maven-plugin-api" version="3.9.16">
+         <artifact name="maven-plugin-api-3.9.16-sources.jar">
+            <sha256 value="26596ead67df4abaac90345fe476d5bef81c90b97bebc90b61240484acd4858b" origin="Verified Maven Central source artifact and SHA1 sidecar for IDE import"/>
+         </artifact>
          <artifact name="maven-plugin-api-3.9.16.pom">
             <sha256 value="6fe60dbb3157b9466a6b18f70a4c6eca7f68978eaf015ce164bb2471e1acbc12" origin="Reviewed official repository SHA1 sidecar"/>
          </artifact>
@@ -1122,6 +1230,9 @@
          </artifact>
       </component>
       <component group="org.apache.maven" name="maven-plugin-api" version="3.9.9">
+         <artifact name="maven-plugin-api-3.9.9-sources.jar">
+            <sha256 value="872822dd489bb95f272167b49e1c4c7d9d3ee80464e52a4aba844fa0b7b1430d" origin="Verified official repository source artifact and SHA1 sidecar for IDE import"/>
+         </artifact>
          <artifact name="maven-plugin-api-3.9.9.jar">
             <sha256 value="2b491d38db45b0e8eef522e8f7889a3366e546e58b376b07fcb56e34c424e932" origin="Reviewed official repository SHA1 sidecar"/>
          </artifact>
@@ -1130,6 +1241,9 @@
          </artifact>
       </component>
       <component group="org.apache.maven" name="maven-repository-metadata" version="3.9.16">
+         <artifact name="maven-repository-metadata-3.9.16-sources.jar">
+            <sha256 value="d599ef8ed08332438b69f02f8db1fa48844f48c57e5859a3a107a8930755d8f8" origin="Verified Maven Central source artifact and SHA1 sidecar for IDE import"/>
+         </artifact>
          <artifact name="maven-repository-metadata-3.9.16.pom">
             <sha256 value="1c018bbd6cd513b43df5dd64c82579b14c414d35f99e06a0c3878b05ae070912" origin="Reviewed official repository SHA1 sidecar"/>
          </artifact>
@@ -1138,6 +1252,9 @@
          </artifact>
       </component>
       <component group="org.apache.maven" name="maven-repository-metadata" version="3.9.9">
+         <artifact name="maven-repository-metadata-3.9.9-sources.jar">
+            <sha256 value="407f00cd460b27677fc641069b5d7a7925df9d29674d66fc12eab8428cad5403" origin="Verified official repository source artifact and SHA1 sidecar for IDE import"/>
+         </artifact>
          <artifact name="maven-repository-metadata-3.9.9.jar">
             <sha256 value="137c297e6a52d489b76663c82324d54e40f5d498a8fc015c0203fd91df8623b0" origin="Reviewed official repository SHA1 sidecar"/>
          </artifact>
@@ -1146,6 +1263,9 @@
          </artifact>
       </component>
       <component group="org.apache.maven" name="maven-resolver-provider" version="3.9.16">
+         <artifact name="maven-resolver-provider-3.9.16-sources.jar">
+            <sha256 value="47e312922a4fdc6642857b8ced4c01c8c4af3167a6966db834bcdd1d14cfa0b7" origin="Verified Maven Central source artifact and SHA1 sidecar for IDE import"/>
+         </artifact>
          <artifact name="maven-resolver-provider-3.9.16.pom">
             <sha256 value="33723bba45ff2a1581bc2840836b7d9c9aa262af676f4f61222e179b56ea8818" origin="Reviewed official repository SHA1 sidecar"/>
          </artifact>
@@ -1154,6 +1274,9 @@
          </artifact>
       </component>
       <component group="org.apache.maven" name="maven-resolver-provider" version="3.9.9">
+         <artifact name="maven-resolver-provider-3.9.9-sources.jar">
+            <sha256 value="442fe53283444bfc1428b7743bc9bca3da4277b13c86b13c404dcd37628b4143" origin="Verified official repository source artifact and SHA1 sidecar for IDE import"/>
+         </artifact>
          <artifact name="maven-resolver-provider-3.9.9.jar">
             <sha256 value="5dea05049c94f952f48ce2bfe0111afdf986acc591fcc11d23fe3b8dcb70291e" origin="Reviewed official repository SHA1 sidecar"/>
          </artifact>
@@ -1162,6 +1285,9 @@
          </artifact>
       </component>
       <component group="org.apache.maven" name="maven-settings" version="3.9.16">
+         <artifact name="maven-settings-3.9.16-sources.jar">
+            <sha256 value="576ab4e7be5b9556c85253927aa63c65506b71b49b747681426285d03183c9d8" origin="Verified Maven Central source artifact and SHA1 sidecar for IDE import"/>
+         </artifact>
          <artifact name="maven-settings-3.9.16.pom">
             <sha256 value="d3df811fe57832933adef90c119cbf3abb941884cf840cc9777aa639cf1a145d" origin="Reviewed official repository SHA1 sidecar"/>
          </artifact>
@@ -1170,6 +1296,9 @@
          </artifact>
       </component>
       <component group="org.apache.maven" name="maven-settings" version="3.9.9">
+         <artifact name="maven-settings-3.9.9-sources.jar">
+            <sha256 value="83734d3a4292a387408802857e79cb879c03eb6cdd78467f06735949626a2d46" origin="Verified official repository source artifact and SHA1 sidecar for IDE import"/>
+         </artifact>
          <artifact name="maven-settings-3.9.9.jar">
             <sha256 value="68edf1b510e0d759ec501271a5d05e3a6e425462fbb84126c16e8a6f89abdada" origin="Reviewed official repository SHA1 sidecar"/>
          </artifact>
@@ -1178,6 +1307,9 @@
          </artifact>
       </component>
       <component group="org.apache.maven" name="maven-settings-builder" version="3.9.16">
+         <artifact name="maven-settings-builder-3.9.16-sources.jar">
+            <sha256 value="e7a37d84b995c08221e7d424ac221d94f1d7d231d12d21e39a05eede64df7832" origin="Verified Maven Central source artifact and SHA1 sidecar for IDE import"/>
+         </artifact>
          <artifact name="maven-settings-builder-3.9.16.pom">
             <sha256 value="bce946240bf297982f524666674acff5c14878a24849f1f3c3489cd1d829ed48" origin="Reviewed official repository SHA1 sidecar"/>
          </artifact>
@@ -1186,6 +1318,9 @@
          </artifact>
       </component>
       <component group="org.apache.maven" name="maven-settings-builder" version="3.9.9">
+         <artifact name="maven-settings-builder-3.9.9-sources.jar">
+            <sha256 value="4b80c92f60cef56d7bf4b841eb0b43328ef41b5ade14a2dda53705babd23bf6c" origin="Verified official repository source artifact and SHA1 sidecar for IDE import"/>
+         </artifact>
          <artifact name="maven-settings-builder-3.9.9.jar">
             <sha256 value="094640f3fdce47250cb06968a143f40c4e2f1c22be979c73caac2f49f3c38373" origin="Reviewed official repository SHA1 sidecar"/>
          </artifact>
@@ -1199,6 +1334,9 @@
          </artifact>
       </component>
       <component group="org.apache.maven.doxia" name="doxia-sink-api" version="2.0.0">
+         <artifact name="doxia-sink-api-2.0.0-sources.jar">
+            <sha256 value="5ebfeaa9ac7deaee10cb6a1a591e088fc56ed6dee6f030e28f919c42a3caa7f2" origin="Verified official repository source artifact and SHA1 sidecar for IDE import"/>
+         </artifact>
          <artifact name="doxia-sink-api-2.0.0.jar">
             <sha256 value="fba33eaee3b01547bcd14b05ebc37f7dacef1819ad9ee7a5b27899afd3472cf4" origin="Reviewed official repository SHA1 sidecar"/>
          </artifact>
@@ -1207,6 +1345,9 @@
          </artifact>
       </component>
       <component group="org.apache.maven.plugin-tools" name="maven-plugin-annotations" version="3.15.1">
+         <artifact name="maven-plugin-annotations-3.15.1-sources.jar">
+            <sha256 value="73468d998e82a146896662c324a8f5f5522773df2952d469d4ec0d9d484f743f" origin="Verified official repository source artifact and SHA1 sidecar for IDE import"/>
+         </artifact>
          <artifact name="maven-plugin-annotations-3.15.1.jar">
             <sha256 value="b58bcb3a1f362f6e1efa2772064026bb3d4ad92e6f43a1812d8d2886489912f5" origin="Reviewed official repository SHA1 sidecar"/>
          </artifact>
@@ -1215,6 +1356,9 @@
          </artifact>
       </component>
       <component group="org.apache.maven.plugin-tools" name="maven-plugin-annotations" version="3.16.0">
+         <artifact name="maven-plugin-annotations-3.16.0-sources.jar">
+            <sha256 value="6875b3c567947711fd346c7d79a9fa8c0402ea7b60a1b6eceed21f2abd8ae7ff" origin="Verified Maven Central source artifact and SHA1 sidecar for IDE import"/>
+         </artifact>
          <artifact name="maven-plugin-annotations-3.16.0.pom">
             <sha256 value="701d5a411eaa1828e79ea6e1e44521358026e0f06668104d4536dcb2ac0bf5ee" origin="Reviewed official repository SHA1 sidecar"/>
          </artifact>
@@ -1233,6 +1377,9 @@
          </artifact>
       </component>
       <component group="org.apache.maven.plugin-tools" name="maven-plugin-tools-annotations" version="3.15.1">
+         <artifact name="maven-plugin-tools-annotations-3.15.1-sources.jar">
+            <sha256 value="53c91d5b4b856732765eac5043d95ee67fa256e4659b39caf9c6e62dc4f46020" origin="Verified official repository source artifact and SHA1 sidecar for IDE import"/>
+         </artifact>
          <artifact name="maven-plugin-tools-annotations-3.15.1.jar">
             <sha256 value="cb812be374f19da55406714c648534c91b234d73fdaa386afda9ad51a025f208" origin="Reviewed official repository SHA1 sidecar"/>
          </artifact>
@@ -1241,6 +1388,9 @@
          </artifact>
       </component>
       <component group="org.apache.maven.plugin-tools" name="maven-plugin-tools-api" version="3.15.1">
+         <artifact name="maven-plugin-tools-api-3.15.1-sources.jar">
+            <sha256 value="e356fbb97bdad1423bef447eb5a0921c016f5981cc4a4748c06898095bbbb88b" origin="Verified official repository source artifact and SHA1 sidecar for IDE import"/>
+         </artifact>
          <artifact name="maven-plugin-tools-api-3.15.1.jar">
             <sha256 value="38556a754b8c947c674d1678270aa36cb6a98d9443235229c6d09f8154837098" origin="Reviewed official repository SHA1 sidecar"/>
          </artifact>
@@ -1249,6 +1399,9 @@
          </artifact>
       </component>
       <component group="org.apache.maven.plugin-tools" name="maven-plugin-tools-generators" version="3.15.1">
+         <artifact name="maven-plugin-tools-generators-3.15.1-sources.jar">
+            <sha256 value="b01b4f392b5452a35586a74c427d33c3650e4eadc29c3eb7ce689c4ee3cd8e7a" origin="Verified official repository source artifact and SHA1 sidecar for IDE import"/>
+         </artifact>
          <artifact name="maven-plugin-tools-generators-3.15.1.jar">
             <sha256 value="c9e76fc2501852d55d258e1210ad5eb306686b2f31cfa55b185991a79b1cb392" origin="Reviewed official repository SHA1 sidecar"/>
          </artifact>
@@ -1257,6 +1410,9 @@
          </artifact>
       </component>
       <component group="org.apache.maven.plugin-tools" name="maven-plugin-tools-java" version="3.15.1">
+         <artifact name="maven-plugin-tools-java-3.15.1-sources.jar">
+            <sha256 value="78041c1c72bbed438aa7bdd8a88557e0f99e924b0c4dd6bc786737c9859b4e39" origin="Verified official repository source artifact and SHA1 sidecar for IDE import"/>
+         </artifact>
          <artifact name="maven-plugin-tools-java-3.15.1.jar">
             <sha256 value="13b49cfceaff63b142ea98cb2fa785cc9e02cdb4b219aeec7fc3c3a8c8815654" origin="Reviewed official repository SHA1 sidecar"/>
          </artifact>
@@ -1265,6 +1421,9 @@
          </artifact>
       </component>
       <component group="org.apache.maven.reporting" name="maven-reporting-api" version="4.0.0">
+         <artifact name="maven-reporting-api-4.0.0-sources.jar">
+            <sha256 value="02ff927e76bd9a723d82d120c96e6551e92f92614d9a081abf32d92a01140c41" origin="Verified official repository source artifact and SHA1 sidecar for IDE import"/>
+         </artifact>
          <artifact name="maven-reporting-api-4.0.0.jar">
             <sha256 value="cb2cbde3c9c7288f7398a250dcf3c90cf92714cff301f22b298e1091b5def33c" origin="Reviewed official repository SHA1 sidecar"/>
          </artifact>
@@ -1293,6 +1452,9 @@
          </artifact>
       </component>
       <component group="org.apache.maven.resolver" name="maven-resolver-api" version="1.9.22">
+         <artifact name="maven-resolver-api-1.9.22-sources.jar">
+            <sha256 value="81f22211b99fea73c6cda74aa617477806b33850b9883722b0b26ac7934c36b7" origin="Verified official repository source artifact and SHA1 sidecar for IDE import"/>
+         </artifact>
          <artifact name="maven-resolver-api-1.9.22.jar">
             <sha256 value="63f5f665e44a09ef55463b3b91fda0b78ff07dd24b1060d56e79c10b6e32cbfb" origin="Reviewed official repository SHA1 sidecar"/>
          </artifact>
@@ -1301,6 +1463,9 @@
          </artifact>
       </component>
       <component group="org.apache.maven.resolver" name="maven-resolver-api" version="1.9.27">
+         <artifact name="maven-resolver-api-1.9.27-sources.jar">
+            <sha256 value="1af0d201c58d077536779b185bd5a25841b50de346727965f1d28d74aaa5f69b" origin="Verified Maven Central source artifact and SHA1 sidecar for IDE import"/>
+         </artifact>
          <artifact name="maven-resolver-api-1.9.27.pom">
             <sha256 value="98dc031f75f2c9b7efeef344e1c74bb3d009c584e36e82a0ec3d263d2bfef373" origin="Reviewed official repository SHA1 sidecar"/>
          </artifact>
@@ -1309,6 +1474,9 @@
          </artifact>
       </component>
       <component group="org.apache.maven.resolver" name="maven-resolver-impl" version="1.9.22">
+         <artifact name="maven-resolver-impl-1.9.22-sources.jar">
+            <sha256 value="dbc2c2c8a0a79b54a112b198a835600b0bd3a3a72b5500a9250cc32c6603f115" origin="Verified official repository source artifact and SHA1 sidecar for IDE import"/>
+         </artifact>
          <artifact name="maven-resolver-impl-1.9.22.jar">
             <sha256 value="e4dafb8acc13d736377c02d2170d869438dd74b98b860745909d238726babcbb" origin="Reviewed official repository SHA1 sidecar"/>
          </artifact>
@@ -1317,6 +1485,9 @@
          </artifact>
       </component>
       <component group="org.apache.maven.resolver" name="maven-resolver-impl" version="1.9.27">
+         <artifact name="maven-resolver-impl-1.9.27-sources.jar">
+            <sha256 value="9666330c8960e95101fd239b735258ed06f869c4be1bd32b6db24cf3f0133802" origin="Verified Maven Central source artifact and SHA1 sidecar for IDE import"/>
+         </artifact>
          <artifact name="maven-resolver-impl-1.9.27.pom">
             <sha256 value="ce9b47e8aeb58e46dfd05eb8fd0fe3ebfe152a06ff0f23bb42127d1576cd6914" origin="Reviewed official repository SHA1 sidecar"/>
          </artifact>
@@ -1325,6 +1496,9 @@
          </artifact>
       </component>
       <component group="org.apache.maven.resolver" name="maven-resolver-named-locks" version="1.9.22">
+         <artifact name="maven-resolver-named-locks-1.9.22-sources.jar">
+            <sha256 value="a441fd2c7a0c913df6ad727e7ed419aaadacb53c0443e39ddb97b5197d51b647" origin="Verified official repository source artifact and SHA1 sidecar for IDE import"/>
+         </artifact>
          <artifact name="maven-resolver-named-locks-1.9.22.jar">
             <sha256 value="0685f29ec3b548d9b6917c527f13c667685a3394b955aaa5b25d0559818b7fc5" origin="Reviewed official repository SHA1 sidecar"/>
          </artifact>
@@ -1333,6 +1507,9 @@
          </artifact>
       </component>
       <component group="org.apache.maven.resolver" name="maven-resolver-named-locks" version="1.9.27">
+         <artifact name="maven-resolver-named-locks-1.9.27-sources.jar">
+            <sha256 value="6eebec0b5a74cf729aa8cfad100740af2188f319a26cd7f30c14158c0e1cc547" origin="Verified Maven Central source artifact and SHA1 sidecar for IDE import"/>
+         </artifact>
          <artifact name="maven-resolver-named-locks-1.9.27.pom">
             <sha256 value="41ef2c7170eb0672cb7bc97caa765bad5386d49d93bbe8ae430887238c8e669a" origin="Reviewed official repository SHA1 sidecar"/>
          </artifact>
@@ -1341,6 +1518,9 @@
          </artifact>
       </component>
       <component group="org.apache.maven.resolver" name="maven-resolver-spi" version="1.9.22">
+         <artifact name="maven-resolver-spi-1.9.22-sources.jar">
+            <sha256 value="c5ec4528bbec341edcecb54477a21f5befde42899b5f5e0d99d3b264412991db" origin="Verified official repository source artifact and SHA1 sidecar for IDE import"/>
+         </artifact>
          <artifact name="maven-resolver-spi-1.9.22.jar">
             <sha256 value="99ad721e4631d9bd0c4f9e29c869672577c66f2a674a5723ce38eff13c75cbfd" origin="Reviewed official repository SHA1 sidecar"/>
          </artifact>
@@ -1349,6 +1529,9 @@
          </artifact>
       </component>
       <component group="org.apache.maven.resolver" name="maven-resolver-spi" version="1.9.27">
+         <artifact name="maven-resolver-spi-1.9.27-sources.jar">
+            <sha256 value="7e03b67c2345e8c6a98e62269a10865a02b6f21544bdc2c093afdeba713e9098" origin="Verified Maven Central source artifact and SHA1 sidecar for IDE import"/>
+         </artifact>
          <artifact name="maven-resolver-spi-1.9.27.pom">
             <sha256 value="c6310e360bb5b543aa0c7a6892b18e964add6feaf3917ac88c85264ed377c676" origin="Reviewed official repository SHA1 sidecar"/>
          </artifact>
@@ -1357,6 +1540,9 @@
          </artifact>
       </component>
       <component group="org.apache.maven.resolver" name="maven-resolver-util" version="1.9.22">
+         <artifact name="maven-resolver-util-1.9.22-sources.jar">
+            <sha256 value="6a71eed7e9011075aec58078e23d113359df4241d7ba25e530529b85f368db5d" origin="Verified official repository source artifact and SHA1 sidecar for IDE import"/>
+         </artifact>
          <artifact name="maven-resolver-util-1.9.22.jar">
             <sha256 value="4aaea1584c39294ca926fc474723d9684473609ef4490c4eb169d6ea7daca6b5" origin="Reviewed official repository SHA1 sidecar"/>
          </artifact>
@@ -1365,6 +1551,9 @@
          </artifact>
       </component>
       <component group="org.apache.maven.resolver" name="maven-resolver-util" version="1.9.27">
+         <artifact name="maven-resolver-util-1.9.27-sources.jar">
+            <sha256 value="0d2b948b67f15306d1578af4c0da6f33e074939359c3b9439de8bd59495d0af0" origin="Verified Maven Central source artifact and SHA1 sidecar for IDE import"/>
+         </artifact>
          <artifact name="maven-resolver-util-1.9.27.pom">
             <sha256 value="b2b3c7774cdc61887da814b42338c9421babbab9b1e87c3e6493885ffda53231" origin="Reviewed official repository SHA1 sidecar"/>
          </artifact>
@@ -1383,6 +1572,9 @@
          </artifact>
       </component>
       <component group="org.apache.maven.shared" name="maven-shared-utils" version="3.4.2">
+         <artifact name="maven-shared-utils-3.4.2-sources.jar">
+            <sha256 value="d465ae0a0e2fe3e75802b850dd8d8c87b479876dc250ccea116bc5e7ab79708b" origin="Verified Maven Central source artifact and SHA1 sidecar for IDE import"/>
+         </artifact>
          <artifact name="maven-shared-utils-3.4.2.jar">
             <sha256 value="b613357e1bad4dfc1dead801691c9460f9585fe7c6b466bc25186212d7d18487" origin="Reviewed official repository SHA1 sidecar"/>
          </artifact>
@@ -1396,6 +1588,9 @@
          </artifact>
       </component>
       <component group="org.apache.maven.wagon" name="wagon-provider-api" version="3.5.3">
+         <artifact name="wagon-provider-api-3.5.3-sources.jar">
+            <sha256 value="0e77ad7e3224b2437bb57a4e819d20669d6e80ab1524d40036a73702b5cd7160" origin="Verified official repository source artifact and SHA1 sidecar for IDE import"/>
+         </artifact>
          <artifact name="wagon-provider-api-3.5.3.jar">
             <sha256 value="5e72000338945ed3e96f8e4f578d1d0672e1af7e19c0e9014197ae5b31af3ef4" origin="Reviewed official repository SHA1 sidecar"/>
          </artifact>
@@ -1404,6 +1599,9 @@
          </artifact>
       </component>
       <component group="org.apache.velocity" name="velocity-engine-core" version="2.4">
+         <artifact name="velocity-engine-core-2.4-sources.jar">
+            <sha256 value="a871b7cc5248739391d64dcf5e8c770967c555047bf0d4945dd5c083c9ac275c" origin="Verified official repository source artifact and SHA1 sidecar for IDE import"/>
+         </artifact>
          <artifact name="velocity-engine-core-2.4.jar">
             <sha256 value="1bf78c2ade46f209bf93ebe72ed2af5b989ca7a1de0a015fc1b92a62f56b6549" origin="Reviewed official repository SHA1 sidecar"/>
          </artifact>
@@ -1433,6 +1631,9 @@
          </artifact>
       </component>
       <component group="org.checkerframework" name="checker-qual" version="3.42.0">
+         <artifact name="checker-qual-3.42.0-sources.jar">
+            <sha256 value="efb65eb479f61f53c6dcafbd42ed59dad09b0a0d5a7f44b7bc68df25c2dcf8fd" origin="Verified official repository artifact and checksum sidecar for IDE import"/>
+         </artifact>
          <artifact name="checker-qual-3.42.0.jar">
             <sha256 value="ccaedd33af0b7894d9f2f3b644f4d19e43928e32902e61ac4d10777830f5aac7" origin="Reviewed official repository SHA512 sidecar"/>
          </artifact>
@@ -1491,6 +1692,9 @@
          </artifact>
       </component>
       <component group="org.codehaus.plexus" name="plexus-archiver" version="4.10.0">
+         <artifact name="plexus-archiver-4.10.0-sources.jar">
+            <sha256 value="8559ed68292e11228d36155c0932ae3f54d743f7a19ad5ce51e253a52d6499c8" origin="Verified official repository artifact and checksum sidecar for IDE import"/>
+         </artifact>
          <artifact name="plexus-archiver-4.10.0.jar">
             <sha256 value="4c07814ff4a39199999ae82bba1e38aa4f25637467fcac6a66ed63a76535799a" origin="Reviewed official repository SHA1 sidecar"/>
          </artifact>
@@ -1499,6 +1703,9 @@
          </artifact>
       </component>
       <component group="org.codehaus.plexus" name="plexus-cipher" version="2.0">
+         <artifact name="plexus-cipher-2.0-sources.jar">
+            <sha256 value="0a98fd1e8d3e9f104f1d158946f5c063ed66af2d85127b70092003c885fe7b0c" origin="Verified Maven Central source artifact and SHA1 sidecar for IDE import"/>
+         </artifact>
          <artifact name="plexus-cipher-2.0.jar">
             <sha256 value="9a7f1b5c5a9effd61eadfd8731452a2f76a8e79111fac391ef75ea801bea203a" origin="Reviewed official repository SHA1 sidecar"/>
          </artifact>
@@ -1507,6 +1714,9 @@
          </artifact>
       </component>
       <component group="org.codehaus.plexus" name="plexus-classworlds" version="2.11.0">
+         <artifact name="plexus-classworlds-2.11.0-sources.jar">
+            <sha256 value="6dcec108e1d85160065e451471c93f34be611a5a4757c2bc6044d41bda01aa90" origin="Verified Maven Central source artifact and SHA1 sidecar for IDE import"/>
+         </artifact>
          <artifact name="plexus-classworlds-2.11.0.pom">
             <sha256 value="281d317bf8a5fe818708cdd00e377dd234ec949f498d30f4b363f6b9771e1fa2" origin="Reviewed official repository SHA512 sidecar"/>
          </artifact>
@@ -1515,6 +1725,9 @@
          </artifact>
       </component>
       <component group="org.codehaus.plexus" name="plexus-classworlds" version="2.8.0">
+         <artifact name="plexus-classworlds-2.8.0-sources.jar">
+            <sha256 value="4488f10a5ab746a1b221b83efa0307c00f6fa01ecf6370435b6bf3d38a74e1d7" origin="Verified official repository source artifact and SHA1 sidecar for IDE import"/>
+         </artifact>
          <artifact name="plexus-classworlds-2.8.0.jar">
             <sha256 value="081b40e0eab033cd5ac72d2501bfff4f5fd2a3eef827051111730ea152681c72" origin="Reviewed official repository SHA1 sidecar"/>
          </artifact>
@@ -1528,6 +1741,9 @@
          </artifact>
       </component>
       <component group="org.codehaus.plexus" name="plexus-component-annotations" version="2.1.0">
+         <artifact name="plexus-component-annotations-2.1.0-sources.jar">
+            <sha256 value="3896689e1df0a4e2707ecdce4946e37c3037fbebbb3d730873c4d9dfb6d25174" origin="Verified official repository source artifact and SHA1 sidecar for IDE import"/>
+         </artifact>
          <artifact name="plexus-component-annotations-2.1.0.jar">
             <sha256 value="bde3617ce9b5bcf9584126046080043af6a4b3baea40a3b153f02e7bbc32acac" origin="Reviewed official repository SHA1 sidecar"/>
          </artifact>
@@ -1536,6 +1752,9 @@
          </artifact>
       </component>
       <component group="org.codehaus.plexus" name="plexus-component-annotations" version="2.2.0">
+         <artifact name="plexus-component-annotations-2.2.0-sources.jar">
+            <sha256 value="205bdeb24bb48dec548232b6faddff33a6d5800a1bafc9ed7e563845fd0eb736" origin="Verified Maven Central source artifact and SHA1 sidecar for IDE import"/>
+         </artifact>
          <artifact name="plexus-component-annotations-2.2.0.pom">
             <sha256 value="c5483fc9c8e1a7ef6b0f899e37aaa6ce2f8afae54955bfa559fd63a33dbb065b" origin="Reviewed official repository SHA1 sidecar"/>
          </artifact>
@@ -1559,6 +1778,9 @@
          </artifact>
       </component>
       <component group="org.codehaus.plexus" name="plexus-interpolation" version="1.27">
+         <artifact name="plexus-interpolation-1.27-sources.jar">
+            <sha256 value="aef15feee7005390a97304e0d64457fab9e792ef0de9932c87dd3d2898fee566" origin="Verified official repository source artifact and SHA1 sidecar for IDE import"/>
+         </artifact>
          <artifact name="plexus-interpolation-1.27.jar">
             <sha256 value="3fb4fb6143fdf964024c3cb738551524b9ea84e5c211cd660c559ad0703e5230" origin="Reviewed official repository SHA1 sidecar"/>
          </artifact>
@@ -1567,6 +1789,9 @@
          </artifact>
       </component>
       <component group="org.codehaus.plexus" name="plexus-interpolation" version="1.29">
+         <artifact name="plexus-interpolation-1.29-sources.jar">
+            <sha256 value="4269dfe3faeb29e0a3753341a20eb38184fd66c3178d14cc319e3d8198f9822c" origin="Verified Maven Central source artifact and SHA1 sidecar for IDE import"/>
+         </artifact>
          <artifact name="plexus-interpolation-1.29.pom">
             <sha256 value="ce0d5634297bb1e065dddfdc8a2a5675717c08e8f4783edcf581543711516938" origin="Reviewed official repository SHA512 sidecar"/>
          </artifact>
@@ -1575,6 +1800,9 @@
          </artifact>
       </component>
       <component group="org.codehaus.plexus" name="plexus-io" version="3.5.0">
+         <artifact name="plexus-io-3.5.0-sources.jar">
+            <sha256 value="c2505097b5f1493a65b83252176008c887fafa502198de04293dc9276c50efaa" origin="Verified official repository artifact and checksum sidecar for IDE import"/>
+         </artifact>
          <artifact name="plexus-io-3.5.0.jar">
             <sha256 value="965ed28912cf1ae4c628112c4009e0c19819bc44ed5db8af54ee5eda21036a3e" origin="Reviewed official repository SHA1 sidecar"/>
          </artifact>
@@ -1583,6 +1811,9 @@
          </artifact>
       </component>
       <component group="org.codehaus.plexus" name="plexus-java" version="1.3.0">
+         <artifact name="plexus-java-1.3.0-sources.jar">
+            <sha256 value="93db5dbd0ac63ebfbf6946d397a023eb5f924a2e17dc6a85f68874f9a3e0b6e1" origin="Verified official repository source artifact and SHA1 sidecar for IDE import"/>
+         </artifact>
          <artifact name="plexus-java-1.3.0.jar">
             <sha256 value="f455405f84e37e6b998970cab24e3963a4fdd802e9830fecac7549378b1048a9" origin="Reviewed official repository SHA1 sidecar"/>
          </artifact>
@@ -1591,6 +1822,9 @@
          </artifact>
       </component>
       <component group="org.codehaus.plexus" name="plexus-sec-dispatcher" version="2.0">
+         <artifact name="plexus-sec-dispatcher-2.0-sources.jar">
+            <sha256 value="ba4508f478d47717c8aeb41cf0ad9bc67e3c6bc7bf8f8bded2ca77b5885435a2" origin="Verified Maven Central source artifact and SHA1 sidecar for IDE import"/>
+         </artifact>
          <artifact name="plexus-sec-dispatcher-2.0.jar">
             <sha256 value="873139960c4c780176dda580b003a2c4bf82188bdce5bb99234e224ef7acfceb" origin="Reviewed official repository SHA1 sidecar"/>
          </artifact>
@@ -1604,6 +1838,9 @@
          </artifact>
       </component>
       <component group="org.codehaus.plexus" name="plexus-utils" version="3.6.1">
+         <artifact name="plexus-utils-3.6.1-sources.jar">
+            <sha256 value="f9b0daa4d3728acf62a90f07136b56790b677dd42644d169855b9f9ec410a27d" origin="Verified Maven Central source artifact and SHA1 sidecar for IDE import"/>
+         </artifact>
          <artifact name="plexus-utils-3.6.1.pom">
             <sha256 value="c8397373781af640a76c5da88f1674293b4fc9a2391d0768ee3fc791883b040d" origin="Reviewed official repository SHA512 sidecar"/>
          </artifact>
@@ -1612,6 +1849,9 @@
          </artifact>
       </component>
       <component group="org.codehaus.plexus" name="plexus-utils" version="4.0.1">
+         <artifact name="plexus-utils-4.0.1-sources.jar">
+            <sha256 value="afe1a6b22d68b06ecd0cfcd1b2f881762c1fa4912ace3f1b002a38ee62765331" origin="Verified official repository artifact and checksum sidecar for IDE import"/>
+         </artifact>
          <artifact name="plexus-utils-4.0.1.jar">
             <sha256 value="96b9cc44439191d2d0635974e2d44e768736b4fb2abcb65f94cd95e41912fa8b" origin="Reviewed official repository SHA1 sidecar"/>
          </artifact>
@@ -1620,6 +1860,9 @@
          </artifact>
       </component>
       <component group="org.codehaus.plexus" name="plexus-velocity" version="2.2.0">
+         <artifact name="plexus-velocity-2.2.0-sources.jar">
+            <sha256 value="80a05d2e4aaa0259c2e370c3d01ed6c25db8545d42d26e40481da755dc3d2040" origin="Verified official repository source artifact and SHA1 sidecar for IDE import"/>
+         </artifact>
          <artifact name="plexus-velocity-2.2.0.jar">
             <sha256 value="3e7e902f492c973cf210ddb8267843a3b65e83f5067467e2f4d9af0051f6b8b9" origin="Reviewed official repository SHA1 sidecar"/>
          </artifact>
@@ -1628,6 +1871,9 @@
          </artifact>
       </component>
       <component group="org.codehaus.plexus" name="plexus-xml" version="3.0.1">
+         <artifact name="plexus-xml-3.0.1-sources.jar">
+            <sha256 value="bb1fd8d3079c3e4b25aca7a9fd49560321291400eaf3016e26e144b7b8792756" origin="Verified official repository source artifact and SHA1 sidecar for IDE import"/>
+         </artifact>
          <artifact name="plexus-xml-3.0.1.jar">
             <sha256 value="c1a510a87a62bd2d74ac1472dd31c3f9e9b0b8b8568f37d77c0f135415bebd05" origin="Reviewed official repository SHA1 sidecar"/>
          </artifact>
@@ -1636,6 +1882,9 @@
          </artifact>
       </component>
       <component group="org.eclipse.sisu" name="org.eclipse.sisu.inject" version="0.9.0.M3">
+         <artifact name="org.eclipse.sisu.inject-0.9.0.M3-sources.jar">
+            <sha256 value="68df3b63392acf086ea869ae57638f7915e5b6cef05c2d2dd4220b96206b4211" origin="Verified official repository source artifact and SHA1 sidecar for IDE import"/>
+         </artifact>
          <artifact name="org.eclipse.sisu.inject-0.9.0.M3.jar">
             <sha256 value="15335c4dcf082f599fb8eddcfb58d6a7e9a9c97de2883c257089a479b9b24522" origin="Reviewed official repository SHA1 sidecar"/>
          </artifact>
@@ -1644,6 +1893,9 @@
          </artifact>
       </component>
       <component group="org.eclipse.sisu" name="org.eclipse.sisu.inject" version="1.0.0">
+         <artifact name="org.eclipse.sisu.inject-1.0.0-sources.jar">
+            <sha256 value="90793c11d4854a380f6f6ee5a5164f471c943f6c62d34ec4283f763ea336f6fc" origin="Verified Maven Central source artifact and SHA1 sidecar for IDE import"/>
+         </artifact>
          <artifact name="org.eclipse.sisu.inject-1.0.0.pom">
             <sha256 value="ea0fb93dafec8adde218ce2a11f0f84ebec2b822c1d9be8b2ed9cd61ed654cf3" origin="Reviewed official repository SHA512 sidecar"/>
          </artifact>
@@ -1652,6 +1904,9 @@
          </artifact>
       </component>
       <component group="org.eclipse.sisu" name="org.eclipse.sisu.plexus" version="0.9.0.M3">
+         <artifact name="org.eclipse.sisu.plexus-0.9.0.M3-sources.jar">
+            <sha256 value="394b25abb384307271f684c51d29ba6da5e51106b161121dd7784b3830344988" origin="Verified official repository source artifact and SHA1 sidecar for IDE import"/>
+         </artifact>
          <artifact name="org.eclipse.sisu.plexus-0.9.0.M3.jar">
             <sha256 value="c99674d3773e26154885661711f0b6d63aa5008f5cc99227a236756d4ad9de5e" origin="Reviewed official repository SHA1 sidecar"/>
          </artifact>
@@ -1660,6 +1915,9 @@
          </artifact>
       </component>
       <component group="org.eclipse.sisu" name="org.eclipse.sisu.plexus" version="1.0.0">
+         <artifact name="org.eclipse.sisu.plexus-1.0.0-sources.jar">
+            <sha256 value="db279d2d203dad5fd17de925284c0c684ed39168b6fbc5eb259018d1844583c2" origin="Verified Maven Central source artifact and SHA1 sidecar for IDE import"/>
+         </artifact>
          <artifact name="org.eclipse.sisu.plexus-1.0.0.pom">
             <sha256 value="f9bd338be70d4bc4d8f3f10cdfab7baec089fd3b3ef1013d4ca64c4e7f2163d5" origin="Reviewed official repository SHA512 sidecar"/>
          </artifact>
@@ -1689,6 +1947,9 @@
          </artifact>
       </component>
       <component group="org.gradlex" name="maven-plugin-development" version="1.0.3">
+         <artifact name="maven-plugin-development-1.0.3-sources.jar">
+            <sha256 value="a4d864685fd18e68d14cea576ead5657aaef8598c4e226b3a6f87a657e97fe05" origin="Verified official repository source artifact and SHA1 sidecar for IDE import"/>
+         </artifact>
          <artifact name="maven-plugin-development-1.0.3.jar">
             <sha256 value="32bd9a1dbda0dc5f2e876ade7e6194cb61b226547ecca9a75e57630135c97759" origin="Reviewed official repository SHA1 sidecar"/>
          </artifact>
@@ -1884,6 +2145,9 @@
          </artifact>
       </component>
       <component group="org.jsoup" name="jsoup" version="1.18.1">
+         <artifact name="jsoup-1.18.1-sources.jar">
+            <sha256 value="e145c1a259fe76a3570ea2d2e8e779367f4e5eb1ca86295990a5dfabe87e4d0e" origin="Verified official repository artifact and checksum sidecar for IDE import"/>
+         </artifact>
          <artifact name="jsoup-1.18.1.jar">
             <sha256 value="3bb5b0ec02998abe45a51f37d7ce67c3068b4ccd4ab63c965929ec5074d64e91" origin="Reviewed official repository SHA1 sidecar"/>
          </artifact>
@@ -2135,6 +2399,9 @@
          </artifact>
       </component>
       <component group="org.ow2.asm" name="asm" version="9.7.1">
+         <artifact name="asm-9.7.1-sources.jar">
+            <sha256 value="22e9507b0c494daaedb33b8148c30cd618c6dacc3992be8b50eaaafeb6a8ba8d" origin="Verified official repository source artifact and SHA1 sidecar for IDE import"/>
+         </artifact>
          <artifact name="asm-9.7.1.jar">
             <sha256 value="8cadd43ac5eb6d09de05faecca38b917a040bb9139c7edeb4cc81c740b713281" origin="Reviewed official repository SHA512 sidecar"/>
          </artifact>
@@ -2143,6 +2410,9 @@
          </artifact>
       </component>
       <component group="org.ow2.asm" name="asm" version="9.9.1">
+         <artifact name="asm-9.9.1-sources.jar">
+            <sha256 value="057e39aa1800b25bc8944846a376509990f49b7fe1e07192b1d6e48e1a780eb2" origin="Verified Maven Central source artifact and SHA1 sidecar for IDE import"/>
+         </artifact>
          <artifact name="asm-9.9.1.pom">
             <sha256 value="aca68dee9ba2f6cd90ffde728efdc7e3ebfcf59f3f41fbfe248d2d01d5b866af" origin="Reviewed official repository SHA512 sidecar"/>
          </artifact>
@@ -2151,6 +2421,9 @@
          </artifact>
       </component>
       <component group="org.ow2.asm" name="asm-analysis" version="9.7.1">
+         <artifact name="asm-analysis-9.7.1-sources.jar">
+            <sha256 value="ee0f33502dfabdfce4bd5e44ad91c9b947916433bf48c29f43036c9db9ee3639" origin="Verified official repository source artifact and SHA1 sidecar for IDE import"/>
+         </artifact>
          <artifact name="asm-analysis-9.7.1.jar">
             <sha256 value="85b29371884ba31bb76edf22323c2c24e172c3267a67152eba3d1ccc2e041ef2" origin="Reviewed official repository SHA512 sidecar"/>
          </artifact>
@@ -2159,6 +2432,9 @@
          </artifact>
       </component>
       <component group="org.ow2.asm" name="asm-tree" version="9.7.1">
+         <artifact name="asm-tree-9.7.1-sources.jar">
+            <sha256 value="442d32be6106a41b61c2edf05f8ae496c4c54cca6e73d9d59d38e9cb54820c44" origin="Verified official repository source artifact and SHA1 sidecar for IDE import"/>
+         </artifact>
          <artifact name="asm-tree-9.7.1.jar">
             <sha256 value="9929881f59eb6b840e86d54570c77b59ce721d104e6dfd7a40978991c2d3b41f" origin="Reviewed official repository SHA512 sidecar"/>
          </artifact>
@@ -2167,6 +2443,9 @@
          </artifact>
       </component>
       <component group="org.ow2.asm" name="asm-util" version="9.7.1">
+         <artifact name="asm-util-9.7.1-sources.jar">
+            <sha256 value="d58055660e99d6b15d8d23303e81cde321cfff06f10537f96dbebdca34b7e342" origin="Verified official repository source artifact and SHA1 sidecar for IDE import"/>
+         </artifact>
          <artifact name="asm-util-9.7.1.jar">
             <sha256 value="f885be71b5c90556f5f1ad1c4f9276b29b96057c497d46666fe4ddbec3cb43c6" origin="Reviewed official repository SHA512 sidecar"/>
          </artifact>
@@ -2197,6 +2476,9 @@
          </artifact>
       </component>
       <component group="org.slf4j" name="slf4j-api" version="1.7.36">
+         <artifact name="slf4j-api-1.7.36-sources.jar">
+            <sha256 value="15bc04357a3725b7a5153f132db71379f95e83b7b8590a86cc6d4ad77bfc150a" origin="Verified Maven Central source artifact and SHA1 sidecar for IDE import"/>
+         </artifact>
          <artifact name="slf4j-api-1.7.36.jar">
             <sha256 value="d3ef575e3e4979678dc01bf1dcce51021493b4d11fb7f1be8ad982877c16a1c0" origin="Reviewed official repository SHA1 sidecar"/>
          </artifact>
@@ -2278,6 +2560,9 @@
          </artifact>
       </component>
       <component group="org.sonatype.sisu" name="sisu-guice" version="3.2.5">
+         <artifact name="sisu-guice-3.2.5-sources.jar">
+            <sha256 value="0311063803aaaa0acce35b1c895b4864aa75a25522eb329c4031f6c507818574" origin="Verified official repository artifact and checksum sidecar for IDE import"/>
+         </artifact>
          <artifact name="sisu-guice-3.2.5-no_aop.jar">
             <sha256 value="2254aa20804aaa804085830ae0b6e9105989c97849d2037e892872d13247c30a" origin="Reviewed official repository SHA1 sidecar"/>
          </artifact>
@@ -2291,6 +2576,9 @@
          </artifact>
       </component>
       <component group="org.sonatype.sisu" name="sisu-inject-bean" version="2.6.0">
+         <artifact name="sisu-inject-bean-2.6.0-sources.jar">
+            <sha256 value="2421fe3ab4666a67eb4b322c00f9b0a2109a1a8e0c468c6f667072e30022b7dd" origin="Verified official repository source artifact and SHA1 sidecar for IDE import"/>
+         </artifact>
          <artifact name="sisu-inject-bean-2.6.0.jar">
             <sha256 value="9fd9dc758f894993badcdb52d2dc33fd6e23292c4e97f5d0d1b3a63a62be6dc9" origin="Reviewed official repository SHA1 sidecar"/>
          </artifact>
@@ -2299,6 +2587,9 @@
          </artifact>
       </component>
       <component group="org.sonatype.sisu" name="sisu-inject-plexus" version="2.6.0">
+         <artifact name="sisu-inject-plexus-2.6.0-sources.jar">
+            <sha256 value="044ae5863643b82784b0b648dc460bad701d67e496664abe2326d872c4ec3c90" origin="Verified official repository source artifact and SHA1 sidecar for IDE import"/>
+         </artifact>
          <artifact name="sisu-inject-plexus-2.6.0.jar">
             <sha256 value="95bf4dcc321e5963a124f62654b2311a1c42a083132dab684b8ae4acf7737119" origin="Reviewed official repository SHA1 sidecar"/>
          </artifact>
@@ -2454,6 +2745,9 @@
          </artifact>
       </component>
       <component group="org.tukaani" name="xz" version="1.9">
+         <artifact name="xz-1.9-sources.jar">
+            <sha256 value="5befa47f06b90e752f035191dde7f2deb59f36000f1ca6cc77d2362a82b6f462" origin="Verified official repository artifact and checksum sidecar for IDE import"/>
+         </artifact>
          <artifact name="xz-1.9.jar">
             <sha256 value="211b306cfc44f8f96df3a0a3ddaf75ba8c5289eed77d60d72f889bb855f535e5" origin="Reviewed official repository SHA512 sidecar"/>
          </artifact>
@@ -2538,6 +2832,194 @@
       <component group="tools.jackson.dataformat" name="jackson-dataformats-text" version="3.1.8">
          <artifact name="jackson-dataformats-text-3.1.8.pom">
             <sha256 value="c390932913f28c120689b3443672426648b7327ad17546cfc0674fb0f4cba03d" origin="Generated by Gradle"/>
+         </artifact>
+      </component>
+      <component group="com.github.luben" name="zstd-jni" version="1.5.7-14">
+         <artifact name="zstd-jni-1.5.7-14-sources.jar">
+            <sha256 value="559cbf7db7686f23c413d38caf67460e7e19658805f5987d75b6c52bfac91550" origin="Verified official repository source artifact and SHA1 sidecar for IDE import"/>
+         </artifact>
+         <artifact name="zstd-jni-1.5.7-14.jar">
+            <sha256 value="0207e5de3bddf223a784139cdc2e4bf382872d820b99bd5678dffc54cefac3ba" origin="Reviewed 2026-11-13 patched descriptor tooling; fresh Maven Central bytes and sha1 sidecar"/>
+         </artifact>
+         <artifact name="zstd-jni-1.5.7-14.pom">
+            <sha256 value="ff2258ff71468c0a26222a918cf55db99a7e8ef2995b9082d444b3089f8b2df1" origin="Reviewed 2026-11-13 patched descriptor tooling; fresh Maven Central bytes and sha1 sidecar"/>
+         </artifact>
+      </component>
+      <component group="com.google.errorprone" name="error_prone_annotations" version="2.50.0">
+         <artifact name="error_prone_annotations-2.50.0-sources.jar">
+            <sha256 value="f7f5b870d5f18bcdcd9d8dc44d6ae3593cc299d32f888aeb29fefe87661473d7" origin="Verified official repository source artifact and SHA1 sidecar for IDE import"/>
+         </artifact>
+         <artifact name="error_prone_annotations-2.50.0.jar">
+            <sha256 value="4667724877f1d37a689202da191e23efa7657c62eef93ccdac406eccfe5cdd0a" origin="Reviewed 2026-11-13 patched descriptor tooling; fresh Maven Central bytes and sha256 sidecar"/>
+         </artifact>
+         <artifact name="error_prone_annotations-2.50.0.pom">
+            <sha256 value="71a0680d277324bab46bec4b00f6f111c1b794a931d0d8cda79bcb9246982f92" origin="Reviewed 2026-11-13 patched descriptor tooling; fresh Maven Central bytes and sha256 sidecar"/>
+         </artifact>
+      </component>
+      <component group="com.google.errorprone" name="error_prone_parent" version="2.50.0">
+         <artifact name="error_prone_parent-2.50.0.pom">
+            <sha256 value="abf45a019db125b50ff55134ec2af94ae3519761038adf0a60b9bd7b4b8b6254" origin="Reviewed 2026-11-13 patched descriptor tooling; fresh Maven Central bytes and sha256 sidecar"/>
+         </artifact>
+      </component>
+      <component group="com.google.guava" name="guava" version="33.7.2-jre">
+         <artifact name="guava-33.7.2-jre-sources.jar">
+            <sha256 value="ab6a8934d352629e6d87087a79808b827b64ed18cff6c6b551be99cd8e03244c" origin="Verified official repository artifact and checksum sidecar for IDE import"/>
+         </artifact>
+         <artifact name="guava-33.7.2-jre.jar">
+            <sha256 value="b530942257fb935f8b2cfaa5f8eb5bd59c555fd8e8d01b8ce98912e077ea606c" origin="Reviewed 2026-11-13 patched descriptor tooling; fresh Maven Central bytes and sha256 sidecar"/>
+         </artifact>
+         <artifact name="guava-33.7.2-jre.module">
+            <sha256 value="7170b42bdc6a9cbfd78a2142d6dfb423473503c584bedbae85d24359dca5029f" origin="Reviewed 2026-11-13 patched descriptor tooling; fresh Maven Central bytes and sha256 sidecar"/>
+         </artifact>
+      </component>
+      <component group="com.google.j2objc" name="j2objc-annotations" version="3.1">
+         <artifact name="j2objc-annotations-3.1-sources.jar">
+            <sha256 value="295938307f4016b3f128f7347101b236ada1394808104519c9e93cd61b64602b" origin="Verified official repository source artifact and SHA1 sidecar for IDE import"/>
+         </artifact>
+         <artifact name="j2objc-annotations-3.1.jar">
+            <sha256 value="84d3a150518485f8140ea99b8a985656749629f6433c92b80c75b36aba3b099b" origin="Reviewed 2026-11-13 patched descriptor tooling; fresh Maven Central bytes and sha256 sidecar"/>
+         </artifact>
+         <artifact name="j2objc-annotations-3.1.pom">
+            <sha256 value="14570838500034fc1b47c8205ce1c9d6b255c1ccdd2d1afdcdcbf75e89b24a33" origin="Reviewed 2026-11-13 patched descriptor tooling; fresh Maven Central bytes and sha256 sidecar"/>
+         </artifact>
+      </component>
+      <component group="commons-codec" name="commons-codec" version="1.19.0">
+         <artifact name="commons-codec-1.19.0-sources.jar">
+            <sha256 value="b0462142585d45fc15bc8091b7b02f1e3a85c83595068659548c82cac9cdc7a2" origin="Verified official repository source artifact and SHA1 sidecar for IDE import"/>
+         </artifact>
+         <artifact name="commons-codec-1.19.0.jar">
+            <sha256 value="5c3881e4f556855e9c532927ee0c9dfde94cc66760d5805c031a59887070af5f" origin="Reviewed 2026-11-13 patched descriptor tooling; fresh Maven Central bytes and sha1 sidecar"/>
+         </artifact>
+         <artifact name="commons-codec-1.19.0.pom">
+            <sha256 value="e0f3269fa23de0c83130c5659f5f9514cc5422c0bcdf45f2eae004a78b9fca34" origin="Reviewed 2026-11-13 patched descriptor tooling; fresh Maven Central bytes and sha1 sidecar"/>
+         </artifact>
+      </component>
+      <component group="commons-io" name="commons-io" version="2.22.0">
+         <artifact name="commons-io-2.22.0-sources.jar">
+            <sha256 value="de5acfae5fa2735276df7facf46cdb0347374208ea47db246b554fae59277fb5" origin="Verified official repository source artifact and SHA1 sidecar for IDE import"/>
+         </artifact>
+         <artifact name="commons-io-2.22.0.jar">
+            <sha256 value="2b9a7b1f726fb86216dbd2c8321eabe0221dbd5b1be81c18e1cb53811b104758" origin="Reviewed 2026-11-13 patched descriptor tooling; fresh Maven Central bytes and sha1 sidecar"/>
+         </artifact>
+         <artifact name="commons-io-2.22.0.pom">
+            <sha256 value="6425cec0ea760035efa77277de85f89fa6dbed147ab3dd95b8d2cbc55340accf" origin="Reviewed 2026-11-13 patched descriptor tooling; fresh Maven Central bytes and sha1 sidecar"/>
+         </artifact>
+      </component>
+      <component group="io.netty" name="netty-bom" version="4.2.17.Final">
+         <artifact name="netty-bom-4.2.17.Final.pom">
+            <sha256 value="0951aa35bdcbf6dbc87af75a67e9af43c01687ed571f77c2e9195417c3afe969" origin="Reviewed 2026-11-13 patched descriptor tooling; fresh Maven Central bytes and sha256 sidecar"/>
+         </artifact>
+      </component>
+      <component group="org.apache" name="apache" version="35">
+         <artifact name="apache-35.pom">
+            <sha256 value="ea297dcd114136e8b8e8b630230d52a76c2fc69f6c5db25d672b1857000728b8" origin="Reviewed 2026-11-13 patched descriptor tooling; fresh Maven Central bytes and sha1 sidecar"/>
+         </artifact>
+      </component>
+      <component group="org.apache.commons" name="commons-compress" version="1.28.0">
+         <artifact name="commons-compress-1.28.0-sources.jar">
+            <sha256 value="6de9de4559f12bba6d41789c72f6a2a424514f2d2a3f7f49e2a3c52414db9632" origin="Verified official repository source artifact and SHA1 sidecar for IDE import"/>
+         </artifact>
+         <artifact name="commons-compress-1.28.0.jar">
+            <sha256 value="e1522945218456f3649a39bc4afd70ce4bd466221519dba7d378f2141a4642ca" origin="Reviewed 2026-11-13 patched descriptor tooling; fresh Maven Central bytes and sha1 sidecar"/>
+         </artifact>
+         <artifact name="commons-compress-1.28.0.pom">
+            <sha256 value="033f4c78d632da88d0eb8ead974fc14a264392cebf12ab6c68d6cea7adf0c64a" origin="Reviewed 2026-11-13 patched descriptor tooling; fresh Maven Central bytes and sha1 sidecar"/>
+         </artifact>
+      </component>
+      <component group="org.apache.commons" name="commons-lang3" version="3.18.0">
+         <artifact name="commons-lang3-3.18.0-sources.jar">
+            <sha256 value="b15732a13e40df7f07c30f2cb8572874798e8dde581f1398943d2ad3765bafaa" origin="Verified official repository source artifact and SHA1 sidecar for IDE import"/>
+         </artifact>
+         <artifact name="commons-lang3-3.18.0.jar">
+            <sha256 value="4eeeae8d20c078abb64b015ec158add383ac581571cddc45c68f0c9ae0230720" origin="Reviewed 2026-11-13 patched descriptor tooling; fresh Maven Central bytes and sha1 sidecar"/>
+         </artifact>
+         <artifact name="commons-lang3-3.18.0.pom">
+            <sha256 value="aa254b373b6f6d46bc9dca86331b072a8ab86eb25ea9921fd439618392e98a16" origin="Reviewed 2026-11-13 patched descriptor tooling; fresh Maven Central bytes and sha1 sidecar"/>
+         </artifact>
+      </component>
+      <component group="org.apache.commons" name="commons-parent" version="85">
+         <artifact name="commons-parent-85.pom">
+            <sha256 value="d189ff2c0027e96bb65d31e6f227ed2af966169b36af1e973dd5ba08926dc7b5" origin="Reviewed 2026-11-13 patched descriptor tooling; fresh Maven Central bytes and sha1 sidecar"/>
+         </artifact>
+      </component>
+      <component group="org.apache.commons" name="commons-parent" version="98">
+         <artifact name="commons-parent-98.pom">
+            <sha256 value="d40318527f56033e0ff0789971cc38c856aa99a685eea11270814e7f1eda9fba" origin="Reviewed 2026-11-13 patched descriptor tooling; fresh Maven Central bytes and sha1 sidecar"/>
+         </artifact>
+      </component>
+      <component group="org.codehaus.plexus" name="plexus" version="27">
+         <artifact name="plexus-27.pom">
+            <sha256 value="dbc7d80d79d3760fed777bea9e41b1c0a370442ea8ecf930d04a6a5620d36b6e" origin="Reviewed 2026-11-13 patched descriptor tooling; fresh Maven Central bytes and sha256 sidecar"/>
+         </artifact>
+      </component>
+      <component group="org.codehaus.plexus" name="plexus-archiver" version="4.13.0">
+         <artifact name="plexus-archiver-4.13.0-sources.jar">
+            <sha256 value="5df863c415e1a699564646bb6319f2c9caf129c627f4e460b4842a8893d3e167" origin="Verified official repository source artifact and SHA1 sidecar for IDE import"/>
+         </artifact>
+         <artifact name="plexus-archiver-4.13.0.jar">
+            <sha256 value="34b9427e60ed3844f4d651635f8ba15a7892f957976b01ec2b69a7a95dfade12" origin="Reviewed 2026-11-13 patched descriptor tooling; fresh Maven Central bytes and sha256 sidecar"/>
+         </artifact>
+         <artifact name="plexus-archiver-4.13.0.pom">
+            <sha256 value="4a76923fd879c7b35b99337e00c2a289ea4318329e38702c5f16ebd504d86e27" origin="Reviewed 2026-11-13 patched descriptor tooling; fresh Maven Central bytes and sha256 sidecar"/>
+         </artifact>
+      </component>
+      <component group="org.codehaus.plexus" name="plexus-io" version="3.7.0">
+         <artifact name="plexus-io-3.7.0-sources.jar">
+            <sha256 value="977b71a9ae0bc9ad5ee48dd02efdc8c7077ce456fc2c0db95c9fbf3ce23c4002" origin="Verified official repository source artifact and SHA1 sidecar for IDE import"/>
+         </artifact>
+         <artifact name="plexus-io-3.7.0.jar">
+            <sha256 value="ba03f4a3ce2de05efef448c2ab62d928423b7cd732c84864e698028947cda9ad" origin="Reviewed 2026-11-13 patched descriptor tooling; fresh Maven Central bytes and sha256 sidecar"/>
+         </artifact>
+         <artifact name="plexus-io-3.7.0.pom">
+            <sha256 value="ec998c372b3a08e6adb3fe4103a0bb27af45989433d5919ee580661352e11845" origin="Reviewed 2026-11-13 patched descriptor tooling; fresh Maven Central bytes and sha256 sidecar"/>
+         </artifact>
+      </component>
+      <component group="org.codehaus.plexus" name="plexus-utils" version="4.0.3">
+         <artifact name="plexus-utils-4.0.3-sources.jar">
+            <sha256 value="868929d8b6320f0b5da4e0b3e357c4b99146488a7cb110767ab42e6d2f6a1a53" origin="Verified official repository source artifact and SHA1 sidecar for IDE import"/>
+         </artifact>
+         <artifact name="plexus-utils-4.0.3.jar">
+            <sha256 value="421ff6ed146c53a9d4eaade8f629b52b12af7187101f1bd06c2c64e904019f3c" origin="Reviewed 2026-11-13 patched descriptor tooling; fresh Maven Central bytes and sha256 sidecar"/>
+         </artifact>
+         <artifact name="plexus-utils-4.0.3.pom">
+            <sha256 value="35736658f3fe1efa395086c91df2592664fafa24c3f2608fdaba1136d17fd360" origin="Reviewed 2026-11-13 patched descriptor tooling; fresh Maven Central bytes and sha256 sidecar"/>
+         </artifact>
+      </component>
+      <component group="org.jsoup" name="jsoup" version="1.23.2">
+         <artifact name="jsoup-1.23.2-sources.jar">
+            <sha256 value="f0ed21735857df93c3e461d1aecf89d28c3eda552f2e043d68959d341376aa17" origin="Verified official repository source artifact and SHA1 sidecar for IDE import"/>
+         </artifact>
+         <artifact name="jsoup-1.23.2.jar">
+            <sha256 value="e9d8c856856680427f096d156f02a414289985c930998fcb519ce5be39b42003" origin="Reviewed 2026-11-13 patched descriptor tooling; fresh Maven Central bytes and sha256 sidecar"/>
+         </artifact>
+         <artifact name="jsoup-1.23.2.pom">
+            <sha256 value="3ff28beafd484e9c345e0749d697d2aa31f29ace54b5d4da4e8375e6d8fe1802" origin="Reviewed 2026-11-13 patched descriptor tooling; fresh Maven Central bytes and sha256 sidecar"/>
+         </artifact>
+      </component>
+      <component group="org.junit" name="junit-bom" version="5.13.1">
+         <artifact name="junit-bom-5.13.1.pom">
+            <sha256 value="fa68451ea830572ed43ffe51d75b6a05f7a5e665a602a51f49d6be02063a65f3" origin="Reviewed 2026-11-13 patched descriptor tooling; fresh Maven Central bytes and sha256 sidecar"/>
+         </artifact>
+      </component>
+      <component group="org.ow2.asm" name="asm" version="9.10.1">
+         <artifact name="asm-9.10.1-sources.jar">
+            <sha256 value="cb29bf42b4008972c566944d377192aa1b2d90275b9cfa9a7fa86de669fde11c" origin="Verified official repository source artifact and SHA1 sidecar for IDE import"/>
+         </artifact>
+      </component>
+      <component group="org.tukaani" name="xz" version="1.12">
+         <artifact name="xz-1.12-sources.jar">
+            <sha256 value="c35c682fa8b617c1f6f21270df14bad4e11df2fe46962dfe45e765b7aec0181b" origin="Verified official repository source artifact and SHA1 sidecar for IDE import"/>
+         </artifact>
+         <artifact name="xz-1.12.jar">
+            <sha256 value="3e158a87bd73d8afb4b6e8239c013b7d049c48563f45860ce99cd2e448cf4a6b" origin="Reviewed 2026-11-13 patched descriptor tooling; fresh Maven Central bytes and sha256 sidecar"/>
+         </artifact>
+         <artifact name="xz-1.12.pom">
+            <sha256 value="937b44d869c059c39f07ae194d8cd6219f5aebf2200ef9707f0b50b7837da281" origin="Reviewed 2026-11-13 patched descriptor tooling; fresh Maven Central bytes and sha256 sidecar"/>
+         </artifact>
+      </component>
+      <component group="com.google.guava" name="guava-parent" version="33.7.2-jre">
+         <artifact name="guava-parent-33.7.2-jre.pom">
+            <sha256 value="a81570d53c8710355e0216a4405afa93834b17c4cdd0ed9aa8beede3a132bbbe" origin="Reviewed official Central sha256 sidecar for patched Maven API Guava parent"/>
          </artifact>
       </component>
    </components>

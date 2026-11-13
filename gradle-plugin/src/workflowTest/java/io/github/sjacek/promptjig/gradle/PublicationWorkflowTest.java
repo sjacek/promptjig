@@ -88,7 +88,8 @@ class PublicationWorkflowTest {
         assertEquals(Set.of("workflow_dispatch"), fieldNames(release.path("on")));
         assertTrue(release.path("on").path("workflow_dispatch").path("inputs").path("tag").path("required").asBoolean());
         assertEquals("read", release.path("permissions").path("contents").asText());
-        assertEquals(Set.of("contents"), fieldNames(release.path("permissions")));
+        assertEquals(Set.of("contents", "actions"), fieldNames(release.path("permissions")));
+        assertEquals("read", release.path("permissions").path("actions").asText());
         var publish = release.path("jobs").path("publish");
         assertEquals("plugin-portal", publish.path("environment").asText());
         var checkout = new ArrayList<JsonNode>();
@@ -112,7 +113,7 @@ class PublicationWorkflowTest {
                 for (String key : PUBLISH_KEYS) assertEquals("${{ secrets." + key + " }}", candidate.path("env").path(key).asText());
             } else for (String key : PUBLISH_KEYS) assertFalse(candidate.toString().contains(key));
         }
-        assertEquals(List.of("verify_release", "build", "validate_portal", "publish_portal"), phases);
+        assertEquals(List.of("verify_release", "verify_ci", "build", "validate_portal", "publish_portal"), phases);
         assertFalse(step(release, "build").path("run").asText().contains("publishPlugins"));
         assertTrue(step(release, "validate_portal").path("run").asText().contains(":gradle-plugin:publishPlugins --validate-only"));
         assertEquals("./gradlew :gradle-plugin:publishPlugins --console=plain", step(release, "publish_portal").path("run").asText());
@@ -122,7 +123,7 @@ class PublicationWorkflowTest {
         var release = workflow("release");
         var jobFailurePolicy = release.path("jobs").path("publish").path("continue-on-error");
         assertTrue(jobFailurePolicy.isMissingNode() || jobFailurePolicy.isBoolean() && !jobFailurePolicy.asBoolean());
-        for (String id : List.of("verify_release", "build", "validate_portal", "publish_portal")) {
+        for (String id : List.of("verify_release", "verify_ci", "build", "validate_portal", "publish_portal")) {
             var step = step(release, id);
             assertTrue(step.path("continue-on-error").isMissingNode() || step.path("continue-on-error").isBoolean() && !step.path("continue-on-error").asBoolean());
             assertTrue(Set.of("", "success()", "${{ success() }}").contains(step.path("if").asText()), "Publication must remain success-gated");

@@ -116,13 +116,38 @@ unrelated failure fails the check and never counts as checksum rejection.
 They alter a JAR and a syntactically valid POM, require the native checksum
 error for that exact artifact, and check that the goal did not produce a report.
 
-IDE imports also request dependency source JARs. Their SHA-256 values are pinned
-individually in the same policy so IntelliJ can import the Gradle model with
-strict verification enabled. When upgrading dependencies, review available
-source artifacts as well as binary/metadata artifacts. CI preparation does not
-need to download optional IDE sources to run its builds and tests.
-This also covers source/module artifacts for the Groovy libraries bundled with
-the authoring Gradle SDK, fetched by IntelliJ from Gradle's own repository.
+IDE imports also request dependency source JARs. Compatibility preparation now
+checks their coverage and independently downloads them on **every** run, including
+exact cache hits, comparing bytes with the reviewed SHA-256 values. The gate covers
+every binary coordinate in the baseline, including classifier-only dependencies,
+plus sources and module metadata for the Groovy libraries discovered in the running
+Wrapper distribution. It catches dependency/plugin and Wrapper updates before the
+matrix can succeed with an incomplete IDE policy. Native strict verification remains enabled.
+
+After reviewing an intended dependency/plugin version and its binary/metadata
+baseline, or updating the Wrapper, run from the repository root:
+
+```shell
+python3 -B scripts/ide_dependency_verification.py update
+python3 -B scripts/ide_dependency_verification.py check --verify-downloads
+```
+
+Use `python` on Windows. The updater downloads missing artifacts from Maven Central
+or the Gradle Plugin Portal, checks a published checksum sidecar, and adds SHA-256
+entries to `gradle/verification-metadata.xml`. It preserves existing checksums;
+neither local resolver caches nor CI may approve new hashes. Review the policy diff
+and `build/ide-dependency-verification/review.json` with the version update. A sidecar
+checks repository consistency, not publisher identity. The Wrapper still configures
+the build in strict mode, so new binary/plugin checksums must be reviewed first.
+
+The only source-availability records allowed in `gradle/ide-source-availability.json`
+are exact source coordinates confirmed absent with HTTP 404 from both repositories,
+bound to the reviewed binary SHA-256. This accommodates the empty Guava
+`listenablefuture` placeholder; it never adds a native trust exception. Network,
+authentication, rate-limit and server failures are not accepted as absence. If the
+sources are later published, the online check fails until their checksum is reviewed.
+CI cannot run the update command. For a local coverage check without source downloads,
+use `check` without `--verify-downloads` (ordinary Wrapper dependency resolution remains).
 
 The reviewed policy is copied into isolated example builds and every TestKit
 fixture. These example copies are generated and ignored by Git. The publication

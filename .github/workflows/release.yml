@@ -2,7 +2,7 @@ name: Publish plugin
 
 on:
   # A push/tag never uploads by itself; the owner dispatches a reviewed, existing tag explicitly.
-  # The owner selects a commit with green Compatibility; this workflow does not query its previous run status.
+  # The exact tagged commit must pass every Compatibility and security job.
   workflow_dispatch:
     inputs:
       tag:
@@ -12,25 +12,27 @@ on:
 
 permissions:
   contents: read
+  actions: read
 
 jobs:
   publish:
+    if: github.repository == 'sjacek/promptjig'
     runs-on: ubuntu-latest
     environment: plugin-portal
     # Keep publishing keys scoped to the two Portal steps, not checkout, build or the tag guard.
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
         with:
           ref: ${{ inputs.tag }}
           fetch-depth: 0
           # Full tag history is required by the guard; checkout must not leave Git credentials in this tree.
           persist-credentials: false
       - run: chmod +x gradlew
-      - uses: actions/setup-java@v4
+      - uses: actions/setup-java@b843ebf9b913146b38da2eaa7aeddf76074ae1ad # v6
         with:
           distribution: temurin
           java-version: '25'
-      - uses: gradle/actions/setup-gradle@v4
+      - uses: gradle/actions/setup-gradle@8da46b539cd8fe6ab27ca75128919a18d757604c # v6
         with:
           # Publishing is deliberately separate from the download-only compatibility snapshot.
           cache-disabled: true
@@ -52,6 +54,12 @@ jobs:
           # Check tracked files and the index before any build or authenticated Portal call.
           git diff --exit-code
           git diff --cached --exit-code
+      - name: Require all Compatibility and security jobs on the exact tagged commit
+        id: verify_ci
+        env:
+          RELEASE_TAG: ${{ inputs.tag }}
+          GITHUB_TOKEN: ${{ github.token }}
+        run: RELEASE_COMMIT="$(git rev-parse HEAD)" python3 -B scripts/central_publication.py ci
       - name: Build and verify reviewed sources
         id: build
         run: ./gradlew check assemble :core:spike --console=plain

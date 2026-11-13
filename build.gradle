@@ -46,3 +46,5 @@ tasks.register('printVersion') {
     description = 'Print the candidate publication version for release automation.'
     doLast { println(configuredVersion) }
 }
+
+apply from: file('gradle/security-inventories.gradle')

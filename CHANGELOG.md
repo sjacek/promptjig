@@ -24,6 +24,13 @@ Changes under **Unreleased** are not yet published.
 
 ### Changed
 
+- Load Spring AI contracts from local resources with clearer startup failures:
+  remote URLs are rejected before connection, and local template symlinks cannot
+  escape the contract directory.
+- Keep build diagnostics readable when file names or error text contain control
+  characters, Unicode line separators or text-direction controls.
+- Release checks now reject known High/Critical dependency findings and incomplete
+  security evidence before either publishing destination can be used.
 - Run the standalone Spring AI pilot with core/runtime 0.2.0 from Maven Central,
   without building Promptjig from source. The build plugin uses its independent
   Portal release 0.1.0.

@@ -52,10 +52,12 @@ public record Diagnostic(String rule, Severity severity, String file, int line, 
 
     /** {@return a single-line compiler-style location and message, with control characters replaced by {@code ?}} */
     public String text() {
-        return safe(file) + ":" + line + ":" + column + ": [" + rule + "] " + safe(message);
+        return safe(file) + ":" + line + ":" + column + ": [" + safe(rule) + "] " + safe(message);
     }
 
     private static String safe(String value) {
-        return value.replaceAll("[\\p{Cntrl}]", "?");
+        // Also remove bidi/format controls and Unicode line separators. A diagnostic
+        // must not forge another terminal line or visually reverse its location/rule.
+        return value.replaceAll("[\\p{Cc}\\p{Cf}\\p{Zl}\\p{Zp}]", "?");
     }
 }

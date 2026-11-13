@@ -202,7 +202,7 @@ def require_ci(state, token, opener=None):
     jobs = result.get('jobs', []) if isinstance(result, dict) else None
     if not isinstance(jobs, list) or any(not isinstance(j, dict) for j in jobs):
         raise PublicationError('Invalid Compatibility job response')
-    required = {'Prepare verified dependencies', 'core-and-packaging', 'runtime-java17', 'runtime-pilot'}
+    required = {'Prepare verified dependencies', 'core-and-packaging', 'runtime-java17', 'runtime-pilot', 'dependency-security', 'offline-security'}
     required |= {f'Gradle {gradle} / JDK {java}' for gradle in ('9.0.0', '9.1.0', '9.9.1')
                  for java in ('17', '21', '25') if (gradle, java) != ('9.0.0', '25')}
     required |= {f'Maven {maven} / JDK {java}' for maven in ('3.9.16', '4.0.0-rc-7')

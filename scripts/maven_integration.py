@@ -85,6 +85,10 @@ def warm():
         tool = ET.SubElement(example_plugins, POM + 'plugin')
         ET.SubElement(tool, POM + 'artifactId').text = 'maven-dependency-plugin'
         ET.SubElement(tool, POM + 'version').text = value['mavenDependency']
+        tooling_dependencies = ET.SubElement(tool, POM + 'dependencies')
+        beanutils = ET.SubElement(tooling_dependencies, POM + 'dependency')
+        for key, pin in [('groupId', 'commons-beanutils'), ('artifactId', 'commons-beanutils'), ('version', value['beanutils'])]:
+            ET.SubElement(beanutils, POM + key).text = pin
         example_pom = pom.with_name('example-dependencies.xml')
         example.write(example_pom, encoding='utf-8', xml_declaration=True)
         verification.run(home, [SERIAL_COLLECTOR, '-f', str(example_pom), goal + ':go-offline', '-DexcludeArtifactIds=' + excluded], repository)
@@ -212,6 +216,31 @@ def reject_tampered_local_artifacts(home, repository, checksums, java_home, work
             target.write_bytes(original)
 
 
+def reject_missing_checksum(home, repository, checksums, java_home, work, output):
+    """Correct restored bytes still require an explicit trust entry before goal execution."""
+    project = work / 'missing-checksum-testdata'
+    shutil.copytree(ROOT / 'examples/maven', project, ignore=shutil.ignore_patterns('target', '.idea'))
+    identity = 'org.antlr:ST4:jar:' + versions()['st4']
+    entries = verification.load_checksums(checksums)
+    del entries[identity]
+    missing = work / 'missing-checksum.sha256'
+    missing.write_text(''.join(k + ' ' + v + '\n' for k, v in sorted(entries.items())), encoding='utf-8')
+    log = output / 'rejected-missing-checksum.log'
+    with log.open('w', encoding='utf-8') as stream:
+        try:
+            verification.run(home, [SERIAL_COLLECTOR, '-f', str(project / 'pom.xml'),
+                'io.github.sjacek.promptjig:promptjig-maven-plugin:' + versions()['promptjig'] + ':validate'],
+                repository, missing, java_home, offline=True, stdout=stream, stderr=subprocess.STDOUT, timeout=120)
+        except subprocess.CalledProcessError:
+            text = log.read_text(encoding='utf-8', errors='replace')
+            if 'ArtifactChecksumError' not in text or 'No checksum found for ' + identity not in text:
+                raise ValueError('Missing-checksum control failed for another reason; see ' + str(log))
+        else:
+            raise ValueError('Native Maven accepted an artifact without an expected checksum')
+    if (project / 'target/reports/prompt-contracts/validate/validation.json').exists():
+        raise ValueError('The goal executed despite missing dependency trust')
+
+
 def invoker_results(reports, expected):
     """Require every named fixture to execute: skipped, duplicate or unrelated jobs are not green."""
     jobs = []
@@ -281,8 +310,10 @@ def verify(version, java_home):
     require_native_runtime(log.read_text(encoding='utf-8', errors='replace'), version, java)
     jobs = invoker_results(reports, expected)
     reject_tampered_local_artifacts(home, repository, policy, java_home, work, output)
+    reject_missing_checksum(home, repository, policy, java_home, work, output)
     result = {'maven': version, 'jdk': java, 'candidate': versions()['promptjig'], 'fixtures': expected,
               'results': jobs, 'offline': True, 'rejectedTamperedLocalArtifacts': ['jar', 'pom'],
+              'rejectedMissingChecksum': True,
               'functionalCollector': 'Maven default', 'tamperProbeCollector': 'df',
               'dependencyVerification': 'enforce SHA-256, including local artifacts'}
     (output / 'summary.json').write_text(json.dumps(result, indent=2) + '\n', encoding='utf-8')

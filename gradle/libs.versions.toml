@@ -5,6 +5,17 @@ promptjigPlugin = "0.1.0"
 mavenApi = "3.9.16"
 mavenPluginTools = "3.16.0"
 mavenPluginDevelopment = "1.0.3"
+# Descriptor-generator build dependencies; these are not consumer runtime dependencies.
+guava = "33.7.2-jre"
+jsoup = "1.23.2"
+plexusUtils = "4.0.3"
+plexusArchiver = "4.13.0"
+commonsLang = "3.18.0"
+# Native Maven tooling POMs consume these two catalog pins through maven_integration.py.
+# noinspection UnusedVersionCatalogEntry
+beanutils = "1.11.0"
+# noinspection UnusedVersionCatalogEntry
+plexusUtils3 = "3.6.2"
 # These pins are consumed by scripts/maven_integration.py and the rendered Invoker POM.
 # noinspection UnusedVersionCatalogEntry
 mavenCompiler = "3.16.0"
@@ -32,6 +43,7 @@ plugin-publish = "2.2.1"
 lombok = "1.18.48"
 
 [libraries]
+guava = { module = "com.google.guava:guava", version.ref = "guava" }
 lombok = { module = "org.projectlombok:lombok", version.ref = "lombok" }
 jackson-bom = { module = "com.fasterxml.jackson:jackson-bom", version.ref = "jackson" }
 jackson-databind = { module = "com.fasterxml.jackson.core:jackson-databind" }

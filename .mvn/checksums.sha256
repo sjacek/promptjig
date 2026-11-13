@@ -553,11 +553,13 @@ org.codehaus.plexus:plexus-languages:pom:1.6.0 57b98b5fd9c81bf78bd34cbe0faf11d96
 org.codehaus.plexus:plexus-sec-dispatcher:jar:2.0 873139960c4c780176dda580b003a2c4bf82188bdce5bb99234e224ef7acfceb
 org.codehaus.plexus:plexus-sec-dispatcher:pom:2.0 9b28bb307017938a94d06c85b2b099bc46912b859d084fb293e569f432eadb7c
 org.codehaus.plexus:plexus-utils:jar:3.6.0 27ef130e32c236090e408fb5498d94cb9ea26d14070fb1c8985d607b62d098d1
+org.codehaus.plexus:plexus-utils:jar:3.6.2 7c2cdf8b4a02a2ee3f0514b8d74ad5eb6e2365eeb073a5cabd6f2d61d8f871df
 org.codehaus.plexus:plexus-utils:jar:4.0.1 96b9cc44439191d2d0635974e2d44e768736b4fb2abcb65f94cd95e41912fa8b
 org.codehaus.plexus:plexus-utils:jar:4.0.3 421ff6ed146c53a9d4eaade8f629b52b12af7187101f1bd06c2c64e904019f3c
 org.codehaus.plexus:plexus-utils:pom:3.5.1 94ff68edeb48204d12c99189c767164d3a9f778a1372d1dce11a41462e6236f2
 org.codehaus.plexus:plexus-utils:pom:3.6.0 6138300481471c7fe6aeb115f912961f886e1a46ee9c2bd2841b65184824da28
 org.codehaus.plexus:plexus-utils:pom:3.6.1 c8397373781af640a76c5da88f1674293b4fc9a2391d0768ee3fc791883b040d
+org.codehaus.plexus:plexus-utils:pom:3.6.2 5ee26b9f0529038802fc1c205a5ce55be5eff247af0a5e5b55cf831652c173ed
 org.codehaus.plexus:plexus-utils:pom:4.0.1 bc4235a95cd1ebae42644c81ebba9c1d4c52565f81e96ab204b6e56e3e378cc1
 org.codehaus.plexus:plexus-utils:pom:4.0.3 35736658f3fe1efa395086c91df2592664fafa24c3f2608fdaba1136d17fd360
 org.codehaus.plexus:plexus-velocity:jar:2.2.0 3e7e902f492c973cf210ddb8267843a3b65e83f5067467e2f4d9af0051f6b8b9

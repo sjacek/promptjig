@@ -1,0 +1,314 @@
+{
+  "schemaVersion": 1,
+  "reviewed": "2026-11-13",
+  "purpose": "Patched Gradlex descriptor-generator classpath; no old checksums replaced",
+  "artifacts": [
+    {
+      "group": "org.apache",
+      "name": "apache",
+      "version": "35",
+      "file": "apache-35.pom",
+      "sha256": "ea297dcd114136e8b8e8b630230d52a76c2fc69f6c5db25d672b1857000728b8",
+      "source": "https://repo.maven.apache.org/maven2/org/apache/apache/35/apache-35.pom",
+      "sidecar": "sha1"
+    },
+    {
+      "group": "commons-codec",
+      "name": "commons-codec",
+      "version": "1.19.0",
+      "file": "commons-codec-1.19.0.jar",
+      "sha256": "5c3881e4f556855e9c532927ee0c9dfde94cc66760d5805c031a59887070af5f",
+      "source": "https://repo.maven.apache.org/maven2/commons-codec/commons-codec/1.19.0/commons-codec-1.19.0.jar",
+      "sidecar": "sha1"
+    },
+    {
+      "group": "commons-codec",
+      "name": "commons-codec",
+      "version": "1.19.0",
+      "file": "commons-codec-1.19.0.pom",
+      "sha256": "e0f3269fa23de0c83130c5659f5f9514cc5422c0bcdf45f2eae004a78b9fca34",
+      "source": "https://repo.maven.apache.org/maven2/commons-codec/commons-codec/1.19.0/commons-codec-1.19.0.pom",
+      "sidecar": "sha1"
+    },
+    {
+      "group": "org.apache.commons",
+      "name": "commons-compress",
+      "version": "1.28.0",
+      "file": "commons-compress-1.28.0.jar",
+      "sha256": "e1522945218456f3649a39bc4afd70ce4bd466221519dba7d378f2141a4642ca",
+      "source": "https://repo.maven.apache.org/maven2/org/apache/commons/commons-compress/1.28.0/commons-compress-1.28.0.jar",
+      "sidecar": "sha1"
+    },
+    {
+      "group": "org.apache.commons",
+      "name": "commons-compress",
+      "version": "1.28.0",
+      "file": "commons-compress-1.28.0.pom",
+      "sha256": "033f4c78d632da88d0eb8ead974fc14a264392cebf12ab6c68d6cea7adf0c64a",
+      "source": "https://repo.maven.apache.org/maven2/org/apache/commons/commons-compress/1.28.0/commons-compress-1.28.0.pom",
+      "sidecar": "sha1"
+    },
+    {
+      "group": "commons-io",
+      "name": "commons-io",
+      "version": "2.22.0",
+      "file": "commons-io-2.22.0.jar",
+      "sha256": "2b9a7b1f726fb86216dbd2c8321eabe0221dbd5b1be81c18e1cb53811b104758",
+      "source": "https://repo.maven.apache.org/maven2/commons-io/commons-io/2.22.0/commons-io-2.22.0.jar",
+      "sidecar": "sha1"
+    },
+    {
+      "group": "commons-io",
+      "name": "commons-io",
+      "version": "2.22.0",
+      "file": "commons-io-2.22.0.pom",
+      "sha256": "6425cec0ea760035efa77277de85f89fa6dbed147ab3dd95b8d2cbc55340accf",
+      "source": "https://repo.maven.apache.org/maven2/commons-io/commons-io/2.22.0/commons-io-2.22.0.pom",
+      "sidecar": "sha1"
+    },
+    {
+      "group": "org.apache.commons",
+      "name": "commons-lang3",
+      "version": "3.18.0",
+      "file": "commons-lang3-3.18.0.jar",
+      "sha256": "4eeeae8d20c078abb64b015ec158add383ac581571cddc45c68f0c9ae0230720",
+      "source": "https://repo.maven.apache.org/maven2/org/apache/commons/commons-lang3/3.18.0/commons-lang3-3.18.0.jar",
+      "sidecar": "sha1"
+    },
+    {
+      "group": "org.apache.commons",
+      "name": "commons-lang3",
+      "version": "3.18.0",
+      "file": "commons-lang3-3.18.0.pom",
+      "sha256": "aa254b373b6f6d46bc9dca86331b072a8ab86eb25ea9921fd439618392e98a16",
+      "source": "https://repo.maven.apache.org/maven2/org/apache/commons/commons-lang3/3.18.0/commons-lang3-3.18.0.pom",
+      "sidecar": "sha1"
+    },
+    {
+      "group": "org.apache.commons",
+      "name": "commons-parent",
+      "version": "85",
+      "file": "commons-parent-85.pom",
+      "sha256": "d189ff2c0027e96bb65d31e6f227ed2af966169b36af1e973dd5ba08926dc7b5",
+      "source": "https://repo.maven.apache.org/maven2/org/apache/commons/commons-parent/85/commons-parent-85.pom",
+      "sidecar": "sha1"
+    },
+    {
+      "group": "org.apache.commons",
+      "name": "commons-parent",
+      "version": "98",
+      "file": "commons-parent-98.pom",
+      "sha256": "d40318527f56033e0ff0789971cc38c856aa99a685eea11270814e7f1eda9fba",
+      "source": "https://repo.maven.apache.org/maven2/org/apache/commons/commons-parent/98/commons-parent-98.pom",
+      "sidecar": "sha1"
+    },
+    {
+      "group": "com.google.errorprone",
+      "name": "error_prone_annotations",
+      "version": "2.50.0",
+      "file": "error_prone_annotations-2.50.0.jar",
+      "sha256": "4667724877f1d37a689202da191e23efa7657c62eef93ccdac406eccfe5cdd0a",
+      "source": "https://repo.maven.apache.org/maven2/com/google/errorprone/error_prone_annotations/2.50.0/error_prone_annotations-2.50.0.jar",
+      "sidecar": "sha256"
+    },
+    {
+      "group": "com.google.errorprone",
+      "name": "error_prone_annotations",
+      "version": "2.50.0",
+      "file": "error_prone_annotations-2.50.0.pom",
+      "sha256": "71a0680d277324bab46bec4b00f6f111c1b794a931d0d8cda79bcb9246982f92",
+      "source": "https://repo.maven.apache.org/maven2/com/google/errorprone/error_prone_annotations/2.50.0/error_prone_annotations-2.50.0.pom",
+      "sidecar": "sha256"
+    },
+    {
+      "group": "com.google.errorprone",
+      "name": "error_prone_parent",
+      "version": "2.50.0",
+      "file": "error_prone_parent-2.50.0.pom",
+      "sha256": "abf45a019db125b50ff55134ec2af94ae3519761038adf0a60b9bd7b4b8b6254",
+      "source": "https://repo.maven.apache.org/maven2/com/google/errorprone/error_prone_parent/2.50.0/error_prone_parent-2.50.0.pom",
+      "sidecar": "sha256"
+    },
+    {
+      "group": "com.google.guava",
+      "name": "guava",
+      "version": "33.7.2-jre",
+      "file": "guava-33.7.2-jre.jar",
+      "sha256": "b530942257fb935f8b2cfaa5f8eb5bd59c555fd8e8d01b8ce98912e077ea606c",
+      "source": "https://repo.maven.apache.org/maven2/com/google/guava/guava/33.7.2-jre/guava-33.7.2-jre.jar",
+      "sidecar": "sha256"
+    },
+    {
+      "group": "com.google.guava",
+      "name": "guava",
+      "version": "33.7.2-jre",
+      "file": "guava-33.7.2-jre.module",
+      "sha256": "7170b42bdc6a9cbfd78a2142d6dfb423473503c584bedbae85d24359dca5029f",
+      "source": "https://repo.maven.apache.org/maven2/com/google/guava/guava/33.7.2-jre/guava-33.7.2-jre.module",
+      "sidecar": "sha256"
+    },
+    {
+      "group": "com.google.j2objc",
+      "name": "j2objc-annotations",
+      "version": "3.1",
+      "file": "j2objc-annotations-3.1.jar",
+      "sha256": "84d3a150518485f8140ea99b8a985656749629f6433c92b80c75b36aba3b099b",
+      "source": "https://repo.maven.apache.org/maven2/com/google/j2objc/j2objc-annotations/3.1/j2objc-annotations-3.1.jar",
+      "sidecar": "sha256"
+    },
+    {
+      "group": "com.google.j2objc",
+      "name": "j2objc-annotations",
+      "version": "3.1",
+      "file": "j2objc-annotations-3.1.pom",
+      "sha256": "14570838500034fc1b47c8205ce1c9d6b255c1ccdd2d1afdcdcbf75e89b24a33",
+      "source": "https://repo.maven.apache.org/maven2/com/google/j2objc/j2objc-annotations/3.1/j2objc-annotations-3.1.pom",
+      "sidecar": "sha256"
+    },
+    {
+      "group": "org.jsoup",
+      "name": "jsoup",
+      "version": "1.23.2",
+      "file": "jsoup-1.23.2.jar",
+      "sha256": "e9d8c856856680427f096d156f02a414289985c930998fcb519ce5be39b42003",
+      "source": "https://repo.maven.apache.org/maven2/org/jsoup/jsoup/1.23.2/jsoup-1.23.2.jar",
+      "sidecar": "sha256"
+    },
+    {
+      "group": "org.jsoup",
+      "name": "jsoup",
+      "version": "1.23.2",
+      "file": "jsoup-1.23.2.pom",
+      "sha256": "3ff28beafd484e9c345e0749d697d2aa31f29ace54b5d4da4e8375e6d8fe1802",
+      "source": "https://repo.maven.apache.org/maven2/org/jsoup/jsoup/1.23.2/jsoup-1.23.2.pom",
+      "sidecar": "sha256"
+    },
+    {
+      "group": "org.junit",
+      "name": "junit-bom",
+      "version": "5.13.1",
+      "file": "junit-bom-5.13.1.pom",
+      "sha256": "fa68451ea830572ed43ffe51d75b6a05f7a5e665a602a51f49d6be02063a65f3",
+      "source": "https://repo.maven.apache.org/maven2/org/junit/junit-bom/5.13.1/junit-bom-5.13.1.pom",
+      "sidecar": "sha256"
+    },
+    {
+      "group": "io.netty",
+      "name": "netty-bom",
+      "version": "4.2.17.Final",
+      "file": "netty-bom-4.2.17.Final.pom",
+      "sha256": "0951aa35bdcbf6dbc87af75a67e9af43c01687ed571f77c2e9195417c3afe969",
+      "source": "https://repo.maven.apache.org/maven2/io/netty/netty-bom/4.2.17.Final/netty-bom-4.2.17.Final.pom",
+      "sidecar": "sha256"
+    },
+    {
+      "group": "org.codehaus.plexus",
+      "name": "plexus",
+      "version": "27",
+      "file": "plexus-27.pom",
+      "sha256": "dbc7d80d79d3760fed777bea9e41b1c0a370442ea8ecf930d04a6a5620d36b6e",
+      "source": "https://repo.maven.apache.org/maven2/org/codehaus/plexus/plexus/27/plexus-27.pom",
+      "sidecar": "sha256"
+    },
+    {
+      "group": "org.codehaus.plexus",
+      "name": "plexus-archiver",
+      "version": "4.13.0",
+      "file": "plexus-archiver-4.13.0.jar",
+      "sha256": "34b9427e60ed3844f4d651635f8ba15a7892f957976b01ec2b69a7a95dfade12",
+      "source": "https://repo.maven.apache.org/maven2/org/codehaus/plexus/plexus-archiver/4.13.0/plexus-archiver-4.13.0.jar",
+      "sidecar": "sha256"
+    },
+    {
+      "group": "org.codehaus.plexus",
+      "name": "plexus-archiver",
+      "version": "4.13.0",
+      "file": "plexus-archiver-4.13.0.pom",
+      "sha256": "4a76923fd879c7b35b99337e00c2a289ea4318329e38702c5f16ebd504d86e27",
+      "source": "https://repo.maven.apache.org/maven2/org/codehaus/plexus/plexus-archiver/4.13.0/plexus-archiver-4.13.0.pom",
+      "sidecar": "sha256"
+    },
+    {
+      "group": "org.codehaus.plexus",
+      "name": "plexus-io",
+      "version": "3.7.0",
+      "file": "plexus-io-3.7.0.jar",
+      "sha256": "ba03f4a3ce2de05efef448c2ab62d928423b7cd732c84864e698028947cda9ad",
+      "source": "https://repo.maven.apache.org/maven2/org/codehaus/plexus/plexus-io/3.7.0/plexus-io-3.7.0.jar",
+      "sidecar": "sha256"
+    },
+    {
+      "group": "org.codehaus.plexus",
+      "name": "plexus-io",
+      "version": "3.7.0",
+      "file": "plexus-io-3.7.0.pom",
+      "sha256": "ec998c372b3a08e6adb3fe4103a0bb27af45989433d5919ee580661352e11845",
+      "source": "https://repo.maven.apache.org/maven2/org/codehaus/plexus/plexus-io/3.7.0/plexus-io-3.7.0.pom",
+      "sidecar": "sha256"
+    },
+    {
+      "group": "org.codehaus.plexus",
+      "name": "plexus-utils",
+      "version": "4.0.3",
+      "file": "plexus-utils-4.0.3.jar",
+      "sha256": "421ff6ed146c53a9d4eaade8f629b52b12af7187101f1bd06c2c64e904019f3c",
+      "source": "https://repo.maven.apache.org/maven2/org/codehaus/plexus/plexus-utils/4.0.3/plexus-utils-4.0.3.jar",
+      "sidecar": "sha256"
+    },
+    {
+      "group": "org.codehaus.plexus",
+      "name": "plexus-utils",
+      "version": "4.0.3",
+      "file": "plexus-utils-4.0.3.pom",
+      "sha256": "35736658f3fe1efa395086c91df2592664fafa24c3f2608fdaba1136d17fd360",
+      "source": "https://repo.maven.apache.org/maven2/org/codehaus/plexus/plexus-utils/4.0.3/plexus-utils-4.0.3.pom",
+      "sidecar": "sha256"
+    },
+    {
+      "group": "org.tukaani",
+      "name": "xz",
+      "version": "1.12",
+      "file": "xz-1.12.jar",
+      "sha256": "3e158a87bd73d8afb4b6e8239c013b7d049c48563f45860ce99cd2e448cf4a6b",
+      "source": "https://repo.maven.apache.org/maven2/org/tukaani/xz/1.12/xz-1.12.jar",
+      "sidecar": "sha256"
+    },
+    {
+      "group": "org.tukaani",
+      "name": "xz",
+      "version": "1.12",
+      "file": "xz-1.12.pom",
+      "sha256": "937b44d869c059c39f07ae194d8cd6219f5aebf2200ef9707f0b50b7837da281",
+      "source": "https://repo.maven.apache.org/maven2/org/tukaani/xz/1.12/xz-1.12.pom",
+      "sidecar": "sha256"
+    },
+    {
+      "group": "com.github.luben",
+      "name": "zstd-jni",
+      "version": "1.5.7-14",
+      "file": "zstd-jni-1.5.7-14.jar",
+      "sha256": "0207e5de3bddf223a784139cdc2e4bf382872d820b99bd5678dffc54cefac3ba",
+      "source": "https://repo.maven.apache.org/maven2/com/github/luben/zstd-jni/1.5.7-14/zstd-jni-1.5.7-14.jar",
+      "sidecar": "sha1"
+    },
+    {
+      "group": "com.github.luben",
+      "name": "zstd-jni",
+      "version": "1.5.7-14",
+      "file": "zstd-jni-1.5.7-14.pom",
+      "sha256": "ff2258ff71468c0a26222a918cf55db99a7e8ef2995b9082d444b3089f8b2df1",
+      "source": "https://repo.maven.apache.org/maven2/com/github/luben/zstd-jni/1.5.7-14/zstd-jni-1.5.7-14.pom",
+      "sidecar": "sha1"
+    },
+    {
+      "group": "com.google.guava",
+      "name": "guava-parent",
+      "version": "33.7.2-jre",
+      "file": "guava-parent-33.7.2-jre.pom",
+      "sha256": "a81570d53c8710355e0216a4405afa93834b17c4cdd0ed9aa8beede3a132bbbe",
+      "source": "https://repo.maven.apache.org/maven2/com/google/guava/guava-parent/33.7.2-jre/guava-parent-33.7.2-jre.pom",
+      "sidecar": "sha256"
+    }
+  ],
+  "notApplicable": "Only the final 34 patch-graph additions are trusted, including the Guava parent needed by the producer API graph. Existing baseline entries unchanged."
+}

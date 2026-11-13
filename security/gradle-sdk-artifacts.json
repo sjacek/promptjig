@@ -1,0 +1,117 @@
+{
+  "schemaVersion": 1,
+  "artifacts": [
+    {
+      "file": "groovy-4.0.33.jar",
+      "group": "org.apache.groovy",
+      "name": "groovy",
+      "version": "4.0.33",
+      "sha256": "5240a9151289115e4d447d6b6d4cb9ac8a9fc6374e079714dfeeffda42323be8",
+      "source": "https://repo.maven.apache.org/maven2/org/apache/groovy/groovy/4.0.33/groovy-4.0.33.jar"
+    },
+    {
+      "file": "groovy-ant-4.0.33.jar",
+      "group": "org.apache.groovy",
+      "name": "groovy-ant",
+      "version": "4.0.33",
+      "sha256": "445830739c965a5b9910938859cbd9e12d6c80d2e81662789326b0cf29f94b2f",
+      "source": "https://repo.maven.apache.org/maven2/org/apache/groovy/groovy-ant/4.0.33/groovy-ant-4.0.33.jar"
+    },
+    {
+      "file": "groovy-astbuilder-4.0.33.jar",
+      "group": "org.apache.groovy",
+      "name": "groovy-astbuilder",
+      "version": "4.0.33",
+      "sha256": "77454b45faa9abf4fc81bc62194594e22f713232ed9c1e8b09bf4a9c8330fc2a",
+      "source": "https://repo.maven.apache.org/maven2/org/apache/groovy/groovy-astbuilder/4.0.33/groovy-astbuilder-4.0.33.jar"
+    },
+    {
+      "file": "groovy-datetime-4.0.33.jar",
+      "group": "org.apache.groovy",
+      "name": "groovy-datetime",
+      "version": "4.0.33",
+      "sha256": "edf80f4a849aea7d8a5b34d5e92fd228bed2fbd0a52e8a58862f995fd42eb025",
+      "source": "https://repo.maven.apache.org/maven2/org/apache/groovy/groovy-datetime/4.0.33/groovy-datetime-4.0.33.jar"
+    },
+    {
+      "file": "groovy-dateutil-4.0.33.jar",
+      "group": "org.apache.groovy",
+      "name": "groovy-dateutil",
+      "version": "4.0.33",
+      "sha256": "7a5fad3cc09eca86f37e636b0ddceedea1096c5c28e6a472465828d2df9d6e98",
+      "source": "https://repo.maven.apache.org/maven2/org/apache/groovy/groovy-dateutil/4.0.33/groovy-dateutil-4.0.33.jar"
+    },
+    {
+      "file": "groovy-groovydoc-4.0.33.jar",
+      "group": "org.apache.groovy",
+      "name": "groovy-groovydoc",
+      "version": "4.0.33",
+      "sha256": "e9da9e62c3e757e3594df1dcfbcfbf9dcc4c0542ebbfaf9b7f89f61f0e31fb2d",
+      "source": "https://repo.maven.apache.org/maven2/org/apache/groovy/groovy-groovydoc/4.0.33/groovy-groovydoc-4.0.33.jar"
+    },
+    {
+      "file": "groovy-json-4.0.33.jar",
+      "group": "org.apache.groovy",
+      "name": "groovy-json",
+      "version": "4.0.33",
+      "sha256": "8ce2d5074e930ca16ca2e0af96eff87e406cc9d1a0fe3107f0193ed4e7a69582",
+      "source": "https://repo.maven.apache.org/maven2/org/apache/groovy/groovy-json/4.0.33/groovy-json-4.0.33.jar"
+    },
+    {
+      "file": "groovy-nio-4.0.33.jar",
+      "group": "org.apache.groovy",
+      "name": "groovy-nio",
+      "version": "4.0.33",
+      "sha256": "8632a8dc8395247e99d47eaf33e622e0ee6c8432d54274f5b010889093698bee",
+      "source": "https://repo.maven.apache.org/maven2/org/apache/groovy/groovy-nio/4.0.33/groovy-nio-4.0.33.jar"
+    },
+    {
+      "file": "groovy-templates-4.0.33.jar",
+      "group": "org.apache.groovy",
+      "name": "groovy-templates",
+      "version": "4.0.33",
+      "sha256": "fe34f48e52686effcf30feba158e1bfabde484303a051fad259f6616bba8ff31",
+      "source": "https://repo.maven.apache.org/maven2/org/apache/groovy/groovy-templates/4.0.33/groovy-templates-4.0.33.jar"
+    },
+    {
+      "file": "groovy-xml-4.0.33.jar",
+      "group": "org.apache.groovy",
+      "name": "groovy-xml",
+      "version": "4.0.33",
+      "sha256": "d444d22878867ec68fb69b25a65709776cb7b96f843572446e73f8fd9d9ebfac",
+      "source": "https://repo.maven.apache.org/maven2/org/apache/groovy/groovy-xml/4.0.33/groovy-xml-4.0.33.jar"
+    },
+    {
+      "file": "javaparser-core-3.27.1.jar",
+      "group": "com.github.javaparser",
+      "name": "javaparser-core",
+      "version": "3.27.1",
+      "sha256": "7ae10d11c5388060a7bf93b721600b951f5585f3782778b6d0555160680d35f8",
+      "source": "https://repo.maven.apache.org/maven2/com/github/javaparser/javaparser-core/3.27.1/javaparser-core-3.27.1.jar"
+    },
+    {
+      "file": "kotlin-reflect-2.4.21.jar",
+      "group": "org.jetbrains.kotlin",
+      "name": "kotlin-reflect",
+      "version": "2.4.21",
+      "sha256": "7c9e8bda3cafa85b65692065acd22578b2843292b4e4baa8361bdc9175746e88",
+      "source": "https://repo.maven.apache.org/maven2/org/jetbrains/kotlin/kotlin-reflect/2.4.21/kotlin-reflect-2.4.21.jar"
+    },
+    {
+      "file": "kotlin-stdlib-2.4.21.jar",
+      "group": "org.jetbrains.kotlin",
+      "name": "kotlin-stdlib",
+      "version": "2.4.21",
+      "sha256": "bd8250210584cb659847dce9cda660f8e9906e5def7fbebcea93dc6dcb6a88a3",
+      "source": "https://repo.maven.apache.org/maven2/org/jetbrains/kotlin/kotlin-stdlib/2.4.21/kotlin-stdlib-2.4.21.jar"
+    },
+    {
+      "file": "javax.inject-1.jar",
+      "group": "javax.inject",
+      "name": "javax.inject",
+      "version": "1",
+      "sha256": "91c77044a50c481636c32d916fd89c9118a72195390452c81065080f957de7ff",
+      "source": "https://repo.maven.apache.org/maven2/javax/inject/javax.inject/1/javax.inject-1.jar"
+    }
+  ]
+}

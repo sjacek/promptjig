@@ -1,0 +1,10 @@
+{
+  "schemaVersion": 1,
+  "publisherPrimaryFingerprint": "0AE0A30C093FDE0EA02E7502ADF2B8E6FA34B930",
+  "publicKeyUrl": "https://github.com/sjacek.gpg",
+  "sourceCommits": {
+    "v0.1.0": "0ae7fa833c168ad096c13591aa42a8cda1346c0e",
+    "v0.2.0": "a5a15a74412f6c47eed4148f1e9e438570b3e70b"
+  },
+  "review": "2026-11-13: tag targets read locally and through GitHub; public local key fingerprint matches the signature key ID. Cryptographic validity is not out-of-band publisher identity certification."
+}

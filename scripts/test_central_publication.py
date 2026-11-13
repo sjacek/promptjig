@@ -210,7 +210,7 @@ class CentralPublicationTest(unittest.TestCase):
                 central.version(self.root)
 
     def ci_responses(self):
-        names = ['Prepare verified dependencies', 'core-and-packaging', 'runtime-java17', 'runtime-pilot']
+        names = ['Prepare verified dependencies', 'core-and-packaging', 'runtime-java17', 'runtime-pilot', 'dependency-security', 'offline-security']
         names += [f'Gradle {g} / JDK {j}' for g in ('9.0.0', '9.1.0', '9.9.1')
                   for j in ('17', '21', '25') if (g, j) != ('9.0.0', '25')]
         names += [f'Maven {m} / JDK {j}' for m in ('3.9.16', '4.0.0-rc-7') for j in ('17', '21', '25')]
@@ -219,12 +219,19 @@ class CentralPublicationTest(unittest.TestCase):
         jobs = [{'name': name, 'status': 'completed', 'conclusion': 'success'} for name in names]
         return {'workflow_runs': [run]}, {'total_count': len(names), 'jobs': jobs}
 
-    def test_ci_requires_eighteen_executed_successful_jobs_for_exact_sha(self):
+    def test_ci_requires_twenty_executed_successful_jobs_including_security_for_exact_sha(self):
         http = HttpFixture(*self.ci_responses())
         central.require_ci({'commit': SHA}, 'fixture-github-token', http)
         self.assertEqual(2, len(http.requests))
         self.assertTrue(all(r.full_url.startswith('https://api.github.com/repos/sjacek/promptjig/') for r in http.requests))
         self.assertIn('head_sha=' + SHA, http.requests[0].full_url)
+
+    def test_old_green_pipeline_without_security_jobs_cannot_authorize_release(self):
+        run, jobs = self.ci_responses()
+        jobs['jobs'] = [job for job in jobs['jobs'] if job['name'] not in {'dependency-security', 'offline-security'}]
+        jobs['total_count'] = len(jobs['jobs'])
+        with self.assertRaises(central.PublicationError):
+            central.require_ci({'commit': SHA}, 'token', HttpFixture(run, jobs))
 
     def test_ci_rejects_missing_stale_failed_or_pending_runs(self):
         run, _ = self.ci_responses()

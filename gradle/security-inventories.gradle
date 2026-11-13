@@ -1,0 +1,131 @@
+import groovy.json.JsonOutput
+import org.gradle.api.Project
+import org.gradle.api.artifacts.Configuration
+import org.gradle.api.artifacts.component.ModuleComponentIdentifier
+import org.gradle.api.artifacts.component.ProjectComponentIdentifier
+import org.gradle.api.artifacts.result.ResolvedDependencyResult
+import org.gradle.api.attributes.Usage
+import java.security.MessageDigest
+
+// Native resolution only: no scanner plugin changes published dependency graphs.
+// This opt-in task deliberately does not support configuration cache: it observes
+// the current resolved models, rather than reusing an earlier green inventory.
+def distributions = ['core', 'spring-ai', 'gradle-plugin', 'maven-plugin']
+gradle.projectsEvaluated {
+    distributions.each { name ->
+        Project owner = project(":$name")
+        owner.configurations.register('securityProvidedClasspath') { Configuration provided ->
+            provided.canBeConsumed = false
+            provided.canBeResolved = true
+            provided.extendsFrom(owner.configurations.named('compileOnly').get())
+            Usage javaApiUsage = owner.objects.named(Usage.class, Usage.JAVA_API)
+            // IntelliJ misinfers this generic Gradle API call in an applied Groovy script.
+            // Native strict-resolution checks verify the attribute and selected graphs.
+            //noinspection GroovyAssignabilityCheck
+            provided.attributes.attribute(Usage.USAGE_ATTRIBUTE, javaApiUsage)
+        }
+    }
+    tasks.register('securityInventories') {
+        group = 'verification'
+        description = 'Retain native resolved graphs for four distributions and security scopes.'
+        notCompatibleWithConfigurationCache('Records current native dependency and artifact evidence.')
+        distributions.each { name -> dependsOn ":$name:jar" }
+        dependsOn ':gradle-plugin:pluginUnderTestMetadata'
+        outputs.upToDateWhen { false }
+        doLast {
+            def hashes = [:]
+            def digest = { File file ->
+                hashes.computeIfAbsent(file.absolutePath) {
+                    def hash = MessageDigest.getInstance('SHA-256')
+                    file.withInputStream { input ->
+                        byte[] buffer = new byte[65536]
+                        int count
+                        while ((count = input.read(buffer)) != -1) hash.update(buffer, 0, count)
+                    }
+                    hash.digest().encodeHex().toString()
+                }
+            }
+            def describe = { id ->
+                if (id instanceof ModuleComponentIdentifier)
+                    return [kind: 'module', group: id.group, name: id.module, version: id.version]
+                if (id instanceof ProjectComponentIdentifier)
+                    return [kind: 'project', path: id.projectPath]
+                return [kind: 'file', display: id.displayName]
+            }
+            def graph = { owner, configuration, source ->
+                def resolution = configuration.incoming.resolutionResult
+                def components = resolution.allComponents.collect { component ->
+                    [id: component.id.displayName, identity: describe(component.id),
+                     dependencies: component.dependencies.collect { dependency ->
+                         if (!(dependency instanceof ResolvedDependencyResult))
+                             throw new GradleException("Unresolved security dependency in ${owner.path}:${configuration.name}")
+                         dependency.selected.id.displayName
+                     }.unique().sort()]
+                }.sort { it.id }
+                def artifacts = configuration.incoming.artifacts.artifacts.collect { artifact ->
+                    File file = artifact.file
+                    String nativeKind = file.isDirectory() ? 'project-classes-directory' : 'file'
+                    // Java API variants can select another project's classes directory.
+                    // Retain that fact and bind its assembled JAR rather than pretending
+                    // that a directory is a downloadable external dependency.
+                    if (file.isDirectory() && artifact.id.componentIdentifier instanceof ProjectComponentIdentifier) {
+                        file = project(artifact.id.componentIdentifier.projectPath)
+                                .tasks.named('jar', Jar).get().archiveFile.get().asFile
+                    }
+                    if (file.isDirectory() && file.name == 'pluginUnderTestMetadata' &&
+                            file.toPath().startsWith(project(':gradle-plugin').layout.buildDirectory.get().asFile.toPath())) {
+                        nativeKind = 'plugin-under-test-metadata'
+                        file = new File(file, 'plugin-under-test-metadata.properties')
+                    }
+                    if (!file.isFile()) throw new GradleException("Non-file security artifact: ${file.name}")
+                    [component: artifact.id.componentIdentifier.displayName,
+                     identity: describe(artifact.id.componentIdentifier), name: file.name,
+                     nativeKind: nativeKind, nativePath: artifact.file.absolutePath,
+                     file: file.absolutePath, sha256: digest(file)]
+                }.sort { it.name }
+                [project: owner.path, configuration: configuration.name, source: source,
+                 root: resolution.rootComponent.get().id.displayName,
+                 components: components, artifacts: artifacts]
+            }
+            def sharedBuild = allprojects.collectMany { owner ->
+                owner.buildscript.configurations.toList().findAll { it.canBeResolved && it.name == 'classpath' }
+                    .collect { graph(owner, it, 'buildscript') }
+            }
+            def sourceFiles = rootProject.fileTree(rootDir) {
+                include '**/*.gradle', '**/pom.xml', '**/invoker.properties', '**/gradle.properties', '**/prompt-contracts.lock.json', '**/src/**', 'scripts/**', 'gradle/**', 'security/**', '.mvn/**', '.github/**', 'testing/**', '.gitattributes', 'gradlew', 'gradlew.bat'
+                exclude '**/build/**', '**/target/**', '**/.gradle/**', '**/.gradle-user-home/**', '**/.idea/**', '**/__pycache__/**', '**/.git/**'
+            }.files + [rootProject.file('.gitattributes')]
+            // Ant excludes .gitattributes by default, even with an include.
+            def sourceInputs = sourceFiles.findAll { it.isFile() }.unique().sort { it.absolutePath }.collect { file ->
+                [file: rootDir.toPath().relativize(file.toPath()).toString().replace('\\', '/'), sha256: digest(file)]
+            }
+            distributions.each { name ->
+                Project owner = project(":$name")
+                def runtimeNames = name == 'gradle-plugin' ? ['runtimeClasspath', 'isolatedRuntime'] : ['runtimeClasspath']
+                def selected = [
+                    runtime: runtimeNames,
+                    build: ['annotationProcessor'],
+                    test: owner.configurations.names.findAll {
+                        it ==~ /(?i).*(test|validator3|spike).*(classpath|runtime|annotationprocessor)/
+                    },
+                    provided: ['securityProvidedClasspath']]
+                def reports = [:]
+                selected.each { scope, names ->
+                    def resolvedGraphs = names.unique().sort().findAll { owner.configurations.names.contains(it) }
+                        .collect { key -> owner.configurations.named(key).get() }
+                        .findAll { it.canBeResolved }.collect { graph(owner, it, 'configuration') }
+                    reports[scope] = scope == 'build' ? resolvedGraphs + sharedBuild : resolvedGraphs
+                }
+                File artifact = owner.tasks.named('jar', Jar).get().archiveFile.get().asFile
+                def value = [schemaVersion: 1, distribution: name, version: owner.version.toString(),
+                    gradleVersion: gradle.gradleVersion, javaVersion: System.getProperty('java.version'),
+                    sourceInputs: sourceInputs,
+                    candidate: [file: artifact.absolutePath, sha256: digest(artifact)], scopes: reports]
+                File output = layout.buildDirectory.file("security/native/${name}.json").get().asFile
+                output.parentFile.mkdirs()
+                output.setText(JsonOutput.prettyPrint(JsonOutput.toJson(value)), 'UTF-8')
+                logger.lifecycle("Native inventory: $name -> ${output.name}")
+            }
+        }
+    }
+}
