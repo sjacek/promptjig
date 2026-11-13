@@ -1,0 +1,47 @@
+title: Promptjig
+description: Validate prompt contracts, preserve version history and read typed model responses.
+url: https://sjacek.github.io
+baseurl: /promptjig
+repository_url: https://github.com/sjacek/promptjig
+markdown: kramdown
+highlighter: rouge
+# Bundled with the pinned GitHub Pages image; resolves source .md links to permalinks.
+plugins:
+  - jekyll-relative-links
+kramdown:
+  input: GFM
+  syntax_highlighter: rouge
+strict_front_matter: true
+exclude:
+  - README.md
+defaults:
+  - scope:
+      path: ""
+    values:
+      layout: default
+releases:
+  gradle_plugin: 0.1.0
+  runtime: 0.2.0
+  maven_plugin: 0.3.0
+  spring_ai: 2.0.2
+navigation:
+  - title: Overview
+    url: /
+  - title: First contract
+    url: /getting-started/
+  - title: Gradle
+    url: /gradle/
+  - title: Maven (unreleased)
+    url: /maven/
+  - title: Contract reference
+    url: /contracts/
+  - title: Java generation
+    url: /java-generation/
+  - title: Spring AI runtime
+    url: /spring-ai/
+  - title: Version history and CI
+    url: /versioning/
+  - title: Examples
+    url: /examples/
+  - title: Troubleshooting
+    url: /troubleshooting/

@@ -3,6 +3,10 @@
 **/build/
 **/target/
 .idea/
+# Local Jekyll preview state; CI renders the public guide into build/user-docs.
+docs/user-docs/.jekyll-cache/
+docs/user-docs/.jekyll-metadata
+docs/user-docs/_site/
 # CI copies the single reviewed checksum policy into these isolated example builds.
 examples/*/gradle/verification-metadata.xml
 **/__pycache__/

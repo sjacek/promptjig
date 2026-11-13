@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" role="img" aria-labelledby="title desc">
+  <title id="title">PromptJig</title>
+  <desc id="desc">An AI prompt input cursor and four-point spark held by alignment corners on a green panel.</desc>
+  <path fill="#A0EF3B" d="M112 184 200 96H912L824 184Z"/>
+  <path fill="#388E24" d="m824 184 88-88v712l-88 88Z"/>
+  <path fill="#063D26" d="M112 184H824V896H112Z"/>
+  <g fill="none" stroke="#CDFFD8" stroke-width="34" stroke-linejoin="round">
+    <path d="M226 390V314H302M640 786H730V706" stroke-linecap="square"/>
+    <path d="M548 420H328Q290 420 290 458V632Q290 670 328 670H376V736L454 670H634Q672 670 672 632V514"/>
+    <path d="m362 506 70 44-70 44M488 602H540" stroke-width="38" stroke-linecap="square"/>
+  </g>
+  <path fill="#CDFFD8" d="M646 286C660 358 688 386 760 400 688 414 660 442 646 514 632 442 604 414 532 400 604 386 632 358 646 286Z"/>
+</svg>

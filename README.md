@@ -31,6 +31,9 @@
 
 See the [runtime migration notes](docs/spring-ai.md#runtime-migration) when upgrading from the 0.1 development runtime.
 
+Read the [user guide](docs/user-docs/index.md) for setup, contracts, Java generation,
+Spring AI integration and troubleshooting. Its GitHub Pages source is in `docs/user-docs`.
+
 See the [changelog](CHANGELOG.md) for user-visible changes and compatibility notes.
 The next release also prepares a [Maven adapter](docs/maven-plugin.md) with
 validation, append-only locks and Java generation. This adapter is unreleased;

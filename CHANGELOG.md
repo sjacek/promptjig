@@ -7,6 +7,9 @@ Changes under **Unreleased** are not yet published.
 
 ### Added
 
+- Follow a dedicated user guide for installation, contracts, Java generation,
+  Spring AI integration, version history and troubleshooting, with a fictional
+  public-announcement walkthrough.
 - Validate prompt contracts in Maven projects before compilation. Contract and
   template errors appear together in the build log and JSON/text reports.
 - Generate Java 17 records, enums and contract constants during `mvn verify`,

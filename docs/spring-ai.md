@@ -1,19 +1,11 @@
 # Spring AI runtime
 
-The 0.2.0 candidate, `io.github.sjacek.promptjig:promptjig-spring-ai:0.2.0`,
-targets Java 17+ and Spring AI 2.0.x (tested with 2.0.2). It is a library, without a model client,
-Boot auto-configuration, transport, logging or audit persistence. Remote Maven
-publication remains pending. Use the local checkout before publication:
-
-```groovy
-// settings.gradle, explicit local path supplied by the developer
-includeBuild(promptjigCheckout) {
-    dependencySubstitution {
-        substitute module('io.github.sjacek.promptjig:promptjig-core') using project(':core')
-        substitute module('io.github.sjacek.promptjig:promptjig-spring-ai') using project(':spring-ai')
-    }
-}
-```
+`io.github.sjacek.promptjig:promptjig-spring-ai:0.2.0` is available in Maven Central
+and targets Java 17+ and Spring AI 2.0.x (tested with 2.0.2). It is a library,
+without a model client, Boot auto-configuration, transport, logging or audit
+persistence. A local Promptjig checkout is not required. The
+[user guide](user-docs/spring-ai.md) covers installation and the complete
+render/read workflow.
 
 Declare the library through the consumer's `libs.versions.toml`. Apply the
 Gradle plugin separately when generating models. The runtime dependency does
