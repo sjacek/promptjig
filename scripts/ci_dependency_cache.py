@@ -37,6 +37,11 @@ def policy():
     for version, checksum in value['gradleDistributions'].items():
         if not re.fullmatch(r'\d+\.\d+\.\d+', version) or not re.fullmatch(r'[a-f0-9]{64}', checksum):
             raise ValueError('Distributions require an exact version and SHA-256')
+    # Published consumers need a narrow exception to the project-output exclusion. A coordinate
+    # permits a download path only; it never grants trust to the bytes or updates the checksum policy.
+    for coordinate in value.get('publishedModules', []):
+        if not re.fullmatch(r'io\.github\.sjacek\.promptjig:[A-Za-z0-9_.-]+:\d+\.\d+\.\d+', coordinate):
+            raise ValueError('Published project dependencies require explicit release coordinates')
     # There is no Maven adapter yet. Introducing POMs must deliberately extend warmup and verification.
     poms = []
     for folder, directories, files in os.walk(ROOT):
@@ -78,7 +83,7 @@ def safe_name(name):
         for part in parts)
 
 
-def allowed(name):
+def allowed(name, published=()):
     """Allow resolver downloads, never project output, credentials or executable user-home configuration."""
     if not safe_name(name) or name.endswith(('.lock', '.lck', '.part', '.tmp', '.lastUpdated')):
         return False
@@ -91,7 +96,10 @@ def allowed(name):
         if parts[0] == 'files-2.1' and len(parts) == 6:
             _, group, artifact, version, storage_hash, filename = parts
             # Gradle's compact checksum directory can omit leading zeroes; content trust comes from SHA-256 below.
-            return not group.startswith('io.github.sjacek') and bool(re.fullmatch(r'[a-f0-9]{1,40}', storage_hash)) \
+            # Match group, artifact and release together, so allowing runtime 0.2.0 cannot admit
+            # another local module/version or the independently versioned build plugin.
+            reviewed_release = ':'.join((group, artifact, version)) in published
+            return (not group.startswith('io.github.sjacek') or reviewed_release) and bool(re.fullmatch(r'[a-f0-9]{1,40}', storage_hash)) \
                 and filename.startswith(artifact + '-' + version) and filename.endswith(('.jar', '.pom', '.module'))
         return bool(re.fullmatch(r'metadata-2\.\d+', parts[0])) and parts[-1] in {
             'module-artifact.bin', 'module-metadata.bin', 'module-versions.bin',
@@ -127,7 +135,8 @@ def contained(root, target):
 
 
 def pack(cache=CACHE, archive=ARCHIVE):
-    baseline, distributions = checksums(), policy()['gradleDistributions']
+    value = policy()
+    baseline, distributions = checksums(), value['gradleDistributions']
     archive.parent.mkdir(parents=True, exist_ok=True)
     temporary = archive.with_suffix('.tmp')
     count = 0
@@ -135,10 +144,11 @@ def pack(cache=CACHE, archive=ARCHIVE):
         with tarfile.open(temporary, 'w', dereference=True) as output:
             for path in sorted(cache.rglob('*')):
                 name = path.relative_to(cache).as_posix()
-                if not path.is_file() or path.is_symlink() or not allowed(name):
+                if not path.is_file() or path.is_symlink() or not allowed(name, value.get('publishedModules', ())):
                     continue
                 contained(cache, path)
                 # Old compatible caches can contain unused versions: only reviewed external bytes are exported.
+                # This applies to explicitly allowed public Promptjig downloads too.
                 if '/files-2.1/' in name and artifact_identity(name) not in baseline:
                     continue
                 verify_file(name, path, baseline, distributions)
@@ -158,7 +168,8 @@ def restore(cache=CACHE, archive=ARCHIVE, required=False):
             raise ValueError('Required same-run dependency snapshot is missing')
         print('No snapshot; warming a cold cache.', flush=True)
         return
-    baseline, distributions = checksums(), policy()['gradleDistributions']
+    value = policy()
+    baseline, distributions = checksums(), value['gradleDistributions']
     with tarfile.open(archive) as source:
         members = source.getmembers()
         if not members:
@@ -167,7 +178,7 @@ def restore(cache=CACHE, archive=ARCHIVE, required=False):
         total = 0
         for member in members:
             folded = member.name.casefold()
-            if not member.isfile() or not allowed(member.name) or folded in names or not 0 <= member.size <= MAX_FILE:
+            if not member.isfile() or not allowed(member.name, value.get('publishedModules', ())) or folded in names or not 0 <= member.size <= MAX_FILE:
                 raise ValueError('Unsafe dependency snapshot entry: ' + member.name)
             names.add(folded)
             total += member.size

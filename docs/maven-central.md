@@ -1,12 +1,15 @@
 # Maven Central library releases
 
-The candidate is **0.2.0**, read from `versions.promptjig` in
+The published library version is **0.2.0**, read from `versions.promptjig` in
 `gradle/libs.versions.toml`. The two library coordinates are:
 
 - `io.github.sjacek.promptjig:promptjig-core:0.2.0`
 - `io.github.sjacek.promptjig:promptjig-spring-ai:0.2.0`
 
-They have not been published yet. Plugin Portal distribution is independent;
+Both were published on 2026-11-13.
+[The successful release workflow](https://github.com/sjacek/promptjig/actions/runs/43416483800)
+confirmed `PUBLISHED`; public payloads, SHA-256 and GPG signatures were checked.
+Plugin Portal distribution is independent;
 publishing the Gradle plugin does not publish these Maven coordinates. The Maven
 build-tool adapter remains a later stage and is not part of this release bundle.
 

@@ -1,0 +1,86 @@
+{
+  "date": "2026-11-13",
+  "scope": "Local Windows and native Ubuntu WSL verification; not hosted CI",
+  "baseCommit": "a5a15a74412f6c47eed4148f1e9e438570b3e70b",
+  "dependencyOrigins": {
+    "includedBuilds": [],
+    "releases": [
+      {
+        "module": "promptjig-spring-ai",
+        "version": "0.2.0",
+        "sha256": "4ed6f5caf2fc09141c1d3f3f1361494e46782136570542c1f371929e29be9746",
+        "file": "promptjig-spring-ai-0.2.0.jar"
+      },
+      {
+        "module": "promptjig-core",
+        "version": "0.2.0",
+        "sha256": "e26361d732edbfd4a520b61f456d27517c80aa17281da707e40d892e0cf61448",
+        "file": "promptjig-core-0.2.0.jar"
+      }
+    ]
+  },
+  "plugin": {
+    "id": "io.github.sjacek.promptjig",
+    "version": "0.1.0",
+    "repository": "Gradle Plugin Portal"
+  },
+  "librariesRepository": "https://repo.maven.apache.org/maven2/",
+  "unchangedPreviousArtifactChecksums": 321,
+  "newReviewedArtifactChecksums": 10,
+  "sourceSha256LfNormalized": {
+    "examples/runtime/settings.gradle": "966d7bab76f5ac0b1e4f0be10aae9eb7affa9ffba0be836b35c43aaf7ceb879d",
+    "gradle/libs.versions.toml": "9c849d279d9ce8b3b75e19988065a5cc8ef36c53554fbef73ec1e5e52aba0352",
+    "gradle/ci-dependencies.json": "412fee7af4ae0c2ec8687ab0a3d5a17df44c14b176547f378581031c7951ed5e",
+    "gradle/verification-metadata.xml": "0ada41d7331685c4d50ba901c8b03e6823d6b14d35f07d9c40497a49791372a7",
+    "scripts/ci_dependency_cache.py": "3163b9f699b69d93ac345a95f45e9989380e31d8954111b8276f816e48635074",
+    "scripts/test_ci_dependency_cache.py": "b4a43df9d496b038326ea2058d11474cc09f60308520c0185d1b208edc9b5d00"
+  },
+  "smallPilot": {
+    "windowsJdk25": {
+      "tests": 78,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    "ubuntuWslJdk17": {
+      "tests": 78,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    "tasks": [
+      "check",
+      "installDist"
+    ],
+    "strictDependencyVerification": true,
+    "configurationCacheProblems": "fail",
+    "linuxIsolation": "Only the example, version catalog and wrapper were copied; no producer sources or root build were present",
+    "linuxOfflineAfterSnapshotRestore": true,
+    "packagedSyntheticDemo": "passed on Windows and Ubuntu WSL",
+    "realModelCalled": false
+  },
+  "cache": {
+    "warmup": "passed: producer, TestKit Gradle 9.0.0/9.1.0/9.9.1 and all three examples",
+    "warmupProducerJdk": 25,
+    "warmupTestKitJdk": 21,
+    "snapshotDownloadedFiles": 400,
+    "linuxSecurityTests": {
+      "tests": 21,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    "windowsSecurityTests": {
+      "tests": 21,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 1,
+      "skipReason": "Physical symlink test skipped on Windows by test policy; exercised on Linux"
+    }
+  },
+  "workflowValidation": "actionlint 1.7.12 passed; 31 existing workflow tests were UP-TO-DATE",
+  "limitations": [
+    "Hosted CI artifact transfer and the complete Gradle/JDK matrix require a user commit and push",
+    "Synthetic responses verify integration; model accuracy was not remeasured"
+  ]
+}

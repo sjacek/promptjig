@@ -141,6 +141,13 @@ tasks.named('test') {
     systemProperty 'promptjig.pluginArtifact', tasks.named('jar').flatMap { it.archiveFile }.get().asFile.absolutePath
 }
 
+// Execute the authored runtime settings in minimal consumers. Keep the real catalog/settings as
+// resource inputs, so changing either invalidates the regression tests without copying the whole pilot.
+tasks.named('processTestResources', ProcessResources) {
+    from(rootProject.file('examples/runtime/settings.gradle')) { into 'runtime-settings' }
+    from(rootProject.file('gradle/libs.versions.toml')) { into 'runtime-settings/gradle' }
+}
+
 // Compile the standalone helper, then resolve only synthetic fixture dependencies with each consumer distribution.
 // This task never schedules Test tasks or executes the functional fixtures' check/verification hooks.
 tasks.register('warmTestKitCache', JavaExec) {

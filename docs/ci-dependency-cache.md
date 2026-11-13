@@ -195,3 +195,33 @@ These are local results, recorded in
 The original [hosted run](https://github.com/sjacek/promptjig/actions/runs/43321358718)
 failed before the fix. A new hosted run after the owner's commit/push must still
 confirm artifact transfer, all required jobs and subsequent cross-run cache reuse.
+
+## Published Promptjig consumers
+
+The standalone runtime pilot resolves core/Spring AI 0.2.0 from Maven Central
+and the independent Gradle plugin 0.1.0 from Plugin Portal. Warmup resolves those
+external releases too. `publishedModules` in `gradle/ci-dependencies.json` is an
+exact coordinate allowlist for downloaded Promptjig release files; each file
+still requires its reviewed SHA-256 from `verification-metadata.xml`. Project
+outputs, snapshots and other locally built Promptjig artifacts remain excluded.
+Changing the catalog, checksum policy or allowlist invalidates the cache key.
+
+Regression tests exercise JAR/POM/module payloads in both Gradle and TestKit
+homes. They reject forged payloads before changing any live files, exclude
+unreviewed classifiers and other project versions, and require exact release
+coordinates. Warmup tests also require the runtime example to resolve without
+source substitution and propagate a failed resolution before subsequent work.
+
+`RuntimePilotSettingsTest` executes the authored example settings and catalog in
+minimal offline TestKit consumers, without injecting the producer plugin. It
+guards the default source-free mode and explicit substitution of all three
+modules, including configuration-cache reuse. These settings tests run in the
+existing Gradle/JDK consumer matrix; the full runtime pilot separately verifies
+the actual public library binaries and application behavior.
+
+The [published-consumer verification](evidence/published-runtime-consumer-2026-11-13.json)
+records a complete warmup and a 400-file snapshot. An isolated Java 17 consumer
+passed all 78 tests offline after restoring it, without producer sources. All
+21 cache tests passed on Linux, including rejection of locally rebuilt bytes
+under an allowlisted release coordinate. The 321 existing artifact checksums
+were retained; ten reviewed public-release artifacts were added explicitly.

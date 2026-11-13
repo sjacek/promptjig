@@ -53,6 +53,22 @@ class DependencyCacheTest(unittest.TestCase):
             entry.linkname = linkname
             output.addfile(entry, io.BytesIO())
 
+    def published_release(self):
+        """Pin synthetic public payloads in both homes; no real release files or network are needed."""
+        coordinate = 'io.github.sjacek.promptjig:promptjig-core:0.2.0'
+        value = json.loads(cache.POLICY.read_text())
+        value['publishedModules'] = [coordinate]
+        cache.POLICY.write_text(json.dumps(value))
+        payloads = {f'promptjig-core-0.2.0.{extension}': f'reviewed {extension}'.encode()
+                    for extension in ('jar', 'pom', 'module')}
+        artifacts = ''.join(f'<artifact name="{name}"><sha256 value="{hashlib.sha256(content).hexdigest()}"/></artifact>'
+                            for name, content in payloads.items())
+        component = ('<component group="io.github.sjacek.promptjig" name="promptjig-core" version="0.2.0">'
+                     + artifacts + '</component>')
+        cache.METADATA.write_text(cache.METADATA.read_text().replace('</components>', component + '</components>'))
+        return {prefix + 'files-2.1/io.github.sjacek.promptjig/promptjig-core/0.2.0/' + '1' * 40 + '/' + name: content
+                for prefix in cache.MODULES for name, content in payloads.items()}
+
     def test_missing_snapshot_is_cold_only_when_not_required(self):
         cache.restore(self.downloads, self.archive)
         self.assertFalse(self.downloads.exists())
@@ -92,6 +108,92 @@ class DependencyCacheTest(unittest.TestCase):
         restored = self.root / 'restored'
         cache.restore(restored, self.archive, required=True)
         self.assertEqual(2, len([path for path in restored.rglob('*.jar') if path.is_file()]))
+
+    def test_published_project_downloads_require_both_explicit_release_and_reviewed_checksum(self):
+        coordinate = 'io.github.sjacek.promptjig:promptjig-core:0.2.0'
+        name = self.FILE.replace('org.example/library/1.0', 'io.github.sjacek.promptjig/promptjig-core/0.2.0')
+        name = name.replace('library-1.0.jar', 'promptjig-core-0.2.0.jar')
+        self.assertFalse(cache.allowed(name))
+        self.assertTrue(cache.allowed(name, [coordinate]))
+        self.assertFalse(cache.allowed(name.replace('0.2.0', '0.3.0-SNAPSHOT'), [coordinate]))
+        value = json.loads(cache.POLICY.read_text())
+        value['publishedModules'] = [coordinate]
+        cache.POLICY.write_text(json.dumps(value))
+        metadata = cache.METADATA.read_text().replace('group="org.example" name="library" version="1.0"',
+                'group="io.github.sjacek.promptjig" name="promptjig-core" version="0.2.0"')
+        cache.METADATA.write_text(metadata.replace('library-1.0.jar', 'promptjig-core-0.2.0.jar'))
+        self.write(name)
+        cache.pack(self.downloads, self.archive)
+        restored = self.root / 'restored'
+        cache.restore(restored, self.archive, required=True)
+        self.assertEqual(self.CONTENT, (restored / name).read_bytes())
+        self.write(name, b'locally rebuilt output')
+        with self.assertRaisesRegex(ValueError, 'checksum'):
+            cache.pack(self.downloads, self.archive)
+
+    def test_published_payloads_round_trip_in_both_gradle_and_testkit_homes(self):
+        payloads = self.published_release()
+        for name, content in payloads.items():
+            self.write(name, content)
+        cache.pack(self.downloads, self.archive)
+        restored = self.root / 'restored'
+        cache.restore(restored, self.archive, required=True)
+        self.assertEqual(payloads, {path.relative_to(restored).as_posix(): path.read_bytes()
+                                    for path in restored.rglob('*') if path.is_file()})
+
+    def test_forged_published_payloads_cannot_partially_replace_a_live_cache(self):
+        for forged_name in self.published_release():
+            with self.subTest(payload=forged_name):
+                # A valid first member must not be installed before a later forged payload is checked.
+                restored = self.root / 'live'
+                existing = restored / self.FILE
+                existing.parent.mkdir(parents=True, exist_ok=True)
+                existing.write_bytes(b'previous cache contents')
+                with tarfile.open(self.archive, 'w') as output:
+                    for name, content in [(self.FILE, self.CONTENT), (forged_name, b'locally rebuilt payload')]:
+                        entry = tarfile.TarInfo(name)
+                        entry.size = len(content)
+                        output.addfile(entry, io.BytesIO(content))
+                with self.assertRaisesRegex(ValueError, 'checksum'):
+                    cache.restore(restored, self.archive, required=True)
+                self.assertEqual([existing], [path for path in restored.rglob('*') if path.is_file()])
+                self.assertEqual(b'previous cache contents', existing.read_bytes())
+
+    def test_published_path_exception_does_not_admit_other_modules_versions_or_outputs(self):
+        payloads = self.published_release()
+        published = cache.policy()['publishedModules']
+        for name in payloads:
+            for excluded in [name.replace('0.2.0', '0.2.1'), name.replace('0.2.0', '0.2.0-SNAPSHOT'),
+                             name.replace('promptjig-core', 'promptjig-gradle-plugin'),
+                             name.replace('io.github.sjacek.promptjig', 'io.github.sjacek.other'),
+                             name + '.asc', name + '.tmp', 'project/build/libs/promptjig-core-0.2.0.jar']:
+                with self.subTest(path=excluded):
+                    self.assertFalse(cache.allowed(excluded, published))
+
+    def test_release_allowlist_cannot_export_payloads_missing_from_the_reviewed_policy(self):
+        payloads = self.published_release()
+        name = next(iter(payloads))
+        # The allowlist admits this classifier-shaped path, but the policy contains no hash for its bytes.
+        name = name.replace('.jar', '-local.jar')
+        self.write(name, b'local output with an allowed release coordinate')
+        self.write(self.FILE)
+        cache.pack(self.downloads, self.archive)
+        with tarfile.open(self.archive) as snapshot:
+            self.assertEqual([self.FILE], snapshot.getnames())
+
+    def test_published_policy_requires_exact_project_release_coordinates(self):
+        value = json.loads(cache.POLICY.read_text())
+        for coordinate in ['io.github.sjacek.promptjig:*:0.2.0', 'io.github.sjacek.promptjig:promptjig-core:0.2.+',
+                           'io.github.sjacek.promptjig:promptjig-core:0.2.0-SNAPSHOT',
+                           'io.github.sjacek.promptjig:promptjig-core:[0.1,0.3)',
+                           'io.github.sjacek.other:promptjig-core:0.2.0',
+                           'io.github.sjacek.promptjig:../outside:0.2.0',
+                           'io.github.sjacek.promptjig:promptjig-core:0.2.0:classifier']:
+            with self.subTest(coordinate=coordinate):
+                value['publishedModules'] = [coordinate]
+                cache.POLICY.write_text(json.dumps(value))
+                with self.assertRaisesRegex(ValueError, 'explicit release coordinates'):
+                    cache.policy()
 
     def test_unsafe_paths_are_rejected_before_any_live_write(self):
         for name in ['../outside', '/outside', 'C:/outside', 'gradle/../outside', self.FILE + '/../outside',
@@ -283,6 +385,36 @@ class DependencyCacheTest(unittest.TestCase):
         self.assertTrue(all(call.kwargs['check'] for call in run.call_args_list))
         self.assertFalse(any(token in ('test', 'check', 'verify', 'integration-test', 'run')
                              for command in calls for token in command))
+
+    def test_runtime_example_warmup_does_not_enable_source_substitution(self):
+        value = json.loads(cache.POLICY.read_text())
+        value['examples'] = ['examples/runtime']
+        cache.POLICY.write_text(json.dumps(value))
+        with patch.object(cache, 'prepare'), patch.object(cache, 'distributions'), \
+                patch.dict(os.environ, {'WARMUP_JAVA_HOME': 'synthetic-jdk-21'}), \
+                patch.object(cache.subprocess, 'run') as run:
+            cache.warm()
+        example_calls = [call for call in run.call_args_list if '-p' in call.args[0]]
+        self.assertEqual(1, len(example_calls))
+        command = example_calls[0].args[0]
+        self.assertEqual('examples/runtime', command[command.index('-p') + 1])
+        self.assertIn('ciResolveDependencies', command)
+        self.assertIn('--dependency-verification=strict', command)
+        self.assertTrue(example_calls[0].kwargs['check'])
+        self.assertFalse(any('promptjigBuildDir' in token for token in command))
+        self.assertFalse(any(token in ('test', 'check', 'run') for token in command))
+
+    def test_resolution_failure_stops_warmup_before_testkit_and_example_execution(self):
+        failure = cache.subprocess.CalledProcessError(1, 'ciResolveDependencies')
+        with patch.object(cache, 'prepare'), patch.object(cache, 'distributions'), \
+                patch.dict(os.environ, {'WARMUP_JAVA_HOME': 'synthetic-jdk-21'}), \
+                patch.object(cache.subprocess, 'run', side_effect=failure) as run:
+            with self.assertRaises(cache.subprocess.CalledProcessError):
+                cache.warm()
+        # CI must see the failure; later steps must not publish an incomplete yet apparently usable snapshot.
+        self.assertEqual(1, run.call_count)
+        self.assertIn('ciResolveDependencies', run.call_args.args[0])
+        self.assertFalse(self.archive.exists())
 
 
 if __name__ == '__main__':

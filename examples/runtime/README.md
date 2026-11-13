@@ -29,8 +29,8 @@ tests. Its scope and adoption steps are recorded in the service repository's
 
 Next, expand the reviewed public fixture set and compare model settings with
 reproducible reports. Keep inference explicit and required CI deterministic.
-After core/runtime publication, verify both pilots against released libraries;
-default service adoption remains a separate reviewed change.
+Both pilots now consume the released core/runtime libraries from Maven Central;
+default service runtime adoption remains a separate reviewed change.
 
 ## Run the small example
 
@@ -42,10 +42,20 @@ From the **Promptjig repository root**:
 
 On Linux/macOS, use `./gradlew` with the same arguments. The wrapper requires a
 supported JDK 17+ and initially downloads Gradle/dependencies as needed. The
-plugin, core and runtime are taken from this checkout, since the runtime library
-has not yet been published. Select another checkout with
-`-PpromptjigBuildDir=<path-relative-to-examples/runtime>`. Dependency versions
-come from that checkout's `gradle/libs.versions.toml`.
+build plugin resolves version 0.1.0 from Plugin Portal; core and Spring AI runtime
+resolve version 0.2.0 from Maven Central. No Promptjig source build is included.
+Versions are pinned in the repository's `gradle/libs.versions.toml`.
+For explicit library development only, supply
+`-PpromptjigBuildDir=<path-relative-to-examples/runtime>` to substitute all three
+modules together. This override is not used by the normal pilot or its CI.
+
+Local verification on 13 November 2026 passed all 78 tests on Windows/JDK 25
+and Ubuntu WSL/JDK 17. The Linux run used an isolated copy containing only this
+example, its catalog and wrapper, with offline dependencies restored from the
+verified CI snapshot. Both packaged synthetic demos passed. The
+[verification record](../../docs/evidence/published-runtime-consumer-2026-11-13.json)
+includes public JAR hashes and confirms that no source build was included.
+These are local checks; the changed configuration still needs a hosted CI run.
 
 Expected output includes:
 

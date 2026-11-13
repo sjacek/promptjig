@@ -9,9 +9,8 @@ generated types with safe validation findings.
 
 Gradle plugin **0.1.0** is available in the
 [Gradle Plugin Portal](https://plugins.gradle.org/plugin/io.github.sjacek.promptjig/0.1.0).
-Standalone core/Spring AI runtime publication and the changes under **Unreleased**
-remain separate from that plugin release.
-The current development candidate is **0.2.0**. Its runtime rejects schema
+The core and Spring AI runtime libraries **0.2.0** are available in Maven Central,
+independently of the build plugin release. The runtime rejects schema
 violations by default; repairing responses requires `output.strict: false`.
 See the [runtime migration notes](docs/spring-ai.md#upgrade-from-the-01-development-runtime).
 The core targets Java 17; the plugin supports Gradle 9.0+ on a supported JDK 17+.

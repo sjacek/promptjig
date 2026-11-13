@@ -3,7 +3,18 @@
 Changes to Promptjig's features, compatibility and availability.
 Changes under **Unreleased** are not yet published.
 
-## Unreleased (0.2.0)
+## Unreleased
+
+### Changed
+
+- Run the standalone Spring AI pilot with core/runtime 0.2.0 from Maven Central,
+  without building Promptjig from source. The build plugin uses its independent
+  Portal release 0.1.0.
+
+## 0.2.0 — 2026-11-13
+
+The core and Spring AI runtime libraries are available in Maven Central.
+The Gradle plugin remains available as version 0.1.0 in Plugin Portal.
 
 ### Changed
 
@@ -24,7 +35,7 @@ Changes under **Unreleased** are not yet published.
 - Prepare signed core and Spring AI library packages for Maven Central, including
   sources and Javadocs. The manual release workflow checks the tested release
   commit and can resume an accepted deployment without uploading it again.
-  Public availability will be confirmed after the first library release.
+  Both libraries are publicly available as version 0.2.0.
 - Find out which response fields were rejected or repaired without including
   extracted values or unexpected field names in validation findings. Contract
   versions, fingerprints and sensitivity labels are available for your

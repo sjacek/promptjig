@@ -1,5 +1,6 @@
 [versions]
 promptjig = "0.2.0"
+promptjigPlugin = "0.1.0"
 jackson = "2.22.4"
 jackson3 = "3.1.8"
 json-schema-validator = "2.0.8"
@@ -33,5 +34,5 @@ spring-ai-template-st = { module = "org.springframework.ai:spring-ai-template-st
 promptjig-runtime = { module = "io.github.sjacek.promptjig:promptjig-spring-ai", version.ref = "promptjig" }
 
 [plugins]
-promptjig = { id = "io.github.sjacek.promptjig", version.ref = "promptjig" }
+promptjig = { id = "io.github.sjacek.promptjig", version.ref = "promptjigPlugin" }
 plugin-publish = { id = "com.gradle.plugin-publish", version.ref = "plugin-publish" }

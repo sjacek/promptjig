@@ -5,14 +5,16 @@ Published Gradle plugin: **0.1.0** in the
 availability confirmed on 2026-11-12. That version is immutable; further releases
 need a new build version, reviewed commit and release tag.
 Verification and local staging do not upload artifacts.
-The current candidate is **0.2.0**, including the change to strict response
-reading by default. Set the shared publication/runtime version in
-`gradle/libs.versions.toml` (`versions.promptjig`); the root build reads it for
-all project publications. This candidate has not been published.
+The core and Spring AI runtime libraries **0.2.0** were published to Maven Central
+on 2026-11-13, including strict response reading by default. Set the shared
+publication/runtime version in `gradle/libs.versions.toml` (`versions.promptjig`);
+the root build reads it for
+all project publications. Gradle Plugin Portal publication remains independent.
 Commits, tags and pushes are performed by the owner; Codex does not commit or push.
 
-Latest local results and remaining release prerequisites:
-[publication readiness](publication-readiness.md).
+Historical plugin-release checks: [publication readiness](publication-readiness.md).
+Current local checks of the public libraries:
+[published runtime consumer](evidence/published-runtime-consumer-2026-11-13.json).
 
 ## Verify the candidate
 
@@ -96,9 +98,9 @@ This stages `promptjig-core` and `promptjig-spring-ai` under their respective
 The separate manual **Publish runtime libraries** workflow prepares signed
 packages and uploads them through the Central Publisher API. It is described in
 [Maven Central releases](maven-central.md), including required environment secrets,
-local verification, release guards and status-only recovery. These libraries have
-not yet been published. Plugin Portal publishes the build plugin separately; it
-does not make the runtime coordinates available.
+local verification, release guards and status-only recovery. Both libraries are
+publicly available as 0.2.0. Plugin Portal publishes the build plugin separately;
+it does not make the runtime coordinates available.
 
 ## Publish the reviewed tag
 
@@ -119,18 +121,14 @@ its own build rerun does not replace that eight-cell acceptance requirement.
 
 ## Service adoption
 
-The `tichodroma-svc` runtime pilot uses an explicit `promptjigBuildDir` checkout
-and has its own mandatory `test:promptjig-pilot` CI job. Audit version/schema and
-validation evidence were verified by the service pilot; the
-[pipeline for commit 43324ce7](https://gitlab.com/tichodroma/tichodroma-svc/-/pipelines/3058477157)
-passed. Production activation remains a separate reviewed change.
+The `tichodroma-svc` runtime pilot uses the explicit `-PpromptjigPilot=true`
+opt-in and its mandatory `test:promptjig-pilot` CI job. Both that pilot and the
+[standalone public-announcement example](../examples/runtime/README.md) resolve
+`promptjig-core` and `promptjig-spring-ai` 0.2.0 from Maven Central. The build
+plugin remains independently pinned to the published Portal version 0.1.0.
 
-The [standalone public-announcement pilot](../examples/runtime/README.md) provides
-a smaller Spring AI consumer. Both runtime pilots still use source substitutions
-because Portal publication supplies the Gradle plugin rather than the separate
-`promptjig-core` and `promptjig-spring-ai` Maven artifacts.
-
-After independent pilot acceptance and verified artifact availability, a separate
-reviewed change can replace preview wiring with catalog-backed published
-dependencies/plugin, enable a target-branch lock baseline in service CI and
-activate the integration. Publication alone must not activate service consumption.
+No source checkout is required in either normal pilot or pilot CI.
+`promptjigBuildDir` remains an explicit development override, substituting plugin,
+core and runtime together. Library publication does not activate production
+runtime in the service. Build-time validation/generation and runtime adoption
+remain separate decisions.

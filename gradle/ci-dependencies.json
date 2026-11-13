@@ -6,5 +6,11 @@
     "9.9.1": "d8a18a7a841dd5df825d35a685fad6f2d7f12ac0c280e57b67c27b4a520ba228"
   },
   "examples": ["examples/gradle", "examples/generation", "examples/runtime"],
+  "publishedModules": [
+    "io.github.sjacek.promptjig:io.github.sjacek.promptjig.gradle.plugin:0.1.0",
+    "io.github.sjacek.promptjig:promptjig-gradle-plugin:0.1.0",
+    "io.github.sjacek.promptjig:promptjig-core:0.2.0",
+    "io.github.sjacek.promptjig:promptjig-spring-ai:0.2.0"
+  ],
   "mavenProjects": []
 }

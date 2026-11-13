@@ -1,26 +1,32 @@
 pluginManagement {
     repositories { gradlePluginPortal() }
-    // Resolve the implementation module through the composite substitutions below, including unreleased versions.
-    // A marker lookup alone could silently use the Portal's old plugin alongside a newer local runtime.
-    resolutionStrategy {
-        eachPlugin {
-            if (requested.id.id == 'io.github.sjacek.promptjig')
-                useModule("io.github.sjacek.promptjig:promptjig-gradle-plugin:${requested.version}")
+    // Source substitution is an explicit development option. Normal runs use the published plugin marker.
+    // In preview mode, address the implementation module so one composite supplies plugin and libraries.
+    if (providers.gradleProperty('promptjigBuildDir').isPresent()) {
+        resolutionStrategy {
+            eachPlugin {
+                if (requested.id.id == 'io.github.sjacek.promptjig')
+                    useModule("io.github.sjacek.promptjig:promptjig-gradle-plugin:${requested.version}")
+            }
         }
     }
 }
 
-// One included build supplies both the plugin and runtime; registering it twice can discard substitutions.
-def checkout = file(providers.gradleProperty('promptjigBuildDir').getOrElse('../..'))
 dependencyResolutionManagement {
     repositories { mavenCentral() }
-    versionCatalogs { libs { from(files(new File(checkout, 'gradle/libs.versions.toml'))) } }
+    // Sharing version pins does not include or build the producer. Plugin and runtime releases are independent.
+    versionCatalogs { libs { from(files('../../gradle/libs.versions.toml')) } }
 }
-includeBuild(checkout) {
-    dependencySubstitution {
-        substitute module('io.github.sjacek.promptjig:promptjig-gradle-plugin') using project(':gradle-plugin')
-        substitute module('io.github.sjacek.promptjig:promptjig-core') using project(':core')
-        substitute module('io.github.sjacek.promptjig:promptjig-spring-ai') using project(':spring-ai')
+// Preview deliberately substitutes all three boundaries; the default has no included build.
+// Never infer a checkout from this example's location: it must also run without producer sources.
+def preview = providers.gradleProperty('promptjigBuildDir')
+if (preview.isPresent()) {
+    includeBuild(file(preview.get())) {
+        dependencySubstitution {
+            substitute module('io.github.sjacek.promptjig:promptjig-gradle-plugin') using project(':gradle-plugin')
+            substitute module('io.github.sjacek.promptjig:promptjig-core') using project(':core')
+            substitute module('io.github.sjacek.promptjig:promptjig-spring-ai') using project(':spring-ai')
+        }
     }
 }
 rootProject.name = 'promptjig-runtime-pilot'
