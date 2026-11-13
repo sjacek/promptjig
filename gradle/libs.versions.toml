@@ -1,6 +1,25 @@
 [versions]
-promptjig = "0.2.0"
+promptjig = "0.3.0"
+promptjigRuntime = "0.2.0"
 promptjigPlugin = "0.1.0"
+mavenApi = "3.9.16"
+mavenPluginTools = "3.16.0"
+mavenPluginDevelopment = "1.0.3"
+# These pins are consumed by scripts/maven_integration.py and the rendered Invoker POM.
+# noinspection UnusedVersionCatalogEntry
+mavenCompiler = "3.16.0"
+# noinspection UnusedVersionCatalogEntry
+mavenResources = "3.5.0"
+# noinspection UnusedVersionCatalogEntry
+mavenJar = "3.5.1"
+# noinspection UnusedVersionCatalogEntry
+mavenSurefire = "3.6.1"
+# noinspection UnusedVersionCatalogEntry
+mavenInvoker = "3.10.1"
+# noinspection UnusedVersionCatalogEntry
+mavenDependency = "3.11.0"
+# noinspection UnusedVersionCatalogEntry
+mavenGroovy = "4.0.33"
 jackson = "2.22.4"
 jackson3 = "3.1.8"
 json-schema-validator = "2.0.8"
@@ -31,8 +50,18 @@ spring-ai-model = { module = "org.springframework.ai:spring-ai-model", version.r
 spring-ai-client-chat = { module = "org.springframework.ai:spring-ai-client-chat", version.ref = "spring-ai" }
 spring-ai-openai = { module = "org.springframework.ai:spring-ai-openai", version.ref = "spring-ai" }
 spring-ai-template-st = { module = "org.springframework.ai:spring-ai-template-st", version.ref = "spring-ai" }
-promptjig-runtime = { module = "io.github.sjacek.promptjig:promptjig-spring-ai", version.ref = "promptjig" }
+promptjig-runtime = { module = "io.github.sjacek.promptjig:promptjig-spring-ai", version.ref = "promptjigRuntime" }
+# Used in maven-plugin/build.gradle; IDE inspection can miss that module's Groovy accessors.
+# noinspection UnusedVersionCatalogEntry
+maven-plugin-api = { module = "org.apache.maven:maven-plugin-api", version.ref = "mavenApi" }
+# noinspection UnusedVersionCatalogEntry
+maven-core = { module = "org.apache.maven:maven-core", version.ref = "mavenApi" }
+# noinspection UnusedVersionCatalogEntry
+maven-plugin-annotations = { module = "org.apache.maven.plugin-tools:maven-plugin-annotations", version.ref = "mavenPluginTools" }
 
 [plugins]
 promptjig = { id = "io.github.sjacek.promptjig", version.ref = "promptjigPlugin" }
 plugin-publish = { id = "com.gradle.plugin-publish", version.ref = "plugin-publish" }
+# Applied in maven-plugin/build.gradle through libs.plugins.maven.plugin.development.
+# noinspection UnusedVersionCatalogEntry
+maven-plugin-development = { id = "org.gradlex.maven-plugin-development", version.ref = "mavenPluginDevelopment" }

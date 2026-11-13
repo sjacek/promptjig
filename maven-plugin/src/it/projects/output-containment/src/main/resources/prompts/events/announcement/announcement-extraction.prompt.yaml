@@ -1,0 +1,32 @@
+promptContract: 1
+id: events.announcement-extraction
+version: 1
+description: Extract a fictional public event announcement; no personal or medical records.
+sensitivity: [PUBLIC]
+messages:
+  - role: system
+    template: system.st
+  - role: user
+    template: user.st
+input:
+  schema:
+    type: object
+    additionalProperties: false
+    required: [documentText]
+    properties:
+      documentText: {type: string}
+output:
+  format: json
+  strict: false
+  schema:
+    type: object
+    additionalProperties: false
+    required: [title, date, location, format, free]
+    properties:
+      title: {type: [string, 'null']}
+      date: {type: [string, 'null'], format: date}
+      location: {type: [string, 'null']}
+      format:
+        type: [string, 'null']
+        enum: [IN_PERSON, ONLINE, HYBRID, null]
+      free: {type: [boolean, 'null']}

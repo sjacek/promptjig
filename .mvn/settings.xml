@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Isolated CI/test invocations never load a developer's mirrors, servers or publishing credentials. -->
+<settings xmlns="http://maven.apache.org/SETTINGS/1.2.0">
+  <interactiveMode>false</interactiveMode>
+  <!-- Keep Maven's default HTTP protection when replacing its global settings. -->
+  <mirrors>
+    <mirror>
+      <id>maven-default-http-blocker</id>
+      <mirrorOf>external:http:*</mirrorOf>
+      <url>http://0.0.0.0/</url>
+      <blocked>true</blocked>
+    </mirror>
+  </mirrors>
+</settings>

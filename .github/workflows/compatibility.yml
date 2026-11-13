@@ -48,7 +48,7 @@ jobs:
         # noinspection UndefinedParamsPresent
         with:
           path: build/ci-dependencies.tar
-          key: dependencies-v1-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('**/*.gradle', '**/pom.xml', '**/libs.versions.toml', '**/gradle.properties', '**/gradle-wrapper.properties', '**/gradle-wrapper.jar', 'gradle/verification-metadata.xml', 'gradle/ci-dependencies.json', '.mvn/**', 'security/**', 'scripts/ci_dependency*', 'scripts/maven_verification.py', 'gradle-plugin/src/test/**/*.java', '.github/actions/**', '.github/workflows/compatibility.yml') }}
+          key: dependencies-v1-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('**/*.gradle', '**/pom.xml', '**/libs.versions.toml', '**/gradle.properties', '**/gradle-wrapper.properties', '**/gradle-wrapper.jar', 'gradle/verification-metadata.xml', 'gradle/ci-dependencies.json', '.mvn/**', 'security/**', 'scripts/ci_dependency*', 'scripts/maven_*.py', 'gradle-plugin/src/test/**/*.java', 'maven-plugin/src/it/**', 'examples/maven/**', '.github/actions/**', '.github/workflows/compatibility.yml') }}
           restore-keys: dependencies-v1-${{ runner.os }}-${{ runner.arch }}-
       - name: Restore downloads and verify the reviewed policy
         run: python3 -B scripts/ci_dependency_cache.py restore
@@ -145,9 +145,9 @@ jobs:
           cache-disabled: true
       # Portal validation requires publishing keys even with --validate-only; regular CI must work without secrets.
       - run: ./gradlew check assemble :core:spike --console=plain
-      - name: Verify Maven Central library payloads without signing or upload
+      - name: Verify Maven Central payloads without signing or upload
         run: |
-          ./gradlew :core:publishAllPublicationsToStagingRepository :spring-ai:publishAllPublicationsToStagingRepository --dependency-verification=strict --console=plain
+          ./gradlew :core:publishAllPublicationsToStagingRepository :spring-ai:publishAllPublicationsToStagingRepository :maven-plugin:publishAllPublicationsToStagingRepository --dependency-verification=strict --console=plain
           python3 -B scripts/central_publication.py verify-staging
           python3 -B -m unittest discover -s scripts -p 'test_central_publication.py' -v
       - name: Verify real Gradle signatures using a disposable test key
@@ -224,6 +224,57 @@ jobs:
           path: |
             examples/runtime/build/reports/
             examples/runtime/build/test-results/
+
+  maven:
+    needs: warm-cache
+    if: ${{ !cancelled() }}
+    name: Maven ${{ matrix.maven }} / JDK ${{ matrix.java }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    strategy:
+      fail-fast: false
+      matrix:
+        maven: ['3.9.16', '4.0.0-rc-7']
+        java: ['17', '21', '25']
+    steps:
+      - name: Require successful dependency preparation
+        env:
+          DEPENDENCIES_RESULT: ${{ needs.warm-cache.result }}
+        run: test "$DEPENDENCIES_RESULT" = success || { echo '::error::Dependency preparation failed; tests must not be skipped.'; exit 1; }
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+        # noinspection UndefinedParamsPresent
+        with:
+          persist-credentials: false
+      - uses: ./.github/actions/restore-dependencies
+      - run: chmod +x gradlew
+      - uses: actions/setup-java@b843ebf9b913146b38da2eaa7aeddf76074ae1ad # v6
+        # noinspection UndefinedParamsPresent
+        with:
+          distribution: temurin
+          java-version: ${{ matrix.java }}
+      - name: Preserve Maven consumer JDK
+        run: echo "CONSUMER_JAVA_HOME=$JAVA_HOME" >> "$GITHUB_ENV"
+      - uses: actions/setup-java@b843ebf9b913146b38da2eaa7aeddf76074ae1ad # v6
+        # noinspection UndefinedParamsPresent
+        with:
+          distribution: temurin
+          java-version: '25'
+      - uses: gradle/actions/setup-gradle@8da46b539cd8fe6ab27ca75128919a18d757604c # v6
+        # noinspection UndefinedParamsPresent
+        with:
+          cache-disabled: true
+      # Own candidates are built per job, never recovered from the dependency snapshot.
+      - name: Stage the current Java 17 core and Maven adapter
+        run: ./gradlew :core:publishAllPublicationsToStagingRepository :maven-plugin:publishAllPublicationsToStagingRepository --offline --dependency-verification=strict --configuration-cache --configuration-cache-problems=fail --console=plain
+      - name: Run real Maven Invoker projects and the standalone example offline
+        run: python3 -B scripts/maven_integration.py verify --maven-version '${{ matrix.maven }}' --java-home "$CONSUMER_JAVA_HOME"
+      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7
+        if: always()
+        # noinspection UndefinedParamsPresent
+        with:
+          name: maven-${{ matrix.maven }}-jdk-${{ matrix.java }}
+          path: maven-plugin/build/reports/maven/
+          if-no-files-found: error
 
   consumer:
     needs: warm-cache

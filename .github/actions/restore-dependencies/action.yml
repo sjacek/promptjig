@@ -1,5 +1,5 @@
 name: Restore verified dependency snapshot
-description: Restore only downloads from this run and recreate verified Gradle installations.
+description: Restore only downloads from this run and recreate verified Gradle and Maven installations.
 runs:
   using: composite
   # Inputs match the pinned action metadata; the IDE does not always resolve SHA references.

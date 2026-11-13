@@ -1,6 +1,7 @@
 .gradle/
 .gradle-user-home/
 **/build/
+**/target/
 .idea/
 # CI copies the single reviewed checksum policy into these isolated example builds.
 examples/*/gradle/verification-metadata.xml

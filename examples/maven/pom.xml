@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>example</groupId><artifactId>public-announcement-testdata</artifactId><version>1.0</version>
+  <properties>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <maven.compiler.release>17</maven.compiler.release>
+    <promptjig.version>0.3.0</promptjig.version>
+  </properties>
+  <dependencyManagement><dependencies>
+    <dependency><groupId>org.junit</groupId><artifactId>junit-bom</artifactId><version>5.14.4</version><type>pom</type><scope>import</scope></dependency>
+  </dependencies></dependencyManagement>
+  <dependencies>
+    <dependency><groupId>tools.jackson.core</groupId><artifactId>jackson-databind</artifactId><version>3.1.8</version></dependency>
+    <dependency><groupId>org.junit.jupiter</groupId><artifactId>junit-jupiter</artifactId><version>5.14.4</version><scope>test</scope></dependency>
+    <dependency><groupId>org.junit.platform</groupId><artifactId>junit-platform-launcher</artifactId><scope>test</scope></dependency>
+  </dependencies>
+  <build><plugins>
+    <plugin>
+      <groupId>io.github.sjacek.promptjig</groupId><artifactId>promptjig-maven-plugin</artifactId><version>${promptjig.version}</version>
+      <configuration><packageName>example.generated</packageName><jackson>v3</jackson></configuration>
+      <executions><execution><goals><goal>validate</goal><goal>generate</goal></goals></execution></executions>
+    </plugin>
+    <plugin><artifactId>maven-compiler-plugin</artifactId><version>3.16.0</version></plugin>
+    <plugin><artifactId>maven-resources-plugin</artifactId><version>3.5.0</version></plugin>
+    <plugin><artifactId>maven-jar-plugin</artifactId><version>3.5.1</version></plugin>
+    <plugin><artifactId>maven-surefire-plugin</artifactId><version>3.6.1</version></plugin>
+  </plugins></build>
+</project>

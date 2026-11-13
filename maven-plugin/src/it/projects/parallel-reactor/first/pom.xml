@@ -1,0 +1,10 @@
+<?xml version="1.0" ?>
+<project xmlns="http://maven.apache.org/POM/4.0.0">
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <groupId>io.github.sjacek.promptjig.test</groupId>
+    <artifactId>parallel-reactor-testdata</artifactId>
+    <version>1.0</version>
+  </parent>
+  <artifactId>first-testdata</artifactId>
+</project>

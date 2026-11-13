@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Rendered by scripts/maven_integration.py from the single Gradle version catalog before execution. -->
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>io.github.sjacek.promptjig.test</groupId>
+  <artifactId>promptjig-integration-testdata</artifactId>
+  <version>1.0</version>
+  <packaging>pom</packaging>
+  <properties>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <maven.compiler.release>17</maven.compiler.release>
+    <promptjig.version>@promptjig@</promptjig.version>
+    <promptjig.jackson>v2</promptjig.jackson>
+    <promptjig.packageName>example.generated</promptjig.packageName>
+  </properties>
+  <dependencyManagement><dependencies>
+    <dependency><groupId>org.junit</groupId><artifactId>junit-bom</artifactId><version>@junit@</version><type>pom</type><scope>import</scope></dependency>
+  </dependencies></dependencyManagement>
+  <dependencies>
+    <dependency><groupId>org.junit.jupiter</groupId><artifactId>junit-jupiter</artifactId><version>@junit@</version><scope>test</scope></dependency>
+    <dependency><groupId>org.junit.platform</groupId><artifactId>junit-platform-launcher</artifactId><scope>test</scope></dependency>
+    <dependency><groupId>com.fasterxml.jackson.core</groupId><artifactId>jackson-databind</artifactId><version>@jackson@</version></dependency>
+    <dependency><groupId>com.fasterxml.jackson.datatype</groupId><artifactId>jackson-datatype-jsr310</artifactId><version>@jackson@</version></dependency>
+    <dependency><groupId>tools.jackson.core</groupId><artifactId>jackson-databind</artifactId><version>@jackson3@</version></dependency>
+  </dependencies>
+  <build>
+    <pluginManagement>
+      <plugins>
+        <plugin><artifactId>maven-compiler-plugin</artifactId><version>@mavenCompiler@</version></plugin>
+        <plugin><artifactId>maven-resources-plugin</artifactId><version>@mavenResources@</version></plugin>
+        <plugin><artifactId>maven-jar-plugin</artifactId><version>@mavenJar@</version></plugin>
+        <plugin><artifactId>maven-surefire-plugin</artifactId><version>@mavenSurefire@</version></plugin>
+      </plugins>
+    </pluginManagement>
+    <plugins>
+      <plugin>
+        <artifactId>maven-invoker-plugin</artifactId><version>@mavenInvoker@</version><inherited>false</inherited>
+        <configuration>
+          <projectsDirectory>@projectsDirectory@</projectsDirectory>
+          <cloneProjectsTo>${project.build.directory}/projects</cloneProjectsTo>
+          <reportsDirectory>${project.build.directory}/invoker-reports</reportsDirectory>
+          <localRepositoryPath>@repository@</localRepositoryPath>
+          <settingsFile>@settingsFile@</settingsFile>
+          <streamLogsOnFailures>true</streamLogsOnFailures>
+          <postBuildHookScript>verify.groovy</postBuildHookScript>
+          <showErrors>true</showErrors>
+          <mavenHome>@mavenHome@</mavenHome>
+        </configuration>
+        <dependencies>
+          <dependency><groupId>org.apache.groovy</groupId><artifactId>groovy</artifactId><version>@mavenGroovy@</version></dependency>
+        </dependencies>
+      </plugin>
+      <plugin><artifactId>maven-dependency-plugin</artifactId><version>@mavenDependency@</version></plugin>
+    </plugins>
+  </build>
+</project>

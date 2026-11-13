@@ -1,0 +1,8 @@
+{
+  "lockVersion" : 1,
+  "prompts" : {
+    "events.announcement-extraction" : {
+      "1" : "sha256:1b9b411a389962e450869bd6b3d982c62a65533700fe42e674ffd283c23d1b7d"
+    }
+  }
+}

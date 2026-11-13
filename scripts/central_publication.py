@@ -1,4 +1,4 @@
-"""Prepare two Gradle library publications and upload once to the Central Publisher API.
+"""Prepare the Gradle-built runtime libraries and Maven adapter for the Central Publisher API.
 
 No extra Maven/Gradle plugin is needed. Local verification and bundling are offline;
 only explicit ci/publish commands use the network. An uncertain upload is never retried.
@@ -24,7 +24,8 @@ import zipfile
 
 ROOT = Path(__file__).resolve().parent.parent
 GROUP = 'io.github.sjacek.promptjig'
-LIBRARIES = {'core': 'promptjig-core', 'spring-ai': 'promptjig-spring-ai'}
+LIBRARIES = {'core': 'promptjig-core', 'spring-ai': 'promptjig-spring-ai',
+             'maven-plugin': 'promptjig-maven-plugin'}
 OUTPUT = ROOT / 'build/central-publication'
 API = 'https://central.sonatype.com/api/v1/publisher'
 REPO = 'sjacek/promptjig'
@@ -75,12 +76,20 @@ def validate_pom(payload, artifact, value):
                   'developers/developer/name', 'developers/developer/url', 'scm/url', 'scm/connection'):
         if not (pom.findtext('/'.join('p:' + part for part in field.split('/')), namespaces=POM_NS) or '').strip():
             raise PublicationError('Missing required POM metadata: ' + field)
-    if artifact == 'promptjig-spring-ai':
+    if artifact in ('promptjig-spring-ai', 'promptjig-maven-plugin'):
         dependencies = pom.findall('p:dependencies/p:dependency', POM_NS)
         if not any(d.findtext('p:groupId', namespaces=POM_NS) == GROUP
                    and d.findtext('p:artifactId', namespaces=POM_NS) == 'promptjig-core'
                    and d.findtext('p:version', namespaces=POM_NS) == value for d in dependencies):
             raise PublicationError('Runtime POM must depend on the same published core version')
+    if artifact == 'promptjig-maven-plugin':
+        if pom.findtext('p:packaging', namespaces=POM_NS) != 'maven-plugin':
+            raise PublicationError('Maven adapter must use maven-plugin packaging')
+        for host in ('maven-plugin-api', 'maven-core'):
+            if not any(d.findtext('p:groupId', namespaces=POM_NS) == 'org.apache.maven'
+                       and d.findtext('p:artifactId', namespaces=POM_NS) == host
+                       and d.findtext('p:scope', namespaces=POM_NS) == 'provided' for d in dependencies):
+                raise PublicationError('Maven host API must remain provided')
 
 
 def publication_files(root=ROOT, signed=True):
@@ -196,6 +205,8 @@ def require_ci(state, token, opener=None):
     required = {'Prepare verified dependencies', 'core-and-packaging', 'runtime-java17', 'runtime-pilot'}
     required |= {f'Gradle {gradle} / JDK {java}' for gradle in ('9.0.0', '9.1.0', '9.9.1')
                  for java in ('17', '21', '25') if (gradle, java) != ('9.0.0', '25')}
+    required |= {f'Maven {maven} / JDK {java}' for maven in ('3.9.16', '4.0.0-rc-7')
+                 for java in ('17', '21', '25')}
     if (result.get('total_count') != len(jobs) or {j.get('name') for j in jobs} != required
             or len(jobs) != len(required) or any(j.get('status') != 'completed' or j.get('conclusion') != 'success' for j in jobs)):
         raise PublicationError('Every required Compatibility job must execute successfully')
@@ -277,7 +288,7 @@ def verify_release(result, value):
         purls = result.get('purls')
         if (not isinstance(purls, list) or any(not isinstance(p, str) for p in purls)
                 or {urllib.parse.unquote(p.split('?', 1)[0]) for p in purls} != expected):
-            raise PublicationError('Published deployment does not contain exactly both runtime libraries')
+            raise PublicationError('Published deployment does not contain exactly the reviewed publications')
 
 
 def poll(state, token, persist, timeout=1800, clock=time.monotonic, sleep=time.sleep, opener=None):
@@ -336,7 +347,7 @@ def main(argv=None):
     args = parser.parse_args(argv)
     if args.command == 'verify-staging':
         files = publication_files(signed=False)
-        print(f'Verified both unsigned local library publications: {len(files)} payloads; no upload.')
+        print(f'Verified {len(LIBRARIES)} unsigned local publications: {len(files)} payloads; no upload.')
     elif args.command == 'bundle':
         bundle()
     elif args.command == 'ci':

@@ -90,12 +90,13 @@ The core and Spring AI runtime have Maven publications with sources, Javadocs
 and MIT metadata:
 
 ```powershell
-.\gradlew.bat :core:publishAllPublicationsToStagingRepository :spring-ai:publishAllPublicationsToStagingRepository
+.\gradlew.bat :core:publishAllPublicationsToStagingRepository :spring-ai:publishAllPublicationsToStagingRepository :maven-plugin:publishAllPublicationsToStagingRepository
 ```
 
-This stages `promptjig-core` and `promptjig-spring-ai` under their respective
+The unreleased 0.3.0 candidate stages `promptjig-core`, `promptjig-spring-ai`
+and `promptjig-maven-plugin` under their respective
 `build/staging-repository/` directories. It does not upload to Maven Central.
-The separate manual **Publish runtime libraries** workflow prepares signed
+The separate manual **Publish Maven Central artifacts** workflow prepares signed
 packages and uploads them through the Central Publisher API. It is described in
 [Maven Central releases](maven-central.md), including required environment secrets,
 local verification, release guards and status-only recovery. Both libraries are

@@ -65,7 +65,7 @@ class DependencyCacheWorkflowTest {
             if (step.path("uses").asText().startsWith("actions/cache/restore@")) {
                 String key = step.path("with").path("key").asText();
                 for (String input : List.of("runner.os", "runner.arch", "libs.versions.toml", "verification-metadata.xml",
-                        "gradle-wrapper.properties", "ci-dependencies.json", "ci_dependency", ".github/actions"))
+                        "gradle-wrapper.properties", "ci-dependencies.json", "ci_dependency", ".github/actions", "scripts/maven_*.py", "maven-plugin/src/it/**", "examples/maven/**"))
                     assertTrue(key.contains(input), input);
                 compatibleFallback = step.path("with").has("restore-keys");
             }
@@ -99,7 +99,7 @@ class DependencyCacheWorkflowTest {
 
     @Test void everyConsumerRequiresWarmupAndRunsFailureGuardBeforeCheckingOutCode() throws Exception {
         var jobs = workflow().path("jobs");
-        for (String name : List.of("runtime-java17", "core-and-packaging", "runtime-pilot", "consumer")) {
+        for (String name : List.of("runtime-java17", "core-and-packaging", "runtime-pilot", "consumer", "maven")) {
             var job = jobs.path(name);
             assertEquals("warm-cache", job.path("needs").asText());
             assertEquals("${{ !cancelled() }}", job.path("if").asText());
@@ -111,6 +111,27 @@ class DependencyCacheWorkflowTest {
                 if (step.path("uses").asText().equals("./.github/actions/restore-dependencies")) restore = true;
             assertTrue(restore, name);
         }
+    }
+
+    @Test void nativeMavenMatrixExecutesAllSixRequiredPairsAgainstCurrentCandidatesOffline() throws Exception {
+        var job = workflow().path("jobs").path("maven");
+        var matrix = job.path("strategy").path("matrix");
+        assertEquals(List.of("3.9.16", "4.0.0-rc-7"),
+                java.util.stream.StreamSupport.stream(matrix.path("maven").spliterator(), false).map(JsonNode::asText).toList());
+        assertEquals(List.of("17", "21", "25"),
+                java.util.stream.StreamSupport.stream(matrix.path("java").spliterator(), false).map(JsonNode::asText).toList());
+        assertFalse(matrix.has("exclude"));
+        assertFalse(job.path("strategy").path("fail-fast").asBoolean(true));
+        var commands = new StringBuilder();
+        for (var step : job.path("steps")) {
+            commands.append(step.path("run").asText()).append('\n');
+            assertFalse(step.path("continue-on-error").asBoolean());
+        }
+        for (String required : List.of(":core:publishAllPublicationsToStagingRepository",
+                ":maven-plugin:publishAllPublicationsToStagingRepository", "--offline", "--dependency-verification=strict",
+                "--configuration-cache-problems=fail", "maven_integration.py verify", "--java-home \"$CONSUMER_JAVA_HOME\""))
+            assertTrue(commands.toString().contains(required), required);
+        assertFalse(commands.toString().contains("skipTests"));
     }
 
     @Test void actualGuardRejectsFailureCancellationAndSkippedPreparation() throws Exception {

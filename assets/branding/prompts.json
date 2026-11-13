@@ -1,0 +1,21 @@
+{
+  "tool": "image_gen.imagegen",
+  "avatar": {
+    "prompt": "Use case: logo-brand. Create ONE square repository avatar for PromptJig, a tool for validating and structuring AI prompts. The supplied Grinnotech Platform image is a STYLE REFERENCE ONLY. Design a NEW original identity with unmistakable AI PROMPT semantics, not chat approval or generic quality checking.\nExact brand family: full-bleed deep forest #063D26 background, pale mint #CDFFD8 isometric ground plane in lower half, cubic construction with lime #A0EF3B top faces and medium green #388E24 side faces, dark forest front faces. Clean vector-like isometric geometry, restrained shading, no textures. Generous breathing room, safe circular crop. Match reference craftsmanship.\nHERO OBJECT: one LARGE upright dark green AI PROMPT EDITOR PANEL standing on a low modular green fixture/workbench. Two lime-topped low side supports grip its lower sides, like a precision jig. Behind it, two offset thin lime-edged template plates are visible. Leave front third of mint ground field empty.\nHERO GLYPH, VERY LARGE and readable: a pale mint outlined wide prompt input rectangle with a small speech-bubble tail. INSIDE the field, on the left, bold mint prompt input symbols greater-than and underscore, exactly \">_\" as an input cursor, not words. On the upper-right of this input rectangle, a LARGE ORIGINAL FOUR-POINT AI SPARK, a symmetric concave diamond with four long tapered points. Place spark slightly overlapping the rectangle's top-right edge, beautifully integrated, not floating random confetti. This spark must be clearly visible and comparable in prominence to the input cursor. The combination of prompt input \">_\" and AI spark is the unmistakable role symbol. The spark is generic geometric, not any vendor's logo.\nTwo detached right-angle alignment corners, upper-left and lower-right outside the prompt field, imply that this AI prompt is held to a precise contract. They are secondary, smaller than the input rectangle and AI spark. Keep visible dark gaps between components. No checkmark, no tick, no badge of approval, no generic verification shield. Avoid a plain messaging app appearance. Absolutely no checkmark anywhere.\nThe central icon should dominate and remain clear at 192 px and recognizable at 48 px. Bold clean geometry, sparse premium technical brand illustration, a sophisticated AI prompt workbench. No written words, no letters or numbers, no name or title, no vendor or framework logos, no watermark, no robot, no face, no brain, no gears, no ornamental scatter, no gradients on glyphs, no photorealism, no metal, no outer frame or rounded app tile. Only >_ input symbols, prompt outline, one four-point AI spark, two alignment corners. Opaque forest background. Square 1024x1024 or greater.",
+    "master": "masters/promptjig-avatar.png",
+    "originalSource": "C:\\Users\\jacek\\.codex\\generated_images\\01a1d525-6e3e-7363-9ebd-e1ba345ad90e\\exec-44ac06a0-3c85-480e-95d7-b3e3512bcc0c.png",
+    "styleReference": "Grinnotech Platform group avatar"
+  },
+  "icon": {
+    "source": "promptjig-icon.svg",
+    "method": "Authored SVG adapting the generated avatar's AI prompt cursor, four-point spark and alignment corners for small sizes",
+    "pngExport": "Headless browser SVG render and native proportional PNG exports",
+    "transparentSurroundings": true
+  },
+  "colors": {
+    "forest": "#063D26",
+    "lime": "#A0EF3B",
+    "side": "#388E24",
+    "mint": "#CDFFD8"
+  }
+}

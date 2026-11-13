@@ -1,11 +1,11 @@
-name: Publish runtime libraries
+name: Publish Maven Central artifacts
 
 on:
   # Tags and pushes never publish automatically. Select an existing reviewed release tag.
   workflow_dispatch:
     inputs:
       tag:
-        description: Existing reviewed stable release tag, for example v0.2.0
+        description: Existing reviewed stable release tag, for example v0.3.0
         required: true
         type: string
       deployment_id:
@@ -104,20 +104,20 @@ jobs:
           # Never restore build state or save a credentialed Gradle home to a shared cache.
           cache-disabled: true
       - run: chmod +x gradlew
-      - name: Recheck both library publications without credentials
+      - name: Recheck all three publications without credentials
         id: build
         if: inputs.deployment_id == ''
         run: |
-          ./gradlew check assemble :core:spike :core:publishAllPublicationsToStagingRepository :spring-ai:publishAllPublicationsToStagingRepository --dependency-verification=strict --console=plain
+          ./gradlew check assemble :core:spike :core:publishAllPublicationsToStagingRepository :spring-ai:publishAllPublicationsToStagingRepository :maven-plugin:publishAllPublicationsToStagingRepository --dependency-verification=strict --console=plain
           python3 -B scripts/central_publication.py verify-staging
           python3 -B -m unittest discover -s scripts -p 'test_central_publication.py' -v
-      - name: Sign both libraries into an isolated local repository
+      - name: Sign libraries and Maven adapter into an isolated local repository
         id: sign
         if: inputs.deployment_id == ''
         env:
           MAVEN_GPG_KEY: ${{ secrets.MAVEN_GPG_KEY }}
           MAVEN_GPG_PASSPHRASE: ${{ secrets.MAVEN_GPG_PASSPHRASE }}
-        run: ./gradlew :core:publishAllPublicationsToCentralStagingRepository :spring-ai:publishAllPublicationsToCentralStagingRepository -PcentralRelease=true --no-configuration-cache --no-daemon --no-build-cache --dependency-verification=strict --console=plain
+        run: ./gradlew :core:publishAllPublicationsToCentralStagingRepository :spring-ai:publishAllPublicationsToCentralStagingRepository :maven-plugin:publishAllPublicationsToCentralStagingRepository -PcentralRelease=true --no-configuration-cache --no-daemon --no-build-cache --dependency-verification=strict --console=plain
       - name: Upload once or resume the existing deployment
         id: publish_central
         env:

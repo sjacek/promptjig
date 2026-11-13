@@ -1,23 +1,41 @@
 # Promptjig
 
-Contract-first validation for Spring AI prompts. Detect contract/template
-mismatches during `check`, keep version fingerprints in an append-only lock,
-protect merged history with a CI baseline, and generate typed Java records
-from the contract schemas. [MIT licensed](LICENSE).
-The Spring AI runtime renders these contracts and reads model responses into
-generated types with safe validation findings.
+<table role="presentation">
+  <tr>
+    <td>
+      <a href="assets/branding/README.md">
+        <img src="assets/branding/promptjig-avatar-256.png" width="256" height="256" alt="PromptJig avatar: an AI prompt input cursor and spark on green template plates held by a modular fixture.">
+      </a>
+    </td>
+    <td>
+      <p>
+        Contract-first validation for Spring AI prompts. Detect contract/template
+        mismatches during <code>check</code>, keep version fingerprints in an append-only lock,
+        protect merged history with a CI baseline, and generate typed Java records
+        from the contract schemas. <a href="LICENSE">MIT licensed</a>.
+        The Spring AI runtime renders these contracts and reads model responses into
+        generated types with safe validation findings.
+      </p>
+      <p>
+        Gradle plugin <strong>0.1.0</strong> is available in the
+        <a href="https://plugins.gradle.org/plugin/io.github.sjacek.promptjig/0.1.0">Gradle Plugin Portal</a>.
+        The core and Spring AI runtime libraries <strong>0.2.0</strong> are available in Maven Central,
+        independently of the build plugin release. The runtime rejects schema
+        violations by default; repairing responses requires <code>output.strict: false</code>.
+        The core targets Java 17; the plugin supports Gradle 9.0+ on a supported JDK 17+.
+        Building the development probes requires JDK 21+; the wrapper uses Gradle 9.9.1.
+      </p>
+    </td>
+  </tr>
+</table>
 
-Gradle plugin **0.1.0** is available in the
-[Gradle Plugin Portal](https://plugins.gradle.org/plugin/io.github.sjacek.promptjig/0.1.0).
-The core and Spring AI runtime libraries **0.2.0** are available in Maven Central,
-independently of the build plugin release. The runtime rejects schema
-violations by default; repairing responses requires `output.strict: false`.
-See the [runtime migration notes](docs/spring-ai.md#upgrade-from-the-01-development-runtime).
-The core targets Java 17; the plugin supports Gradle 9.0+ on a supported JDK 17+.
-Building the development probes requires JDK 21+; the wrapper uses Gradle 9.9.1.
+See the [runtime migration notes](docs/spring-ai.md#runtime-migration) when upgrading from the 0.1 development runtime.
 
 See the [changelog](CHANGELOG.md) for user-visible changes and compatibility notes.
-Library maintainers can prepare a [signed Maven Central release](docs/maven-central.md)
+The next release also prepares a [Maven adapter](docs/maven-plugin.md) with
+validation, append-only locks and Java generation. This adapter is unreleased;
+the [Maven example](examples/maven/README.md) is currently verified from source.
+Maintainers can prepare a [signed Maven Central release](docs/maven-central.md)
 independently of the Gradle Plugin Portal publication.
 
 ## Use the plugin

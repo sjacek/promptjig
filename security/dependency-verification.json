@@ -1,0 +1,8 @@
+{
+  "schemaVersion": 1,
+  "mavenExtension": {
+    "version": "0.0.5",
+    "url": "https://repo.maven.apache.org/maven2/codes/rafael/mavenchecksumextension/maven-checksum-extension/0.0.5/maven-checksum-extension-0.0.5.jar",
+    "sha256": "f5f573f307bfc7d71130d405a7a920a83773f405320c79053f28b1c852d95e1b"
+  }
+}

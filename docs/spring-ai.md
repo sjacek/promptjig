@@ -157,7 +157,9 @@ results in repairing mode can still contain findings, so callers must inspect/au
 them. This choice does not change input validation, which always rejects invalid
 input, or the backend's `response_format.json_schema.strict` option.
 
-### Upgrade from the 0.1 development runtime
+<a id="upgrade-from-the-01-development-runtime"></a>
+
+### Runtime migration
 
 Previously, an omitted `output.strict` selected repairing mode. Review those
 contracts before using 0.2.0: leave the field absent to require valid responses,

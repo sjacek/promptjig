@@ -1,0 +1,8 @@
+{
+  "lockVersion" : 1,
+  "prompts" : {
+    "events.announcement-extraction" : {
+      "1" : "sha256:0000000000000000000000000000000000000000000000000000000000000000"
+    }
+  }
+}

@@ -56,13 +56,19 @@ class CentralPublicationTest(unittest.TestCase):
             folder.mkdir(parents=True)
             prefix = artifact + '-' + VERSION
             dependency = (f'<dependencies><dependency><groupId>{central.GROUP}</groupId><artifactId>promptjig-core</artifactId>'
-                          f'<version>{VERSION}</version></dependency></dependencies>') if module == 'spring-ai' else ''
+                          f'<version>{VERSION}</version></dependency></dependencies>') if module in ('spring-ai', 'maven-plugin') else ''
+            if module == 'maven-plugin':
+                dependency = dependency.replace('</dependencies>', ''.join(
+                    '<dependency><groupId>org.apache.maven</groupId><artifactId>' + host
+                    + '</artifactId><version>3.9.16</version><scope>provided</scope></dependency>'
+                    for host in ('maven-plugin-api', 'maven-core')) + '</dependencies>')
             pom = (f'<project xmlns="http://maven.apache.org/POM/4.0.0"><modelVersion>4.0.0</modelVersion>'
                    f'<groupId>{central.GROUP}</groupId><artifactId>{artifact}</artifactId><version>{VERSION}</version>'
                    '<name>Promptjig</name><description>Fixture</description><url>https://example.test</url>'
                    '<licenses><license><name>MIT</name><url>https://example.test/license</url></license></licenses>'
                    '<developers><developer><name>Fixture</name><url>https://example.test/author</url></developer></developers>'
                    '<scm><url>https://example.test</url><connection>scm:git:https://example.test</connection></scm>'
+                   + ('<packaging>maven-plugin</packaging>' if module == 'maven-plugin' else '')
                    + dependency + '</project>')
             (folder / (prefix + '.pom')).write_text(pom)
             (folder / (prefix + '.module')).write_text(json.dumps({'component': {
@@ -78,16 +84,16 @@ class CentralPublicationTest(unittest.TestCase):
 
     def test_unsigned_staging_is_offline_and_never_accepted_as_a_signed_bundle(self):
         self.stage(signed=False)
-        self.assertEqual(10, len(central.publication_files(self.root, signed=False)))
+        self.assertEqual(15, len(central.publication_files(self.root, signed=False)))
         with self.assertRaises(central.PublicationError):
             central.bundle(self.root, self.output)
 
-    def test_bundle_contains_exactly_both_signed_libraries_and_computed_sidecars(self):
+    def test_bundle_contains_exactly_all_signed_publications_and_computed_sidecars(self):
         self.stage()
         bundle = central.bundle(self.root, self.output)
         original = bundle.read_bytes()
         with zipfile.ZipFile(bundle) as archive:
-            self.assertEqual(60, len(archive.namelist()))
+            self.assertEqual(90, len(archive.namelist()))
             self.assertTrue(all(name.startswith('io/github/sjacek/promptjig/') for name in archive.namelist()))
             self.assertFalse(any('gradle-plugin' in name or 'metadata.xml' in name for name in archive.namelist()))
             for name in archive.namelist():
@@ -119,7 +125,7 @@ class CentralPublicationTest(unittest.TestCase):
         folder = self.stage()
         pom = next(folder.glob('*.pom'))
         original = pom.read_text()
-        for changed in (original.replace('<artifactId>promptjig-spring-ai</artifactId>', '<artifactId>foreign</artifactId>'),
+        for changed in (original.replace('<artifactId>promptjig-maven-plugin</artifactId>', '<artifactId>foreign</artifactId>'),
                         original.replace('<name>Fixture</name>', ''),
                         original.replace('<version>0.2.0</version></dependency>', '<version>0.1.0</version></dependency>')):
             with self.subTest(changed=changed):
@@ -139,6 +145,18 @@ class CentralPublicationTest(unittest.TestCase):
             jar.writestr('META-INF/LICENSE', 'MIT')
         with self.assertRaisesRegex(central.PublicationError, 'Javadoc'):
             central.bundle(self.root, self.output)
+
+    def test_maven_adapter_requires_plugin_packaging_and_provided_host_apis(self):
+        folder = self.stage(signed=False)
+        pom = next(folder.glob('*.pom'))
+        original = pom.read_text()
+        for changed in (original.replace('<packaging>maven-plugin</packaging>', '<packaging>jar</packaging>'),
+                        original.replace('<scope>provided</scope>', '<scope>runtime</scope>')):
+            with self.subTest(changed=changed):
+                pom.write_text(changed)
+                with self.assertRaises(central.PublicationError):
+                    central.publication_files(self.root, signed=False)
+        pom.write_text(original)
 
     def test_staging_symlinks_are_rejected(self):
         folder = self.stage()
@@ -195,12 +213,13 @@ class CentralPublicationTest(unittest.TestCase):
         names = ['Prepare verified dependencies', 'core-and-packaging', 'runtime-java17', 'runtime-pilot']
         names += [f'Gradle {g} / JDK {j}' for g in ('9.0.0', '9.1.0', '9.9.1')
                   for j in ('17', '21', '25') if (g, j) != ('9.0.0', '25')]
+        names += [f'Maven {m} / JDK {j}' for m in ('3.9.16', '4.0.0-rc-7') for j in ('17', '21', '25')]
         run = {'id': 123, 'head_sha': SHA, 'status': 'completed', 'conclusion': 'success',
                'path': '.github/workflows/compatibility.yml'}
         jobs = [{'name': name, 'status': 'completed', 'conclusion': 'success'} for name in names]
-        return {'workflow_runs': [run]}, {'total_count': 12, 'jobs': jobs}
+        return {'workflow_runs': [run]}, {'total_count': len(names), 'jobs': jobs}
 
-    def test_ci_requires_twelve_executed_successful_jobs_for_exact_sha(self):
+    def test_ci_requires_eighteen_executed_successful_jobs_for_exact_sha(self):
         http = HttpFixture(*self.ci_responses())
         central.require_ci({'commit': SHA}, 'fixture-github-token', http)
         self.assertEqual(2, len(http.requests))
@@ -282,7 +301,7 @@ class CentralPublicationTest(unittest.TestCase):
         self.assertEqual(1, len(http.requests))
         self.assertEqual('UPLOAD_UNCERTAIN', saved[-1]['status'])
 
-    def test_only_published_with_both_coordinates_is_success(self):
+    def test_only_published_with_all_coordinates_is_success(self):
         central.verify_release(status(), VERSION)
         for response in (status(deploymentName='Other release'), status(purls=[]),
                          status(purls=[f'pkg:maven/{central.GROUP}/promptjig-core@0.1.0'])):
@@ -333,7 +352,7 @@ class CentralPublicationTest(unittest.TestCase):
         self.assertEqual(ID, state['deploymentId'])
         self.assertNotIn('fixture-token', json.dumps(state))
 
-    def test_full_upload_records_one_deployment_and_waits_for_both_published_libraries(self):
+    def test_full_upload_records_one_deployment_and_waits_for_all_published_artifacts(self):
         self.stage()
         http = HttpFixture(ID.encode(), status('VALIDATING'), status())
         real_poll = central.poll

@@ -5,6 +5,10 @@
     "9.1.0": "a17ddd85a26b6a7f5ddb71ff8b05fc5104c0202c6e64782429790c933686c806",
     "9.9.1": "d8a18a7a841dd5df825d35a685fad6f2d7f12ac0c280e57b67c27b4a520ba228"
   },
+  "mavenDistributions": {
+    "3.9.16": "5af3b743dd8b876b5c45da33b676251e5f1687712644abb4ee519ca56e1d89ce",
+    "4.0.0-rc-7": "6ef648cbd5d06c4669fb43256b2fd03954019d97ab4f42fdfaa0a2d46ede9f2e"
+  },
   "examples": ["examples/gradle", "examples/generation", "examples/runtime"],
   "publishedModules": [
     "io.github.sjacek.promptjig:io.github.sjacek.promptjig.gradle.plugin:0.1.0",
@@ -12,5 +16,5 @@
     "io.github.sjacek.promptjig:promptjig-core:0.2.0",
     "io.github.sjacek.promptjig:promptjig-spring-ai:0.2.0"
   ],
-  "mavenProjects": []
+  "mavenProjects": ["maven-plugin/src/it", "examples/maven"]
 }

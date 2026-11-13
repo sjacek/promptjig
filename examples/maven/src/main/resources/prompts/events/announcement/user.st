@@ -1,0 +1,2 @@
+Public event announcement:
+{documentText}

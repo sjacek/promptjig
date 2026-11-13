@@ -1,0 +1,35 @@
+<?xml version="1.0" ?>
+<project xmlns="http://maven.apache.org/POM/4.0.0">
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <groupId>io.github.sjacek.promptjig.test</groupId>
+    <artifactId>promptjig-integration-testdata</artifactId>
+    <version>1.0</version>
+    <relativePath>../../../pom.xml</relativePath>
+  </parent>
+  <artifactId>generation-v3-testdata</artifactId>
+  <properties>
+    <promptjig.jackson>v3</promptjig.jackson>
+  </properties>
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>io.github.sjacek.promptjig</groupId>
+        <artifactId>promptjig-maven-plugin</artifactId>
+        <version>${promptjig.version}</version>
+        <configuration>
+          <packageName>${promptjig.packageName}</packageName>
+          <jackson>${promptjig.jackson}</jackson>
+        </configuration>
+        <executions>
+          <execution>
+            <goals>
+              <goal>validate</goal>
+              <goal>generate</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
+  </build>
+</project>

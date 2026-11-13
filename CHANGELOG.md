@@ -5,6 +5,20 @@ Changes under **Unreleased** are not yet published.
 
 ## Unreleased
 
+### Added
+
+- Validate prompt contracts in Maven projects before compilation. Contract and
+  template errors appear together in the build log and JSON/text reports.
+- Generate Java 17 records, enums and contract constants during `mvn verify`,
+  with a choice of Jackson 2 or 3. Maven compiles the generated sources
+  automatically.
+- Protect contract version history in Maven builds. Explicitly append new
+  versions with `promptjig:lock`, and use a CI baseline to detect rewritten
+  history. Normal validation never changes your lock file.
+- Try Maven validation and generation with a small fictional public-announcement
+  example, without connecting a model. The Maven adapter is planned for 0.3.0
+  and is not yet available from Maven Central.
+
 ### Changed
 
 - Run the standalone Spring AI pilot with core/runtime 0.2.0 from Maven Central,
@@ -24,7 +38,7 @@ The Gradle plugin remains available as version 0.1.0 in Plugin Portal.
 - If your application needs partially usable answers, add `output.strict: false`
   before upgrading from the 0.1 development runtime. Each repair is reported so
   you can show fields requiring review. Adding this setting changes the contract
-  fingerprint; follow the [upgrade guide](docs/spring-ai.md#upgrade-from-the-01-development-runtime)
+  fingerprint; follow the [upgrade guide](docs/spring-ai.md#runtime-migration)
   to update its version and lock.
 
 ### Added

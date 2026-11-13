@@ -1,7 +1,7 @@
 # CI dependency snapshots
 
-Compatibility prepares downloads once before starting the eight Gradle/JDK
-consumer combinations and the runtime, packaging and example jobs. Each consumer
+Compatibility prepares downloads once before starting eight Gradle/JDK
+and six Maven/JDK combinations, plus the runtime, packaging and example jobs. Each consumer
 downloads the `ci-dependencies` artifact from its own workflow run. A pull request,
 including one from a fork, does not need publishing secrets or cache write access.
 
@@ -10,7 +10,9 @@ including one from a fork, does not need publishing secrets or cache write acces
 `gradle/ci-dependencies.json` declares Gradle 9.0.0, 9.1.0 and 9.9.1 with their
 official distribution SHA-256 values, and the three checked-in Gradle examples.
 The producer uses JDK 25; the preparation fixture uses JDK 21, which all three
-consumer Gradle versions support. The existing JDK 17/21/25 matrix is unchanged.
+consumer Gradle versions support. The JDK 17/21/25 Gradle matrix is unchanged.
+The same policy pins Maven 3.9.16 and 4.0.0-rc-7 ZIPs for native acceptance on
+JDK 17/21/25; Maven 4 is a preview target.
 
 The archive contains only:
 
@@ -21,6 +23,9 @@ The archive contains only:
 - Pinned Gradle distribution ZIPs. Every consumer verifies their SHA-256 and
   extracts fresh installations. Extracted tools and Wrapper `.ok` markers are
   never restored from a shared cache.
+- External Maven JAR/POM downloads, pinned Maven distribution ZIPs and the
+  independently pinned native checksum-verification extension. Extracted Maven
+  executables are recreated from the verified ZIP on every use.
 
 Preparation resolves every resolvable producer configuration and the examples
 `gradle`, `generation` and `runtime`. Its isolated TestKit fixture resolves the
@@ -33,12 +38,21 @@ needed. It does not execute tests, apply the plugin to functional-test fixtures,
 start containers, call a model, or invoke verification hooks. Normal consumers
 still execute all existing tests and example checks after preparation succeeds.
 
-Promptjig currently has **no Maven build, Maven adapter or Maven Invoker
-projects**. There are no Maven dependencies to warm or export. Unlike ShardPilot,
-this implementation therefore does not install a Maven version, fabricate POMs
-or copy Maven settings. The policy rejects an authored `pom.xml` or a nonempty
-`mavenProjects` declaration until verified Maven resolution and Invoker warmup
-are implemented deliberately. Maven support cannot silently bypass preparation.
+`mavenProjects` declares the Invoker fixtures and standalone Maven example.
+Preparation renders the integration driver with pins from `libs.versions.toml`
+and separately resolves the actual standalone example. It resolves core through
+its Gradle-generated POM in a private, metadata-only repository, so dependency
+mediation matches a real plugin class realm without building a core JAR. The
+temporary policy hashes that exact POM; only reviewed external downloads are
+promoted to the shared repository. This covers conflict-losing POMs too, and
+prevents the core BOM from overriding consumer-selected versions.
+Build plugins, their dependencies, the Invoker Groovy hook engine and the JUnit
+Platform provider are resolved with `dependency:go-offline`, `dependency:resolve`
+and `dependency:get`. Preparation does not
+execute fixture hooks, test phases, compilation or plugin installation. A new
+authored POM outside the declared roots is rejected. Actual acceptance clones
+fixtures into private workspaces, stages the current core/adapter only there,
+and runs all fixtures and the standalone example offline.
 
 Project classes, locally built plugin publications, TestKit project directories,
 Invoker workspaces, test results, reports, build caches, configuration cache,
@@ -52,7 +66,8 @@ Only `warm-cache` reads the cross-run GitHub cache. Its key is
 `dependencies-v1-<OS>-<architecture>-<dependency-input-hash>`. The hash includes
 build scripts, version catalogs, Gradle properties, wrappers, the verification
 policy, the distribution/example manifest, warmup scripts and TestKit fixtures,
-and the workflow/composite action configuration. A restore prefix with the same
+Maven settings/checksum policy, bootstrap scripts, Invoker inputs, Maven example
+sources, and the workflow/composite action configuration. A restore prefix with the same
 schema version, OS and architecture allows an older snapshot to supply unchanged
 downloads. Preparation always resolves missing dependencies, even on an exact hit.
 
@@ -78,6 +93,28 @@ known artifact bytes during export and restore; Gradle's native strict
 verification also checks requested dependencies during actual builds. Unused
 versions from an older snapshot may be restored as candidates, but do not become
 trusted and are omitted from the next exported archive.
+
+Maven uses `.mvn/checksums.sha256` for exact external JAR/POM coordinates and
+`security/dependency-verification.json` to pin its bootstrap extension. Native
+enforcement checks SHA-256 for **local/restored artifacts as well as downloads**,
+including snapshots. Current candidate bytes are hashed into an ephemeral
+per-run policy, outside the shared snapshot. No whole group is trusted. Unused
+Maven coordinates absent from current policy are omitted when restoring older
+snapshots and resolved again if needed. Corrupt known bytes fail restore.
+The harness supplies explicit clean settings and never uses the ambient
+`~/.m2/repository`. POSIX workspace paths must not contain whitespace because
+Maven expands JVM options through its shell launcher.
+
+Preparation and the two corruption probes select
+`-Daether.dependencyCollector.impl=df`. With the pinned Maven 4 preview,
+the checksum extension's fatal POM rejection can leave a parallel collector's
+future unfinished. Serial traversal propagates that rejection to the CLI.
+Resolver documents [equivalent dependency results for both collectors](https://maven.apache.org/resolver/configuration.html).
+Normal Invoker acceptance retains Maven's default collector, including the
+`-T2` reactor scenario. The probes have a 120-second limit; a timeout or an
+unrelated failure fails the check and never counts as checksum rejection.
+They alter a JAR and a syntactically valid POM, require the native checksum
+error for that exact artifact, and check that the goal did not produce a report.
 
 IDE imports also request dependency source JARs. Their SHA-256 values are pinned
 individually in the same policy so IntelliJ can import the Gradle model with
@@ -125,6 +162,14 @@ download-only snapshot and is never consumed as a dependency cache. No Gradle
 user homes, publishing settings or daemon logs are included.
 If the one-day artifact has expired, rerun the complete workflow so preparation
 can recreate it before consumers restart.
+
+For Maven failures, check `maven-plugin/build/reports/maven/<Maven>-jdk-<JDK>`
+and its native Invoker reports. A missing checksum requires maintainer review
+against the official repository before adding it to `.mvn/checksums.sha256`;
+there is no collect mode or automatic trust update. `verify` is offline, so a
+missing artifact there means preparation did not cover an actual build input.
+Review the POM/catalog and warmup together. Never fix it by disabling native
+verification, reusing `~/.m2` or ignoring a failed fixture.
 
 Check a changed verification policy against an empty dependency cache as well
 as a restored one. Cached resolver descriptors can avoid re-reading parent POMs,
@@ -225,3 +270,6 @@ passed all 78 tests offline after restoring it, without producer sources. All
 21 cache tests passed on Linux, including rejection of locally rebuilt bytes
 under an allowlisted release coordinate. The 321 existing artifact checksums
 were retained; ten reviewed public-release artifacts were added explicitly.
+
+For the Maven adapter's preparation, fresh snapshot restore and six native
+Maven/JDK combinations, see the [stage-4 report](stage4-report.md).

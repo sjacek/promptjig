@@ -56,7 +56,8 @@ class CentralSigningTest(unittest.TestCase):
                     self.assertNotEqual(0, rejected.returncode)
                     self.assertIn(expected, rejected.stdout)
                 command = ['bash', './gradlew', ':core:publishAllPublicationsToCentralStagingRepository',
-                           ':spring-ai:publishAllPublicationsToCentralStagingRepository', '-PcentralRelease=true',
+                           ':spring-ai:publishAllPublicationsToCentralStagingRepository',
+                           ':maven-plugin:publishAllPublicationsToCentralStagingRepository', '-PcentralRelease=true',
                            '--no-configuration-cache', '--no-daemon', '--no-build-cache',
                            '--dependency-verification=strict', '--console=plain']
                 result = subprocess.run(command, cwd=central.ROOT, env=environment, stdout=subprocess.PIPE,
@@ -66,18 +67,18 @@ class CentralSigningTest(unittest.TestCase):
                     output = result.stdout.decode(errors='replace').replace(exported, '[test key omitted]')
                     self.fail('Signed Gradle staging failed:\n' + output[-5000:])
                 files = central.publication_files()
-                self.assertEqual(20, len(files))
+                self.assertEqual(30, len(files))
                 for module, artifact in central.LIBRARIES.items():
                     folder = central.ROOT / module / 'build/central-staging' / Path(*central.GROUP.split('.')) / artifact / central.version()
                     for signature in folder.glob('*.asc'):
                         gpg('--verify', str(signature), str(signature.with_suffix('')))
                 bundle = central.bundle(output=home / 'bundle')
                 with zipfile.ZipFile(bundle) as archive:
-                    self.assertEqual(60, len(archive.namelist()))
+                    self.assertEqual(90, len(archive.namelist()))
                     for name in archive.namelist():
                         self.assertNotIn(b'BEGIN PGP PRIVATE KEY BLOCK', archive.read(name))
                         self.assertNotIn(passphrase.encode(), archive.read(name))
-                print('Verified 10 real Gradle signatures and both library payloads; no publication performed.')
+                print('Verified 15 real Gradle signatures and all three publication payloads; no publication performed.')
             finally:
                 # Stop only the agent attached to this temporary home before removing it.
                 subprocess.run(['gpgconf', '--homedir', str(home), '--kill', 'gpg-agent'],

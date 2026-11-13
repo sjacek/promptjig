@@ -1,0 +1,244 @@
+{
+  "recordedOn": "2026-11-13",
+  "candidateVersion": "0.3.0",
+  "source": {
+    "baseCommit": "a085c9f4ba458cfa217ba81219e4ea773d725476",
+    "branch": "feature/maven-plugin",
+    "uncommitted": true
+  },
+  "producer": {
+    "gradle": "9.9.1",
+    "javaTarget": 17,
+    "configurationCacheProblems": "fail",
+    "windowsCheckAssembleAndOfflineSpike": "passed",
+    "mavenAdapterTests": {
+      "tests": 15,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    "workflowTests": {
+      "tests": 32,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    "java17CoreRuntimeAndAdapterInWsl": "passed"
+  },
+  "nativeMaven": {
+    "platform": "Ubuntu WSL",
+    "workspace": "/var/tmp/promptjig-stage4-yaurbdp3/repository",
+    "cells": [
+      {
+        "maven": "3.9.16",
+        "jdk": "17",
+        "invokerProjects": 14,
+        "skipped": 0,
+        "modelBindingTests": 6,
+        "offline": true,
+        "rejectedModifiedLocalPayloads": [
+          "jar",
+          "pom"
+        ],
+        "fixtures": [
+          "baseline-rewrite",
+          "changed-contract",
+          "custom-paths",
+          "generation-v2",
+          "generation-v3",
+          "lock-create",
+          "lock-refuse-overwrite",
+          "missing-lock",
+          "output-containment",
+          "parallel-reactor",
+          "standalone-example",
+          "template-parameters",
+          "validate-valid",
+          "without-contracts"
+        ]
+      },
+      {
+        "maven": "3.9.16",
+        "jdk": "21",
+        "invokerProjects": 14,
+        "skipped": 0,
+        "modelBindingTests": 6,
+        "offline": true,
+        "rejectedModifiedLocalPayloads": [
+          "jar",
+          "pom"
+        ],
+        "fixtures": [
+          "baseline-rewrite",
+          "changed-contract",
+          "custom-paths",
+          "generation-v2",
+          "generation-v3",
+          "lock-create",
+          "lock-refuse-overwrite",
+          "missing-lock",
+          "output-containment",
+          "parallel-reactor",
+          "standalone-example",
+          "template-parameters",
+          "validate-valid",
+          "without-contracts"
+        ]
+      },
+      {
+        "maven": "3.9.16",
+        "jdk": "25",
+        "invokerProjects": 14,
+        "skipped": 0,
+        "modelBindingTests": 6,
+        "offline": true,
+        "rejectedModifiedLocalPayloads": [
+          "jar",
+          "pom"
+        ],
+        "fixtures": [
+          "baseline-rewrite",
+          "changed-contract",
+          "custom-paths",
+          "generation-v2",
+          "generation-v3",
+          "lock-create",
+          "lock-refuse-overwrite",
+          "missing-lock",
+          "output-containment",
+          "parallel-reactor",
+          "standalone-example",
+          "template-parameters",
+          "validate-valid",
+          "without-contracts"
+        ]
+      },
+      {
+        "maven": "4.0.0-rc-7",
+        "jdk": "17",
+        "invokerProjects": 14,
+        "skipped": 0,
+        "modelBindingTests": 6,
+        "offline": true,
+        "rejectedModifiedLocalPayloads": [
+          "jar",
+          "pom"
+        ],
+        "fixtures": [
+          "baseline-rewrite",
+          "changed-contract",
+          "custom-paths",
+          "generation-v2",
+          "generation-v3",
+          "lock-create",
+          "lock-refuse-overwrite",
+          "missing-lock",
+          "output-containment",
+          "parallel-reactor",
+          "standalone-example",
+          "template-parameters",
+          "validate-valid",
+          "without-contracts"
+        ]
+      },
+      {
+        "maven": "4.0.0-rc-7",
+        "jdk": "21",
+        "invokerProjects": 14,
+        "skipped": 0,
+        "modelBindingTests": 6,
+        "offline": true,
+        "rejectedModifiedLocalPayloads": [
+          "jar",
+          "pom"
+        ],
+        "fixtures": [
+          "baseline-rewrite",
+          "changed-contract",
+          "custom-paths",
+          "generation-v2",
+          "generation-v3",
+          "lock-create",
+          "lock-refuse-overwrite",
+          "missing-lock",
+          "output-containment",
+          "parallel-reactor",
+          "standalone-example",
+          "template-parameters",
+          "validate-valid",
+          "without-contracts"
+        ]
+      },
+      {
+        "maven": "4.0.0-rc-7",
+        "jdk": "25",
+        "invokerProjects": 14,
+        "skipped": 0,
+        "modelBindingTests": 6,
+        "offline": true,
+        "rejectedModifiedLocalPayloads": [
+          "jar",
+          "pom"
+        ],
+        "fixtures": [
+          "baseline-rewrite",
+          "changed-contract",
+          "custom-paths",
+          "generation-v2",
+          "generation-v3",
+          "lock-create",
+          "lock-refuse-overwrite",
+          "missing-lock",
+          "output-containment",
+          "parallel-reactor",
+          "standalone-example",
+          "template-parameters",
+          "validate-valid",
+          "without-contracts"
+        ]
+      }
+    ],
+    "invokerProjectExecutions": 84,
+    "modelBindingTests": 36,
+    "windowsMaven39Jdk25AdditionalProjects": 14,
+    "windowsLocalTamperProbes": [
+      "jar",
+      "pom"
+    ]
+  },
+  "dependencyPreparation": {
+    "realWarmCommand": "python3 -B scripts/ci_dependency_cache.py warm",
+    "exportAndFreshRestore": "passed",
+    "downloadedFiles": 1395,
+    "gradleChecksumPoliciesBefore": 331,
+    "gradleChecksumPoliciesAfter": 623,
+    "mavenBaselineSha256": "1a7b39277009730b874752e66bd46430738e75d6b9c4d2a8062ddc4bbb4ab8cd",
+    "trustedHashesAutomaticallyUpdatedInCi": false,
+    "cacheAndBootstrapSecurityTests": 46,
+    "preparationAndTamperCollector": "df",
+    "privateCoreModelAndLocalJarCandidatesShared": false
+  },
+  "centralPreparation": {
+    "publications": [
+      "promptjig-core",
+      "promptjig-spring-ai",
+      "promptjig-maven-plugin"
+    ],
+    "unsignedPayloads": 15,
+    "realSignaturesVerifiedWithDisposableKey": 15,
+    "signedBundleEntries": 90,
+    "protocolTests": 30,
+    "uploadPerformed": false
+  },
+  "workflowValidation": {
+    "actionlint": "1.7.12",
+    "passed": true,
+    "requiredCompatibilityJobs": 18
+  },
+  "limits": [
+    "Local verification only; the new GitHub Actions jobs have not run before the owner commits and pushes.",
+    "Maven 4 compatibility targets 4.0.0-rc-7, not arbitrary future previews.",
+    "Cross-run GitHub cache reuse and fork artifact delivery require hosted confirmation.",
+    "The first WSL export exhausted RAM-backed /tmp; the completed rehearsal uses disk-backed /var/tmp."
+  ]
+}

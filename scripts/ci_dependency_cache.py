@@ -42,15 +42,28 @@ def policy():
     for coordinate in value.get('publishedModules', []):
         if not re.fullmatch(r'io\.github\.sjacek\.promptjig:[A-Za-z0-9_.-]+:\d+\.\d+\.\d+', coordinate):
             raise ValueError('Published project dependencies require explicit release coordinates')
-    # There is no Maven adapter yet. Introducing POMs must deliberately extend warmup and verification.
+    for version, checksum in value.get('mavenDistributions', {}).items():
+        if not re.fullmatch(r'\d+\.\d+\.\d+(?:-rc-\d+)?', version) or not re.fullmatch(r'[a-f0-9]{64}', checksum):
+            raise ValueError('Maven distributions require an exact version and SHA-256')
+    # Every authored Maven project must belong to an explicitly warmed root. A new POM cannot
+    # silently escape dependency preparation by appearing outside the declared fixtures/examples.
     poms = []
     for folder, directories, files in os.walk(ROOT):
         directories[:] = [name for name in directories if not name.startswith('.')
                           and name not in ('build', 'target') and not name.startswith('build-')]
         if 'pom.xml' in files:
             poms.append(Path(folder) / 'pom.xml')
-    if value['mavenProjects'] or poms:
-        raise ValueError('Maven projects require an explicit verified warmup implementation before CI can proceed')
+    roots = []
+    for name in value['mavenProjects']:
+        if not safe_name(name):
+            raise ValueError('Unsafe Maven project root')
+        target = ROOT / name
+        contained(ROOT, target)
+        if not (target / 'pom.xml').is_file() or not value.get('mavenDistributions'):
+            raise ValueError('Maven projects require an explicit verified warmup configuration')
+        roots.append(target.resolve())
+    if any(not any(pom.resolve().is_relative_to(root) for root in roots) for pom in poms):
+        raise ValueError('Maven projects require an explicit verified warmup configuration')
     return value
 
 
@@ -71,6 +84,15 @@ def checksums():
             result[(*identity, artifact.get('name'))] = values
     if not result:
         raise ValueError('Empty dependency verification baseline')
+    maven = ROOT / '.mvn/checksums.sha256'
+    if maven.is_file():
+        import maven_verification
+        result.update({'maven:' + name: {checksum} for name, checksum in maven_verification.load_checksums(maven).items()})
+    verifier = ROOT / 'security/dependency-verification.json'
+    if verifier.is_file():
+        import maven_verification
+        value = maven_verification.verifier_policy(ROOT)
+        result['maven-verifier:maven-checksum-extension-' + value['version'] + '.jar'] = {value['sha256']}
     return result
 
 
@@ -88,6 +110,14 @@ def allowed(name, published=()):
     if not safe_name(name) or name.endswith(('.lock', '.lck', '.part', '.tmp', '.lastUpdated')):
         return False
     if re.fullmatch(r'distributions/gradle/gradle-\d+\.\d+\.\d+-bin\.zip', name):
+        return True
+    if re.fullmatch(r'distributions/maven/apache-maven-\d+\.\d+\.\d+(?:-rc-\d+)?-bin\.zip', name):
+        return True
+    if name.startswith('maven/repository/'):
+        import maven_verification
+        identity = maven_verification.artifact_identity(name.removeprefix('maven/repository/'))
+        return identity is not None and not identity.startswith('io.github.sjacek')
+    if re.fullmatch(r'maven/verifier/maven-checksum-extension-\d+\.\d+\.\d+\.jar', name):
         return True
     for prefix in MODULES:
         if not name.startswith(prefix):
@@ -113,8 +143,15 @@ def verify_file(name, path, baseline, distributions):
     if name.startswith('distributions/'):
         match = re.fullmatch(r'distributions/gradle/gradle-(.+)-bin.zip', name)
         expected = distributions.get(match[1]) if match else None
+        maven = re.fullmatch(r'distributions/maven/apache-maven-(.+)-bin.zip', name)
+        if maven:
+            expected = distributions.get('maven:' + maven[1])
         if expected is None or digest(path) != expected:
-            raise ValueError('Gradle distribution checksum mismatch: ' + name)
+            raise ValueError('Dependency distribution checksum mismatch: ' + name)
+        return
+    if name.startswith(('maven/repository/', 'maven/verifier/')):
+        if digest(path) not in baseline.get(artifact_identity(name), set()):
+            raise ValueError('Maven artifact checksum missing or mismatched: ' + name)
         return
     for prefix in MODULES:
         if name.startswith(prefix + 'files-2.1/'):
@@ -136,7 +173,8 @@ def contained(root, target):
 
 def pack(cache=CACHE, archive=ARCHIVE):
     value = policy()
-    baseline, distributions = checksums(), value['gradleDistributions']
+    baseline = checksums()
+    distributions = value['gradleDistributions'] | {'maven:' + k: v for k, v in value.get('mavenDistributions', {}).items()}
     archive.parent.mkdir(parents=True, exist_ok=True)
     temporary = archive.with_suffix('.tmp')
     count = 0
@@ -149,7 +187,7 @@ def pack(cache=CACHE, archive=ARCHIVE):
                 contained(cache, path)
                 # Old compatible caches can contain unused versions: only reviewed external bytes are exported.
                 # This applies to explicitly allowed public Promptjig downloads too.
-                if '/files-2.1/' in name and artifact_identity(name) not in baseline:
+                if ('/files-2.1/' in name or name.startswith('maven/repository/')) and artifact_identity(name) not in baseline:
                     continue
                 verify_file(name, path, baseline, distributions)
                 output.add(path, arcname=name, recursive=False)
@@ -169,7 +207,8 @@ def restore(cache=CACHE, archive=ARCHIVE, required=False):
         print('No snapshot; warming a cold cache.', flush=True)
         return
     value = policy()
-    baseline, distributions = checksums(), value['gradleDistributions']
+    baseline = checksums()
+    distributions = value['gradleDistributions'] | {'maven:' + k: v for k, v in value.get('mavenDistributions', {}).items()}
     with tarfile.open(archive) as source:
         members = source.getmembers()
         if not members:
@@ -189,6 +228,10 @@ def restore(cache=CACHE, archive=ARCHIVE, required=False):
         with tempfile.TemporaryDirectory(prefix='promptjig-cache-') as staging:
             stage = Path(staging)
             for member in members:
+                # An older compatible snapshot may carry obsolete Maven coordinates. Do not
+                # promote unknown bytes into its executable local repository; warm current pins again.
+                if member.name.startswith('maven/repository/') and artifact_identity(member.name) not in baseline:
+                    continue
                 target = stage / member.name
                 target.parent.mkdir(parents=True, exist_ok=True)
                 stream = source.extractfile(member)
@@ -200,6 +243,8 @@ def restore(cache=CACHE, archive=ARCHIVE, required=False):
                 if '/files-2.1/' not in member.name or artifact_identity(member.name) in baseline:
                     verify_file(member.name, target, baseline, distributions)
             for member in members:
+                if member.name.startswith('maven/repository/') and artifact_identity(member.name) not in baseline:
+                    continue
                 target = cache / member.name
                 target.parent.mkdir(parents=True, exist_ok=True)
                 contained(cache, target)
@@ -216,6 +261,12 @@ def restore(cache=CACHE, archive=ARCHIVE, required=False):
 
 
 def artifact_identity(name):
+    if name.startswith('maven/repository/'):
+        import maven_verification
+        identity = maven_verification.artifact_identity(name.removeprefix('maven/repository/'))
+        return 'maven:' + identity if identity else None
+    if name.startswith('maven/verifier/'):
+        return 'maven-verifier:' + name.removeprefix('maven/verifier/')
     for prefix in MODULES:
         if name.startswith(prefix + 'files-2.1/'):
             _, group, artifact, version, _, filename = name[len(prefix):].split('/')
@@ -285,6 +336,11 @@ def distributions(download=False):
     contained(CACHE, target)
     target.parent.mkdir(parents=True, exist_ok=True)
     shutil.copyfile(directory / target.name, target)
+    if policy()['mavenProjects']:
+        import maven_verification
+        for version in policy()['mavenDistributions']:
+            maven_verification.distribution(version, download=download)
+        maven_verification.extension(download=download)
 
 
 def base36(number):
@@ -308,7 +364,10 @@ def warm():
     wrapper = [str(ROOT / 'gradlew.bat')] if os.name == 'nt' else ['bash', str(ROOT / 'gradlew')]
     common = ['--no-configuration-cache', '--dependency-verification=strict', '--console=plain',
               '-I', str(ROOT / 'scripts/ci_dependency_warmup.gradle')]
-    subprocess.run([*wrapper, 'ciResolveDependencies', *common], cwd=ROOT, check=True, env=environment)
+    producer = ['ciResolveDependencies']
+    if policy()['mavenProjects']:
+        producer.append(':core:generatePomFileForCorePublication')
+    subprocess.run([*wrapper, *producer, *common], cwd=ROOT, check=True, env=environment)
     subprocess.run([*wrapper, ':gradle-plugin:warmTestKitCache', *common,
                     '-PtestGradleVersions=' + ','.join(policy()['gradleDistributions'])], cwd=ROOT, check=True, env=environment)
     for project in policy()['examples']:
@@ -324,7 +383,11 @@ def warm():
             subprocess.run([str(launcher), '--stop', '--gradle-user-home', str(CACHE / 'testkit'),
                             '-Dorg.gradle.daemon.registry.base=' + str(CACHE / 'testkit/test-kit-daemon')],
                            cwd=ROOT, check=True, env=stop_environment)
-    print('Maven/Invoker warmup: not applicable (no POMs or Maven adapter).', flush=True)
+    if policy()['mavenProjects']:
+        import maven_integration
+        maven_integration.warm()
+    else:
+        print('Maven/Invoker warmup: not applicable (no declared Maven projects).', flush=True)
 
 
 def main():

@@ -7,7 +7,7 @@ abstract class CentralPublicationBuildFeatures {
     abstract BuildFeatures getBuildFeatures()
 }
 
-// Applied only by the two runtime libraries. The Portal plugin remains a separate publication.
+// Applied by the runtime libraries and Maven adapter. The Portal plugin remains a separate publication.
 // Ordinary builds/staging never read signing material or require publication credentials.
 if (providers.gradleProperty('centralRelease').getOrElse('false') == 'true') {
     def configurationCache = objects.newInstance(CentralPublicationBuildFeatures).buildFeatures.configurationCache
