@@ -55,7 +55,8 @@ class DependencyCacheWorkflowTest {
                 assertFalse(step.has("if"), "Even exact hits must fill missing downloads");
             }
             if (command.endsWith("ci_dependency_cache.py pack")) pack = index;
-            if (step.path("uses").asText().startsWith("actions/upload-artifact@")) {
+            if (step.path("uses").asText().startsWith("actions/upload-artifact@")
+                    && step.path("with").path("name").asText().equals("ci-dependencies")) {
                 upload = index;
                 assertEquals("ci-dependencies", step.path("with").path("name").asText());
                 assertEquals("error", step.path("with").path("if-no-files-found").asText());
@@ -72,6 +73,28 @@ class DependencyCacheWorkflowTest {
         }
         assertTrue(compatibleFallback);
         assertTrue(resolve >= 0 && pack > resolve && upload > pack);
+    }
+
+    @Test void preparationFailuresPublishOnlyDiagnosticReportsAsADistinctArtifact() throws Exception {
+        var steps = workflow().path("jobs").path("warm-cache").path("steps");
+        int diagnosticUploads = 0;
+        for (var step : steps) {
+            if (!step.path("uses").asText().startsWith("actions/upload-artifact@")) continue;
+            String name = step.path("with").path("name").asText();
+            if (name.equals("ci-dependencies")) {
+                assertFalse(step.has("if"), "A failed job must not publish a usable snapshot");
+                continue;
+            }
+            diagnosticUploads++;
+            assertEquals("dependency-preparation-diagnostics", name);
+            assertEquals("failure()", step.path("if").asText());
+            assertEquals(List.of("build/reports/dependency-verification/", "build/reports/problems/",
+                    "gradle-plugin/build/cache-warmup/testkit/build/reports/dependency-verification/",
+                    "examples/*/build/reports/dependency-verification/"),
+                    step.path("with").path("path").asText().lines().toList());
+            assertFalse(step.path("continue-on-error").asBoolean());
+        }
+        assertEquals(1, diagnosticUploads);
     }
 
     @Test void everyConsumerRequiresWarmupAndRunsFailureGuardBeforeCheckingOutCode() throws Exception {

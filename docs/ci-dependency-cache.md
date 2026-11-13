@@ -119,8 +119,34 @@ failure links to Gradle's detailed report. Investigate changed or missing hashes
 do not disable strict verification or generate trusted sums in CI. For an
 artifact-download failure, confirm that preparation completed and the artifact
 belongs to the same run. Forks should restore and prepare normally without secrets.
+Failed preparation uploads `dependency-preparation-diagnostics` with dependency
+verification and problem reports, when available. It is separate from the
+download-only snapshot and is never consumed as a dependency cache. No Gradle
+user homes, publishing settings or daemon logs are included.
 If the one-day artifact has expired, rerun the complete workflow so preparation
 can recreate it before consumers restart.
+
+Check a changed verification policy against an empty dependency cache as well
+as a restored one. Cached resolver descriptors can avoid re-reading parent POMs,
+masking missing parent checksums that a fresh runner needs. The initial cold CI
+run exposed this for `jackson-dataformats-text:2.22.4`; its parent POM checksum
+was reviewed against Maven Central's SHA-256 and SHA-512. On Windows, a unique
+temporary Gradle home exercises fresh producer resolution without removing an
+existing cache:
+
+```powershell
+$coldGradleHome = Join-Path $env:TEMP ('promptjig-cold-' + [guid]::NewGuid())
+$previousGradleHome = $env:GRADLE_USER_HOME
+try {
+    $env:GRADLE_USER_HOME = $coldGradleHome
+    .\gradlew.bat ciResolveDependencies -I scripts/ci_dependency_warmup.gradle --no-configuration-cache --dependency-verification=strict --console=plain
+} finally {
+    $env:GRADLE_USER_HOME = $previousGradleHome
+}
+```
+
+The full `warm` command owns its fixed `build/ci-dependencies` homes; run it in a
+fresh checkout to test all producer, TestKit and example dependencies cold.
 
 On Windows with the producer JDK selected and JDK 21 installed:
 
@@ -146,3 +172,26 @@ artifact transfer or success of every hosted matrix job. After pushing, inspect
 the preparation cache-hit/miss, artifact upload/download and test reports for all
 eight combinations. The first trusted default-branch run seeds the cross-run
 cache; a subsequent run confirms its actual reuse.
+
+## Local cold-cache regression, 2026-11-13
+
+The missing Jackson parent POM failure was reproduced in Ubuntu WSL with an
+empty resolver home and the new entry removed. After restoring the reviewed
+entry, the complete warmup passed with new producer and TestKit resolver homes.
+Only the pinned Gradle ZIPs were seeded; no existing module metadata or project
+outputs were imported into that cold preparation.
+
+The resulting snapshot contained 386 downloaded files. Restoring it into a new
+home passed seven offline resolution checks: producer, three TestKit Gradle
+versions and three examples. All 20 cache security tests passed on Linux,
+including physical symlinks. The eight supported Gradle/JDK pairs passed all
+160 test executions with configuration cache enabled and no skipped cases.
+Full packaging, Java 17 core/runtime checks, the examples and the packaged
+synthetic runtime demo also passed. Windows workflow tests passed all 26 cases;
+actionlint 1.7.12 accepted both workflows.
+
+These are local results, recorded in
+[the verification evidence](evidence/ci-cold-cache-2026-11-13.json).
+The original [hosted run](https://github.com/sjacek/promptjig/actions/runs/43321358718)
+failed before the fix. A new hosted run after the owner's commit/push must still
+confirm artifact transfer, all required jobs and subsequent cross-run cache reuse.

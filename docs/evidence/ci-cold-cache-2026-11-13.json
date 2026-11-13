@@ -1,0 +1,162 @@
+{
+  "date": "2026-11-13",
+  "scope": "Local regression verification in native Ubuntu WSL; not a hosted GitHub Actions run",
+  "source": {
+    "baseCommit": "486e75eb1c5909527f569be3bd842551d1a9d30d",
+    "unchangedPreviousChecksums": 320,
+    "newChecksums": 1,
+    "sourceSha256": {
+      "gradle/verification-metadata.xml": "7d94997838cbf742a6d00a0da2d8de3da149937865e3bb55170522f51fb7256f",
+      ".github/workflows/compatibility.yml": "44f2075bb8d2c5e98d5a084640e8447b2d4e081325a3d911762253a1ead55669",
+      "gradle-plugin/src/workflowTest/java/io/github/sjacek/promptjig/gradle/DependencyCacheWorkflowTest.java": "34ed5bc8f9d1d7f7d7c886c6c4cc7ceab2c6324d574da7a907fc8351a4536663"
+    }
+  },
+  "cause": "Missing SHA-256 for the jackson-dataformats-text 2.22.4 parent POM; cached resolver descriptors masked it locally",
+  "artifactReview": {
+    "url": "https://repo.maven.apache.org/maven2/com/fasterxml/jackson/dataformat/jackson-dataformats-text/2.22.4/jackson-dataformats-text-2.22.4.pom",
+    "sha256": "57ca2b45f3b4015ee42e8bcea4b886baa8569eab4bc34654cbf3410bcbb7a8fe",
+    "sha512": "f95f2281008627e526c981d3ba52be679daa715d46edf988352f8046cba790ecee0c5c04274f62c96cff8ddbcda66bd66b70cb10b5a052d8c3d24b911a2ef3f1",
+    "bytes": 3475,
+    "matching_local_downloads": 2
+  },
+  "beforeFix": "Reproduced the same dependency-verification failure with an empty resolver home and the parent entry removed",
+  "afterFix": {
+    "coldWarmup": "passed for producer, all three TestKit distributions and all three examples",
+    "distributionZipReuse": "Only SHA-256-pinned Gradle ZIPs were seeded; dependency resolver homes started absent",
+    "snapshotDownloadedFiles": 386,
+    "restoredOfflineResolutions": 7,
+    "cacheSecurityTests": {
+      "tests": 20,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    "gradleJdkPairs": [
+      {
+        "check": "gradle-9.0.0-jdk-17",
+        "seconds": 104.67,
+        "result": "passed",
+        "tests": 20,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "check": "gradle-9.0.0-jdk-21",
+        "seconds": 128.31,
+        "result": "passed",
+        "tests": 20,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "check": "gradle-9.1.0-jdk-17",
+        "seconds": 178.17,
+        "result": "passed",
+        "tests": 20,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "check": "gradle-9.1.0-jdk-21",
+        "seconds": 87.15,
+        "result": "passed",
+        "tests": 20,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "check": "gradle-9.1.0-jdk-25",
+        "seconds": 52.53,
+        "result": "passed",
+        "tests": 20,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "check": "gradle-9.9.1-jdk-17",
+        "seconds": 60.56,
+        "result": "passed",
+        "tests": 20,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "check": "gradle-9.9.1-jdk-21",
+        "seconds": 55.79,
+        "result": "passed",
+        "tests": 20,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "check": "gradle-9.9.1-jdk-25",
+        "seconds": 58.83,
+        "result": "passed",
+        "tests": 20,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      }
+    ],
+    "configurationCache": "enabled with problems=fail for all matrix pairs, packaging, Java 17 and examples",
+    "testReports": {
+      "core/build/test-results/test": {
+        "tests": 131,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      "core/build/test-results/testValidator3": {
+        "tests": 131,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      "spring-ai/build/test-results/test": {
+        "tests": 49,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      "gradle-plugin/build/test-results/workflowTest": {
+        "tests": 26,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      "gradle-plugin/build/test-results/test": {
+        "tests": 20,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      "examples/generation/build/test-results/test": {
+        "tests": 1,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      "examples/runtime/build/test-results/test": {
+        "tests": 78,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      }
+    },
+    "packagedPilot": "synthetic demo passed on JDK 17; no model calls",
+    "containersStarted": false,
+    "windowsWorkflowTests": 26,
+    "actionlint": "1.7.12 passed"
+  },
+  "hostedCi": {
+    "originalFailedRun": "https://github.com/sjacek/promptjig/actions/runs/43321358718",
+    "afterFix": "Pending owner commit/push and a new hosted run; artifact transfer and cross-run cache reuse are not confirmed by local tests"
+  }
+}
