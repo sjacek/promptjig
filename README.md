@@ -76,7 +76,7 @@ options, sensitivity policy and durable audit before response reading.
 
 Try the [small standalone Spring AI pilot](examples/runtime/README.md) to extract
 a fictional public event announcement into generated Java types. It retains
-Portal plugin 0.1.0 and Central core/runtime 0.2.0. Its default
+Portal plugin 0.3.1 and Central core/runtime 0.3.1. Its default
 run uses synthetic responses; an explicit task can call a pinned local model.
 
 ```powershell

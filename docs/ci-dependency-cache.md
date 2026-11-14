@@ -14,6 +14,14 @@ consumer Gradle versions support. The JDK 17/21/25 Gradle matrix is unchanged.
 The same policy pins Maven 3.9.16 and 4.0.0-rc-7 ZIPs for native acceptance on
 JDK 17/21/25; Maven 4 is a preview target.
 
+The small runtime pilot resolves the public plugin and libraries 0.3.1. The
+`publishedModules` list permits those exact coordinates in download snapshots;
+it does not trust their bytes. Previously reviewed 0.1.0/0.2.0 coordinates remain
+listed so an older compatible snapshot can be restored before filling current
+dependencies. Native strict verification still checks every selected artifact,
+and packing retains only payloads with reviewed hashes. Producer outputs and
+arbitrary versions of the same group remain excluded.
+
 The archive contains only:
 
 - External JAR, POM and Gradle module metadata downloads from the producer's

@@ -142,9 +142,9 @@ their own build rerun does not replace the full acceptance requirement.
 
 The `tichodroma-svc` runtime pilot uses the explicit `-PpromptjigPilot=true`
 opt-in and its mandatory `test:promptjig-pilot` CI job. Both that pilot and the
-[standalone public-announcement example](../examples/runtime/README.md) resolve
-`promptjig-core` and `promptjig-spring-ai` 0.2.0 from Maven Central. The build
-plugin remains independently pinned to the published Portal version 0.1.0.
+[standalone public-announcement example](../examples/runtime/README.md) use public
+releases independently. The service pilot retains core/runtime 0.2.0 and Portal
+plugin 0.1.0; the small example uses core/runtime and Portal plugin **0.3.1**.
 
 No source checkout is required in either normal pilot or pilot CI.
 `promptjigBuildDir` remains an explicit development override, substituting plugin,

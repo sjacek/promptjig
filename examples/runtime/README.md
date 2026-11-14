@@ -42,20 +42,28 @@ From the **Promptjig repository root**:
 
 On Linux/macOS, use `./gradlew` with the same arguments. The wrapper requires a
 supported JDK 17+ and initially downloads Gradle/dependencies as needed. The
-build plugin resolves version 0.1.0 from Plugin Portal; core and Spring AI runtime
-resolve version 0.2.0 from Maven Central. No Promptjig source build is included.
+build plugin resolves version **0.3.1** from Plugin Portal; core and Spring AI runtime
+resolve version **0.3.1** from Maven Central. No Promptjig source build is included.
 Versions are pinned in the repository's `gradle/libs.versions.toml`.
 For explicit library development only, supply
 `-PpromptjigBuildDir=<path-relative-to-examples/runtime>` to substitute all three
 modules together. This override is not used by the normal pilot or its CI.
 
-Local verification on 13 November 2026 passed all 78 tests on Windows/JDK 25
+Historical verification of runtime 0.2.0 on 13 November 2026 passed all 78 tests on Windows/JDK 25
 and Ubuntu WSL/JDK 17. The Linux run used an isolated copy containing only this
 example, its catalog and wrapper, with offline dependencies restored from the
 verified CI snapshot. Both packaged synthetic demos passed. The
 [verification record](../../docs/evidence/published-runtime-consumer-2026-11-13.json)
 includes public JAR hashes and confirms that no source build was included.
-These are local checks; the changed configuration still needs a hosted CI run.
+The [0.3.1 acceptance record](../../docs/evidence/runtime-pilot-0.3.1-2026-11-14.json)
+covers **81 tests** on Windows/JDK 25 and isolated Linux/JDK 17, plus both packaged
+synthetic demos. The Linux run restored verified dependencies, had no producer
+sources or network, and reused configuration cache on a second invocation.
+Actual plugin/core/runtime JAR hashes match the public release. The three added
+cases check the published reader's strict default, explicit `true` and explicit
+`false` using isolated contract copies; authored resources and their frozen lock
+stay intact. This is local acceptance; hosted CI must confirm the updated pins
+after push. The real-model results below remain historical.
 
 Expected output includes:
 
@@ -78,7 +86,7 @@ options are preserved when adding that schema.
 
 `output.strict: false` explicitly allows nullable-field repairs with findings.
 This example already selects repairing mode, so its contract and lock do not
-change for runtime 0.2.0. Omitting this field in 0.2.0 rejects every schema violation.
+change for runtime 0.3.1. Since 0.2.0, omitting this field rejects every schema violation.
 Invalid dates,
 unknown enum values and wrongly typed nullable fields become null; unknown
 properties are removed. Malformed JSON and incompatible root structures reject

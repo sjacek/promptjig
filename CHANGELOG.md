@@ -3,6 +3,13 @@
 Changes to Promptjig's features, compatibility and availability.
 Changes under **Unreleased** are not yet published.
 
+## Unreleased
+
+### Changed
+
+- Run the small public-announcement pilot with the published Gradle plugin and
+  core/Spring AI libraries 0.3.1, without a local Promptjig source build.
+
 ## 0.3.1 — 2026-11-14
 
 The Gradle plugin is available in Plugin Portal. The core, Spring AI runtime and

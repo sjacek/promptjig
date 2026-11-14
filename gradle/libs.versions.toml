@@ -1,7 +1,7 @@
 [versions]
 promptjig = "0.3.1"
-promptjigRuntime = "0.2.0"
-promptjigPlugin = "0.1.0"
+promptjigRuntime = "0.3.1"
+promptjigPlugin = "0.3.1"
 mavenApi = "3.9.16"
 mavenPluginTools = "3.16.0"
 mavenPluginDevelopment = "1.0.3"

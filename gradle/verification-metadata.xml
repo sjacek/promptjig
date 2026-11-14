@@ -599,6 +599,11 @@
             <sha256 value="bb9f308e3be592bed11b387b9ca2029d92cb6b33c0777081d7f4547cc40df2d2" origin="Reviewed Plugin Portal release over HTTPS and published SHA-1 sidecar"/>
          </artifact>
       </component>
+      <component group="io.github.sjacek.promptjig" name="io.github.sjacek.promptjig.gradle.plugin" version="0.3.1">
+         <artifact name="io.github.sjacek.promptjig.gradle.plugin-0.3.1.pom">
+            <sha256 value="e8db379521c00aed15b3432a2e68e1baf4b8cfc1871d265fbbee9a3b22947323" origin="Reviewed official 0.3.1 registry payload and checksum sidecar"/>
+         </artifact>
+      </component>
       <component group="io.github.sjacek.promptjig" name="promptjig-core" version="0.2.0">
          <artifact name="promptjig-core-0.2.0-sources.jar">
             <sha256 value="9603785168684e57fa04784bb8051ab5beabd8b62b6168d33210ba8eebf14705" origin="Verified official repository artifact and checksum sidecar for IDE import"/>
@@ -611,6 +616,20 @@
          </artifact>
          <artifact name="promptjig-core-0.2.0.pom">
             <sha256 value="de4585e72cafe5f554ccefe7c1edde5b9eb3eacee163ce36a470355094612323" origin="Reviewed Maven Central release with published SHA-256 and GPG signatures"/>
+         </artifact>
+      </component>
+      <component group="io.github.sjacek.promptjig" name="promptjig-core" version="0.3.1">
+         <artifact name="promptjig-core-0.3.1-sources.jar">
+            <sha256 value="39fbd4cd1bcede393bcc84065d49c622813ce608073ddf5dd320b5359378d59b" origin="Verified official repository artifact and checksum sidecar for IDE import"/>
+         </artifact>
+         <artifact name="promptjig-core-0.3.1.jar">
+            <sha256 value="ea73c23801d9a080255db3147c6286ca3948e5666aeac40f55e8c7a474b19927" origin="Reviewed official 0.3.1 registry payload and checksum sidecar"/>
+         </artifact>
+         <artifact name="promptjig-core-0.3.1.module">
+            <sha256 value="bbd6e41cd9d42828c553359e58fb38d693fd6179aef92944918a2a4ea182d150" origin="Reviewed official 0.3.1 registry payload and checksum sidecar"/>
+         </artifact>
+         <artifact name="promptjig-core-0.3.1.pom">
+            <sha256 value="3095e8870321afc92119967cadc37b96304f850546b04c149ac3f5b247d4f5d1" origin="Reviewed official 0.3.1 registry payload and checksum sidecar"/>
          </artifact>
       </component>
       <component group="io.github.sjacek.promptjig" name="promptjig-gradle-plugin" version="0.1.0">
@@ -627,6 +646,20 @@
             <sha256 value="1048f050bc255d28ef166f232d0a298c5bd550aefb9576a2c5bf58bb2bbd9e20" origin="Reviewed Plugin Portal release over HTTPS and published SHA-1 sidecar"/>
          </artifact>
       </component>
+      <component group="io.github.sjacek.promptjig" name="promptjig-gradle-plugin" version="0.3.1">
+         <artifact name="promptjig-gradle-plugin-0.3.1-sources.jar">
+            <sha256 value="1b4975c1bfc5888d69454d12c5c1b73ab4245119c74e05a37335efd124d9df4c" origin="Verified official repository artifact and checksum sidecar for IDE import"/>
+         </artifact>
+         <artifact name="promptjig-gradle-plugin-0.3.1.jar">
+            <sha256 value="f0fb019467d9bfe8324e03bbebaa222e84de6bb3eb034610c00c8de7abee4014" origin="Reviewed official 0.3.1 registry payload and checksum sidecar"/>
+         </artifact>
+         <artifact name="promptjig-gradle-plugin-0.3.1.module">
+            <sha256 value="2d6ffd6b80d35ab524d53c904edd02e6e5841e2bb4d5deaeb8ee9829b6453735" origin="Reviewed official 0.3.1 registry payload and checksum sidecar"/>
+         </artifact>
+         <artifact name="promptjig-gradle-plugin-0.3.1.pom">
+            <sha256 value="2a8b38327201eb906a39f52ca7b5dafcd8a7975c7cb0c24d46bd511aee238ac2" origin="Reviewed official 0.3.1 registry payload and checksum sidecar"/>
+         </artifact>
+      </component>
       <component group="io.github.sjacek.promptjig" name="promptjig-spring-ai" version="0.2.0">
          <artifact name="promptjig-spring-ai-0.2.0-sources.jar">
             <sha256 value="81917dc5d56844a1288af406bfd227f354e59cdc90a771ae1f6a3d78fe1281ae" origin="Verified official repository artifact and checksum sidecar for IDE import"/>
@@ -639,6 +672,20 @@
          </artifact>
          <artifact name="promptjig-spring-ai-0.2.0.pom">
             <sha256 value="ed7aacd704e593ed553c8f952302decaaa0048fbf610550d772e3d18778e2939" origin="Reviewed Maven Central release with published SHA-256 and GPG signatures"/>
+         </artifact>
+      </component>
+      <component group="io.github.sjacek.promptjig" name="promptjig-spring-ai" version="0.3.1">
+         <artifact name="promptjig-spring-ai-0.3.1-sources.jar">
+            <sha256 value="b4dff01beb417cd4d2d0ae5d13adb393f8b80fc06dbbb161f341c5d21a7bd96d" origin="Verified official repository artifact and checksum sidecar for IDE import"/>
+         </artifact>
+         <artifact name="promptjig-spring-ai-0.3.1.jar">
+            <sha256 value="d46b9278904ab434c63d87fa3918340e04f7709a52ca6e20cfad6b661b65275d" origin="Reviewed official 0.3.1 registry payload and checksum sidecar"/>
+         </artifact>
+         <artifact name="promptjig-spring-ai-0.3.1.module">
+            <sha256 value="df1e0d3a17996bc65b13afc7d1859b1237590b2a67b64cc7456f299b951c3d9d" origin="Reviewed official 0.3.1 registry payload and checksum sidecar"/>
+         </artifact>
+         <artifact name="promptjig-spring-ai-0.3.1.pom">
+            <sha256 value="f51ef86a36a9c6f86088de73f58b4097152490c1af03b4bc05c9f6619663f831" origin="Reviewed official 0.3.1 registry payload and checksum sidecar"/>
          </artifact>
       </component>
       <component group="io.micrometer" name="context-propagation" version="1.2.1">

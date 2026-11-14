@@ -7,9 +7,9 @@ Run these commands from a Promptjig checkout using its wrapper. On Windows use
 `.\gradlew.bat`; on Linux/macOS use `./gradlew`.
 
 The examples retain their reviewed, published version pins. The small Spring AI
-pilot uses Portal plugin **0.1.0** and Central core/runtime **0.2.0**; the
+pilot uses Portal plugin **0.3.1** and Central core/runtime **0.3.1**; the
 validation-only Gradle consumer uses Portal **0.1.0**, and the standalone Maven
-example uses **0.3.0**. Publishing 0.3.1 does not upgrade these examples.
+example uses **0.3.0**. The small pilot's upgrade is independent of those examples.
 The installation guides show the current 0.3.1 release for new applications.
 
 ## Public announcement: no model required

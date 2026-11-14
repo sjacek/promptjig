@@ -6,6 +6,7 @@ import os
 from pathlib import Path
 import tarfile
 import tempfile
+import tomllib
 import unittest
 import zipfile
 from unittest.mock import patch
@@ -415,6 +416,32 @@ class DependencyCacheTest(unittest.TestCase):
         self.assertEqual(1, run.call_count)
         self.assertIn('ciResolveDependencies', run.call_args.args[0])
         self.assertFalse(self.archive.exists())
+
+
+class PublishedConsumerPolicyTest(unittest.TestCase):
+    def test_runtime_catalog_releases_have_exact_cache_coordinates_and_reviewed_payloads(self):
+        """A consumer upgrade must update both cache admission and independent byte verification."""
+        root = Path(__file__).resolve().parents[1]
+        versions = tomllib.loads((root / 'gradle/libs.versions.toml').read_text(encoding='utf-8'))['versions']
+        published = cache.policy()['publishedModules']
+        hashes = cache.checksums()
+        group = 'io.github.sjacek.promptjig'
+        for name, version, kinds in (
+                (group + '.gradle.plugin', versions['promptjigPlugin'], ('pom',)),
+                ('promptjig-gradle-plugin', versions['promptjigPlugin'], ('jar', 'pom', 'module')),
+                ('promptjig-core', versions['promptjigRuntime'], ('jar', 'pom', 'module')),
+                ('promptjig-spring-ai', versions['promptjigRuntime'], ('jar', 'pom', 'module')),
+                # Compatible fallback snapshots still carry these exact, previously reviewed public releases.
+                ('promptjig-core', '0.2.0', ('jar', 'pom', 'module')),
+                ('promptjig-spring-ai', '0.2.0', ('jar', 'pom', 'module'))):
+            with self.subTest(module=name, version=version):
+                self.assertIn(f'{group}:{name}:{version}', published)
+                for kind in kinds:
+                    filename = f'{name}-{version}.{kind}'
+                    self.assertIn((group, name, version, filename), hashes)
+                    path = f'gradle/caches/modules-2/files-2.1/{group}/{name}/{version}/' + '1' * 40 + '/' + filename
+                    self.assertTrue(cache.allowed(path, published))
+                    self.assertFalse(cache.allowed(path.replace('/' + version + '/', '/' + version + '-SNAPSHOT/'), published))
 
 
 if __name__ == '__main__':

@@ -21,7 +21,7 @@ publishing the Gradle plugin does not publish these Maven coordinates. The 0.2.0
 The shared publication version is read from `versions.promptjig` in
 `gradle/libs.versions.toml`. Local staging produces three artifacts: both runtime
 libraries and `promptjig-maven-plugin`. The standalone Spring AI pilot continues to pin
-public runtime 0.2.0 through the separate `promptjigRuntime` catalog version.
+public runtime 0.3.1 through the separate `promptjigRuntime` catalog version.
 
 ## Published Maven consumer acceptance
 

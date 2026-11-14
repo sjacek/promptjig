@@ -14,7 +14,11 @@
     "io.github.sjacek.promptjig:io.github.sjacek.promptjig.gradle.plugin:0.1.0",
     "io.github.sjacek.promptjig:promptjig-gradle-plugin:0.1.0",
     "io.github.sjacek.promptjig:promptjig-core:0.2.0",
-    "io.github.sjacek.promptjig:promptjig-spring-ai:0.2.0"
+    "io.github.sjacek.promptjig:promptjig-spring-ai:0.2.0",
+    "io.github.sjacek.promptjig:io.github.sjacek.promptjig.gradle.plugin:0.3.1",
+    "io.github.sjacek.promptjig:promptjig-gradle-plugin:0.3.1",
+    "io.github.sjacek.promptjig:promptjig-core:0.3.1",
+    "io.github.sjacek.promptjig:promptjig-spring-ai:0.3.1"
   ],
   "mavenProjects": ["maven-plugin/src/it", "examples/maven"]
 }

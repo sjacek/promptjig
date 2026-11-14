@@ -1,0 +1,256 @@
+{
+  "schemaVersion": 1,
+  "version": "0.3.1",
+  "verifiedOn": "2026-11-14",
+  "baseCommit": "4d67215af563af9878df06fb44505abde8395476",
+  "verification": "local working-tree acceptance; hosted CI for these changes is pending",
+  "consumer": "examples/runtime",
+  "gradle": "9.9.1",
+  "registries": {
+    "plugin": "https://plugins.gradle.org/m2/",
+    "libraries": "https://repo.maven.apache.org/maven2/"
+  },
+  "sourceBuildIncluded": false,
+  "localInstallUsed": false,
+  "stagedCandidateUsed": false,
+  "nativeGradleDependencyVerification": "strict",
+  "baselineLock": {
+    "source": "HEAD:examples/runtime/prompt-contracts.lock.json",
+    "sha256": "819d834a14455a4b89a715c81d3822b02a92fb2b14f3b17aa4cf4e4cc2c9c89e",
+    "authoredResourcesAndLockUnchanged": true
+  },
+  "windows": {
+    "java": "25.0.5",
+    "tasks": "clean check installDist run",
+    "flags": [
+      "--dependency-verification=strict",
+      "--configuration-cache",
+      "--configuration-cache-problems=fail",
+      "--no-build-cache"
+    ],
+    "tests": {
+      "tests": 81,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    "packagedSyntheticDemoPassed": true,
+    "modules": [
+      {
+        "module": "promptjig-core",
+        "version": "0.3.1",
+        "file": "promptjig-core-0.3.1.jar",
+        "sha256": "ea73c23801d9a080255db3147c6286ca3948e5666aeac40f55e8c7a474b19927"
+      },
+      {
+        "module": "promptjig-spring-ai",
+        "version": "0.3.1",
+        "file": "promptjig-spring-ai-0.3.1.jar",
+        "sha256": "d46b9278904ab434c63d87fa3918340e04f7709a52ca6e20cfad6b661b65275d"
+      }
+    ],
+    "plugin": {
+      "version": "0.3.1",
+      "sha256": "f0fb019467d9bfe8324e03bbebaa222e84de6bb3eb034610c00c8de7abee4014"
+    }
+  },
+  "linux": {
+    "java": "openjdk version \"17.0.20.1\" 2026-08-18",
+    "tasks": "check installDist run",
+    "flags": [
+      "--offline",
+      "--dependency-verification=strict",
+      "--configuration-cache",
+      "--configuration-cache-problems=fail",
+      "--no-build-cache"
+    ],
+    "tests": {
+      "tests": 81,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    "packagedSyntheticDemoPassed": true,
+    "configurationCacheReused": true,
+    "network": "none",
+    "producerSourcesPresent": false,
+    "includedBuilds": [],
+    "containerImage": "sha256:7378542d7f3a04c67ac2256de9d7df2dee990913690a0bf4d80af25c1d01037b",
+    "restoredVerifiedDownloadedFiles": 1451,
+    "projectOutputsRestored": false,
+    "modulesMatchWindows": true
+  },
+  "addedReaderRegressions": [
+    "strict omitted rejects invalid enum",
+    "strict true rejects invalid enum",
+    "strict false repairs invalid enum to null with value-free findings"
+  ],
+  "dependencyReview": {
+    "previousArtifactHashesUnchanged": 770,
+    "addedBinaryAndMetadataArtifacts": 10,
+    "addedSourceArtifacts": 3,
+    "officialBinaryAndMetadataDownloads": {
+      "io.github.sjacek.promptjig:io.github.sjacek.promptjig.gradle.plugin:0.3.1:io.github.sjacek.promptjig.gradle.plugin-0.3.1.pom": {
+        "sha256": "e8db379521c00aed15b3432a2e68e1baf4b8cfc1871d265fbbee9a3b22947323",
+        "url": "https://plugins.gradle.org/m2/io/github/sjacek/promptjig/io.github.sjacek.promptjig.gradle.plugin/0.3.1/io.github.sjacek.promptjig.gradle.plugin-0.3.1.pom",
+        "sidecar": "sha1",
+        "sidecarValue": "25e5613e59261b6b9d186bffc11f0e5639ecf155"
+      },
+      "io.github.sjacek.promptjig:promptjig-gradle-plugin:0.3.1:promptjig-gradle-plugin-0.3.1.jar": {
+        "sha256": "f0fb019467d9bfe8324e03bbebaa222e84de6bb3eb034610c00c8de7abee4014",
+        "url": "https://plugins.gradle.org/m2/io/github/sjacek/promptjig/promptjig-gradle-plugin/0.3.1/promptjig-gradle-plugin-0.3.1.jar",
+        "sidecar": "sha1",
+        "sidecarValue": "1f133e913f48485931d55d565e0559781d689eb4"
+      },
+      "io.github.sjacek.promptjig:promptjig-gradle-plugin:0.3.1:promptjig-gradle-plugin-0.3.1.pom": {
+        "sha256": "2a8b38327201eb906a39f52ca7b5dafcd8a7975c7cb0c24d46bd511aee238ac2",
+        "url": "https://plugins.gradle.org/m2/io/github/sjacek/promptjig/promptjig-gradle-plugin/0.3.1/promptjig-gradle-plugin-0.3.1.pom",
+        "sidecar": "sha1",
+        "sidecarValue": "d53a3ce25dbe5429b7ab0ff7ae3bc9aa0c808a62"
+      },
+      "io.github.sjacek.promptjig:promptjig-gradle-plugin:0.3.1:promptjig-gradle-plugin-0.3.1.module": {
+        "sha256": "2d6ffd6b80d35ab524d53c904edd02e6e5841e2bb4d5deaeb8ee9829b6453735",
+        "url": "https://plugins.gradle.org/m2/io/github/sjacek/promptjig/promptjig-gradle-plugin/0.3.1/promptjig-gradle-plugin-0.3.1.module",
+        "sidecar": "sha1",
+        "sidecarValue": "dee50f0081c050773de18e846d4e29cda608e0f9"
+      },
+      "io.github.sjacek.promptjig:promptjig-core:0.3.1:promptjig-core-0.3.1.jar": {
+        "sha256": "ea73c23801d9a080255db3147c6286ca3948e5666aeac40f55e8c7a474b19927",
+        "url": "https://repo.maven.apache.org/maven2/io/github/sjacek/promptjig/promptjig-core/0.3.1/promptjig-core-0.3.1.jar",
+        "sidecar": "sha512",
+        "sidecarValue": "a404178bc49114a4e775629b78b943004d92d386cbbcb07ad929cb3a122f7b2c9b24c87df21c23ad48ebcbeb1b761ba42fbff199a3e009557124fef2bdf5f548",
+        "verifiedSigner": "0AE0A30C093FDE0EA02E7502ADF2B8E6FA34B930"
+      },
+      "io.github.sjacek.promptjig:promptjig-core:0.3.1:promptjig-core-0.3.1.pom": {
+        "sha256": "3095e8870321afc92119967cadc37b96304f850546b04c149ac3f5b247d4f5d1",
+        "url": "https://repo.maven.apache.org/maven2/io/github/sjacek/promptjig/promptjig-core/0.3.1/promptjig-core-0.3.1.pom",
+        "sidecar": "sha512",
+        "sidecarValue": "c6557e82efccde039e21d53b96a8f0f2480626d7eff8a7d5db2cc0e30bfed90482fb9a2c12fe0e38b760eff50ce4e06f91e2b518f26eac530c43187a74765308",
+        "verifiedSigner": "0AE0A30C093FDE0EA02E7502ADF2B8E6FA34B930"
+      },
+      "io.github.sjacek.promptjig:promptjig-core:0.3.1:promptjig-core-0.3.1.module": {
+        "sha256": "bbd6e41cd9d42828c553359e58fb38d693fd6179aef92944918a2a4ea182d150",
+        "url": "https://repo.maven.apache.org/maven2/io/github/sjacek/promptjig/promptjig-core/0.3.1/promptjig-core-0.3.1.module",
+        "sidecar": "sha512",
+        "sidecarValue": "786aee83bcbf728caeff57e6d1c17bac94a2379ff3ddfae2994944a33579662a1c7b14ae15b8a2618200c684f578c4f7c6036066221540834df3249b098b47f8",
+        "verifiedSigner": "0AE0A30C093FDE0EA02E7502ADF2B8E6FA34B930"
+      },
+      "io.github.sjacek.promptjig:promptjig-spring-ai:0.3.1:promptjig-spring-ai-0.3.1.jar": {
+        "sha256": "d46b9278904ab434c63d87fa3918340e04f7709a52ca6e20cfad6b661b65275d",
+        "url": "https://repo.maven.apache.org/maven2/io/github/sjacek/promptjig/promptjig-spring-ai/0.3.1/promptjig-spring-ai-0.3.1.jar",
+        "sidecar": "sha512",
+        "sidecarValue": "115fafa45dcd80da2035ac841b15b330929db18e6d4925e14d3a90bee35ba4a383e57adb9c7b42679e1f510e0382e1d1485ff264dbf58bcf268cd2b47e2615db",
+        "verifiedSigner": "0AE0A30C093FDE0EA02E7502ADF2B8E6FA34B930"
+      },
+      "io.github.sjacek.promptjig:promptjig-spring-ai:0.3.1:promptjig-spring-ai-0.3.1.pom": {
+        "sha256": "f51ef86a36a9c6f86088de73f58b4097152490c1af03b4bc05c9f6619663f831",
+        "url": "https://repo.maven.apache.org/maven2/io/github/sjacek/promptjig/promptjig-spring-ai/0.3.1/promptjig-spring-ai-0.3.1.pom",
+        "sidecar": "sha512",
+        "sidecarValue": "4a6015a8a0d0e71dae67bae02bb630bea8468e17e561834cf9f27c37bf4a44d4655496fe55cd66bf00e51519752d41a91364e1d4f1d45191fba9fbc9597c212b",
+        "verifiedSigner": "0AE0A30C093FDE0EA02E7502ADF2B8E6FA34B930"
+      },
+      "io.github.sjacek.promptjig:promptjig-spring-ai:0.3.1:promptjig-spring-ai-0.3.1.module": {
+        "sha256": "df1e0d3a17996bc65b13afc7d1859b1237590b2a67b64cc7456f299b951c3d9d",
+        "url": "https://repo.maven.apache.org/maven2/io/github/sjacek/promptjig/promptjig-spring-ai/0.3.1/promptjig-spring-ai-0.3.1.module",
+        "sidecar": "sha512",
+        "sidecarValue": "5893176b24d827fa6233bb901b44fddbbadb68a12e43603b9878e54dea48211c8015aa4f6a7bd71dec305700b89ac3c50af6bd8073e00d6a259ac508aada4531",
+        "verifiedSigner": "0AE0A30C093FDE0EA02E7502ADF2B8E6FA34B930"
+      }
+    },
+    "officialSourceDownloads": {
+      "io.github.sjacek.promptjig:promptjig-core:0.3.1:promptjig-core-0.3.1-sources.jar": {
+        "sha256": "39fbd4cd1bcede393bcc84065d49c622813ce608073ddf5dd320b5359378d59b",
+        "sidecar": "sha512",
+        "sidecarValue": "66f98ead92356d68232706dd0ec37b4d8ad4954c9de5be1e60f1ac740d659e083385dfafcdbce6ba22c409ef407fdef9f6d673a98a98878a053dcdf73a72db28",
+        "url": "https://repo.maven.apache.org/maven2/io/github/sjacek/promptjig/promptjig-core/0.3.1/promptjig-core-0.3.1-sources.jar"
+      },
+      "io.github.sjacek.promptjig:promptjig-gradle-plugin:0.3.1:promptjig-gradle-plugin-0.3.1-sources.jar": {
+        "sha256": "1b4975c1bfc5888d69454d12c5c1b73ab4245119c74e05a37335efd124d9df4c",
+        "sidecar": "sha1",
+        "sidecarValue": "a5968b4f3a7b90466e33a658b43ecd4eb3fbd552",
+        "url": "https://plugins.gradle.org/m2/io/github/sjacek/promptjig/promptjig-gradle-plugin/0.3.1/promptjig-gradle-plugin-0.3.1-sources.jar"
+      },
+      "io.github.sjacek.promptjig:promptjig-spring-ai:0.3.1:promptjig-spring-ai-0.3.1-sources.jar": {
+        "sha256": "b4dff01beb417cd4d2d0ae5d13adb393f8b80fc06dbbb161f341c5d21a7bd96d",
+        "sidecar": "sha512",
+        "sidecarValue": "d5ead1f02027de116ff51a48055e56ae2038e4bafb96851c2ae8987387adc42b41df0d0918d78df079db8e4638db948bf8d6fdbb339d80739a7adbdde50c8a15",
+        "url": "https://repo.maven.apache.org/maven2/io/github/sjacek/promptjig/promptjig-spring-ai/0.3.1/promptjig-spring-ai-0.3.1-sources.jar"
+      }
+    },
+    "sourceArchivesComparedWithReleaseTag": [
+      {
+        "module": "core",
+        "sha256": "39fbd4cd1bcede393bcc84065d49c622813ce608073ddf5dd320b5359378d59b",
+        "url": "https://repo.maven.apache.org/maven2/io/github/sjacek/promptjig/promptjig-core/0.3.1/promptjig-core-0.3.1-sources.jar",
+        "tag": "v0.3.1",
+        "sourcesCompared": 19
+      },
+      {
+        "module": "spring-ai",
+        "sha256": "b4dff01beb417cd4d2d0ae5d13adb393f8b80fc06dbbb161f341c5d21a7bd96d",
+        "url": "https://repo.maven.apache.org/maven2/io/github/sjacek/promptjig/promptjig-spring-ai/0.3.1/promptjig-spring-ai-0.3.1-sources.jar",
+        "tag": "v0.3.1",
+        "sourcesCompared": 6
+      },
+      {
+        "module": "gradle-plugin",
+        "sha256": "1b4975c1bfc5888d69454d12c5c1b73ab4245119c74e05a37335efd124d9df4c",
+        "url": "https://plugins.gradle.org/m2/io/github/sjacek/promptjig/promptjig-gradle-plugin/0.3.1/promptjig-gradle-plugin-0.3.1-sources.jar",
+        "tag": "v0.3.1",
+        "sourcesCompared": 11
+      }
+    ],
+    "ideUpdatePassed": true,
+    "ideCheckVerifyDownloadsPassed": true,
+    "verifiedSourceAndSdkArtifacts": 217,
+    "existingExactUnavailableSourceRecords": 1,
+    "unavailableSourcePolicyUnchanged": true,
+    "broadTrustExceptionsAdded": false
+  },
+  "supportingTests": {
+    "cacheAndMaven": {
+      "tests": 52,
+      "failures": 0,
+      "skipped": 1,
+      "skipReason": "existing Windows symlink test"
+    },
+    "idePolicy": {
+      "tests": 17,
+      "failures": 0
+    },
+    "dependencyPolicyPassed": true,
+    "userDocsValidator": {
+      "tests": 6,
+      "failures": 0
+    },
+    "jekyll": {
+      "buildPassed": true,
+      "pages": 12,
+      "internalLinksAndAssets": 225,
+      "image": "ghcr.io/actions/jekyll-build-pages@sha256:6791ebfd912185ed59bfb5fb102664fa872496b79f87ff8b9cfba292a7345041"
+    },
+    "analysisDocs": {
+      "strictBuildPassed": true,
+      "pages": 40,
+      "linksAndMigrationChecksPassed": true
+    }
+  },
+  "historicalReleaseEvidence": "docs/evidence/publication-0.3.1.json",
+  "localLogHashes": {
+    "build/runtime-upgrade-0.3.1/windows-jdk25.log": "50ee659cfdc9cbed0ac2260c1f73c94f775d7bb6c31d23bb82204153ed0bd3fa",
+    "build/runtime-upgrade-0.3.1/windows-resolution.log": "e0227a9af6d2579cd563f06116e5411eae3ab9993203c70a9411055b53ea91f2",
+    "build/runtime-upgrade-0.3.1/packaged-windows.log": "3896e336fcb00a2e865f2c1f70cc6543b3aa2ec03722a6b45ac7c3d77cd05d26",
+    "build/runtime-upgrade-0.3.1/cache-tests.log": "6ef5336e242f2fb7dbd76d4133263086d79a5bda9f9e00795a5a03f2aa6047a2",
+    "build/runtime-upgrade-0.3.1/ide-tests.log": "d17e784c6c3fb5d976bcf298bd87bbc4bf07c56e5a69b541c76a08459cd9acb4",
+    "build/runtime-upgrade-0.3.1/linux-volume-container.log": "c4ccc5f2c731e18bc90361b4c07b614e29006ad02bada88a8c5099380893f83a",
+    "build/runtime-upgrade-0.3.1/linux-volume-results/linux-jdk17.log": "0274d7796179127e23449fdbe3a4ed52103a52aeb9f72f2b1b18e633c72bec07",
+    "build/runtime-upgrade-0.3.1/linux-volume-results/linux-configuration-cache.log": "93be9bc5f8e27885b7eb38af68633523260accb653ce8c184e3d0c910f2048db",
+    "build/runtime-upgrade-0.3.1/linux-volume-results/linux-resolution.log": "7ad5864d4724d504949516dadb524ea91e14ab01ce501991116871819e4cf164",
+    "build/runtime-upgrade-0.3.1/linux-volume-results/linux-packaged-demo.log": "f0b7c8646c3f1cab2bd104a3a386fec12df9c204f5c26cc91b8027d5a47e1328"
+  },
+  "limitations": [
+    "No hosted runner confirmation of this working tree before push.",
+    "No real-model inference was repeated; deterministic synthetic/loopback tests only.",
+    "tichodroma-svc and other standalone example pins were not upgraded."
+  ]
+}
