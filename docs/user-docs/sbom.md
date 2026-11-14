@@ -5,9 +5,10 @@ permalink: /sbom/
 
 # Software bill of materials
 
-**SBOM attachments are introduced in the unreleased 0.3.0 candidate.** They will
-be available after that version is published. Portal 0.1.0 and the Central 0.2.0
-libraries keep their original files and do not gain attachments retroactively.
+**Maven Central 0.3.0 includes SBOM attachments.** The Gradle plugin 0.3.0 is
+available in Plugin Portal, but its separate SBOM JAR was omitted during
+publication. The fix is prepared for **0.3.1, which is not published yet**.
+Older releases keep their original files and do not gain attachments retroactively.
 
 Promptjig publishes CycloneDX 1.6 JSON inventories for each distribution,
 separately for these scopes:
@@ -35,7 +36,7 @@ the JSON with the same artifact version as your JAR:
 | test | `cyclonedx-test` / `json` |
 | provided | `cyclonedx-provided` / `json` |
 
-For example, **after 0.3.0 is published**, the core runtime inventory is:
+For example, the published 0.3.0 core runtime inventory is:
 
 ```text
 https://repo.maven.apache.org/maven2/io/github/sjacek/promptjig/promptjig-core/0.3.0/promptjig-core-0.3.0-cyclonedx.json
@@ -48,11 +49,11 @@ well as signature validity. The main JAR's SHA-256 appears in the SBOM's
 
 ## Gradle Plugin Portal
 
-The Portal distribution carries the four documents in a separate classifier
-JAR. **After 0.3.0 is published**, its URL is:
+The corrected Portal distribution carries the four documents in a separate
+classifier JAR. **After 0.3.1 is published**, its URL will be:
 
 ```text
-https://plugins.gradle.org/m2/io/github/sjacek/promptjig/promptjig-gradle-plugin/0.3.0/promptjig-gradle-plugin-0.3.0-sbom.jar
+https://plugins.gradle.org/m2/io/github/sjacek/promptjig/promptjig-gradle-plugin/0.3.1/promptjig-gradle-plugin-0.3.1-sbom.jar
 ```
 
 Open it as a ZIP and read:

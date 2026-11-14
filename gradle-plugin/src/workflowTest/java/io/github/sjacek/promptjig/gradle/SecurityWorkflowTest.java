@@ -72,6 +72,9 @@ class SecurityWorkflowTest {
     @Test void auditedSbomsAreTransferredFromTheAcceptedRunAndVerifiedBeforeSigningOrUpload() throws Exception {
         String security = document("compatibility").path("jobs").path("dependency-security").toString();
         assertTrue(security.indexOf("security_reports.py scan") < security.indexOf("publication_sboms.py export"));
+        assertTrue(security.indexOf("publication_sboms.py export") < security.indexOf("test_portal_publication.py"));
+        assertTrue(security.indexOf("test_portal_publication.py") < security.indexOf(":core:publishAllPublicationsToStagingRepository"),
+                "The clean Portal regression must precede staging that could hide a missing archive producer");
         assertTrue(security.indexOf("publication_sboms.py export") < security.indexOf("test_central_signing.py"));
         assertTrue(security.contains("verifyPortalPublicationArtifacts"));
         for (String name : List.of("release", "release-central")) {

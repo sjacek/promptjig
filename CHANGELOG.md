@@ -3,18 +3,28 @@
 Changes to Promptjig's features, compatibility and availability.
 Changes under **Unreleased** are not yet published.
 
-## Unreleased
+## Unreleased — 0.3.1
+
+### Changed
+
+- Read the user guide in a full-width layout with a section index beside each
+  article. On smaller screens, expand the documentation menu and section index
+  above the text.
+
+### Fixed
+
+- Inspect the Gradle plugin's dependencies using the separate `-sbom.jar`
+  downloaded from Plugin Portal. It describes runtime, build, test and provided
+  dependencies without adding them to your application's classpath. This
+  attachment was missing from version 0.3.0.
+
+## 0.3.0 — 2026-11-14
+
+The Gradle plugin is available in Plugin Portal. The core, Spring AI runtime and
+Maven plugin are available in Maven Central.
 
 ### Added
 
-- Download a CycloneDX SBOM alongside each new release. Maven Central provides
-  signed JSON files for runtime, build, test and provided dependencies; the
-  Gradle Plugin Portal distribution carries the same scopes in a separate SBOM
-  JAR. Each inventory identifies the main JAR by its SHA-256.
-
-- Follow a dedicated user guide for installation, contracts, Java generation,
-  Spring AI integration, version history and troubleshooting, with a fictional
-  public-announcement walkthrough.
 - Validate prompt contracts in Maven projects before compilation. Contract and
   template errors appear together in the build log and JSON/text reports.
 - Generate Java 17 records, enums and contract constants during `mvn verify`,
@@ -24,13 +34,14 @@ Changes under **Unreleased** are not yet published.
   versions with `promptjig:lock`, and use a CI baseline to detect rewritten
   history. Normal validation never changes your lock file.
 - Try Maven validation and generation with a small fictional public-announcement
-  example, without connecting a model. The Maven adapter is planned for 0.3.0
-  and is not yet available from Maven Central.
-
-### Fixed
-
-- Verify Maven integrations with a patched archive decompressor, removing a known
-  JVM-crash vulnerability from the integration test tooling.
+  example, without connecting a model. The Maven adapter is available from
+  Maven Central as version 0.3.0.
+- Follow a dedicated user guide for installation, contracts, Java generation,
+  Spring AI integration, version history and troubleshooting, with a fictional
+  public-announcement walkthrough.
+- Inspect the dependencies of the Maven Central libraries and Maven plugin using
+  signed CycloneDX SBOMs. Separate inventories describe runtime, build, test and
+  provided dependencies, and identify the matching main JAR by its SHA-256.
 
 ### Changed
 
@@ -39,11 +50,14 @@ Changes under **Unreleased** are not yet published.
   escape the contract directory.
 - Keep build diagnostics readable when file names or error text contain control
   characters, Unicode line separators or text-direction controls.
-- Release checks now reject known High/Critical dependency findings and incomplete
-  security evidence before either publishing destination can be used.
 - Run the standalone Spring AI pilot with core/runtime 0.2.0 from Maven Central,
   without building Promptjig from source. The build plugin uses its independent
   Portal release 0.1.0.
+
+### Known limitations
+
+- The Gradle plugin works normally, but its separate SBOM JAR is missing from
+  Plugin Portal. Maven Central SBOMs are available for all three artifacts.
 
 ## 0.2.0 — 2026-11-13
 
@@ -66,10 +80,9 @@ The Gradle plugin remains available as version 0.1.0 in Plugin Portal.
 - Use `promptjig-spring-ai` to render messages from your contract and read model
   answers into generated Java models. Invalid prompt resources are detected
   when contracts are loaded.
-- Prepare signed core and Spring AI library packages for Maven Central, including
-  sources and Javadocs. The manual release workflow checks the tested release
-  commit and can resume an accepted deployment without uploading it again.
-  Both libraries are publicly available as version 0.2.0.
+- Add the core and Spring AI runtime libraries to your application directly from
+  Maven Central as version 0.2.0, without a local Promptjig checkout. Sources and
+  Javadocs are available alongside the libraries.
 - Find out which response fields were rejected or repaired without including
   extracted values or unexpected field names in validation findings. Contract
   versions, fingerprints and sensitivity labels are available for your
@@ -110,8 +123,6 @@ The Gradle plugin remains available as version 0.1.0 in Plugin Portal.
 
 ### Known limitations
 
-- Remote publication of the standalone core and Spring AI runtime libraries
-  remains pending. Use the included-build setup in the [runtime guide](docs/spring-ai.md).
 - Maven build integration is not yet available.
 
 ## 0.1.0

@@ -1,12 +1,13 @@
 # Release procedure
 
-Published Gradle plugin: **0.1.0** in the
-[Plugin Portal](https://plugins.gradle.org/plugin/io.github.sjacek.promptjig/0.1.0),
-availability confirmed on 2026-11-12. That version is immutable; further releases
+Published Gradle plugin: **0.3.0** in the
+[Plugin Portal](https://plugins.gradle.org/plugin/io.github.sjacek.promptjig/0.3.0),
+availability confirmed on 2026-11-14. That version is immutable; further releases
 need a new build version, reviewed commit and release tag.
 Verification and local staging do not upload artifacts.
-The core and Spring AI runtime libraries **0.2.0** were published to Maven Central
-on 2026-11-13, including strict response reading by default. Set the shared
+The core and Spring AI runtime libraries and Maven adapter **0.3.0** were published
+to Maven Central on 2026-11-14. Strict response reading has been the default since
+0.2.0. Set the shared
 publication/runtime version in `gradle/libs.versions.toml` (`versions.promptjig`);
 the root build reads it for
 all project publications. Gradle Plugin Portal publication remains independent.
@@ -28,16 +29,17 @@ This verifies the build without publishing credentials. Tests cover an installed
 plugin marker from a local Maven repository, classloader isolation, explicit
 lock writes, baseline protection, configuration cache and relocatable build
 cache reports. Consumer matrix results are recorded in the stage-1 report;
-the eight-cell workflow must pass on the reviewed revision.
+all 20 Compatibility jobs must pass on the reviewed revision.
 
 Validate the Plugin Portal publication separately, with Portal credentials
 configured in Gradle user properties or the environment:
 
 ```powershell
-.\gradlew.bat :gradle-plugin:publishPlugins --validate-only --console=plain
+.\gradlew.bat :gradle-plugin:publishPlugins --validate-only -PpublicationSboms=true --console=plain
 ```
 
-This contacts the Portal without uploading artifacts. It still requires
+Prepare the current [audited SBOM set](sbom-publication.md) first. This command
+builds its classifier JAR and contacts the Portal without uploading artifacts. It still requires
 `GRADLE_PUBLISH_KEY` / `GRADLE_PUBLISH_SECRET` (or `gradle.publish.key` /
 `gradle.publish.secret` user properties), so ordinary CI and pull requests must
 not depend on it. Both the validation and upload steps of the manual release
@@ -93,17 +95,19 @@ and MIT metadata:
 .\gradlew.bat :core:publishAllPublicationsToStagingRepository :spring-ai:publishAllPublicationsToStagingRepository :maven-plugin:publishAllPublicationsToStagingRepository
 ```
 
-The unreleased 0.3.0 candidate stages `promptjig-core`, `promptjig-spring-ai`
+The unreleased 0.3.1 candidate stages `promptjig-core`, `promptjig-spring-ai`
 and `promptjig-maven-plugin` under their respective
 `build/staging-repository/` directories. It does not upload to Maven Central.
 The separate manual **Publish Maven Central artifacts** workflow prepares signed
 packages and uploads them through the Central Publisher API. It is described in
 [Maven Central releases](maven-central.md), including required environment secrets,
 local verification, release guards and status-only recovery. Both libraries are
-publicly available as 0.2.0. Plugin Portal publishes the build plugin separately;
+publicly available as 0.3.0, alongside the Maven adapter. Plugin Portal publishes the build plugin separately;
 it does not make the runtime coordinates available.
 
-The unreleased 0.3.0 release paths also require [audited SBOM attachments](sbom-publication.md).
+The 0.3.1 release paths require [audited SBOM attachments](sbom-publication.md)
+and a clean Portal publication regression before staging. The published 0.3.0
+Portal plugin omitted its SBOM JAR; 0.3.0 Central attachments are available.
 Central signs four classifier JSONs per module; Portal receives a separate
 implementation `-sbom.jar`, keeping the POM-only marker unchanged. Release guards
 select the exact successful Compatibility run whose SBOM artifact is downloaded
@@ -123,9 +127,10 @@ matches the build's version and HEAD, reruns acceptance/metadata validation, and
 then invokes `:gradle-plugin:publishPlugins`. The first release's Portal approval
 is complete. Verify actual availability of every new version after publishing;
 a successful upload alone does not establish public availability.
-The owner must select a commit whose **Compatibility** workflow is green. The
-release workflow does not query the outcome of an earlier Compatibility run;
-its own build rerun does not replace that eight-cell acceptance requirement.
+The owner must select a commit whose latest **Compatibility** workflow is green.
+Both release workflows query that exact commit and require all 20 jobs to have
+executed successfully. They restore the accepted run's audited SBOM artifact;
+their own build rerun does not replace the full acceptance requirement.
 
 ## Service adoption
 

@@ -1,0 +1,81 @@
+{
+  "schemaVersion": 1,
+  "checkedAt": "2026-11-14T09:25:50.190942+00:00",
+  "candidateVersion": "0.3.1",
+  "baseCommit": "11517339c800af3bdc42ca5c6e8d5c4e3565b566",
+  "sourceDirty": true,
+  "branch": "fix/portal-sbom-0.3.1",
+  "platform": "Linux JDK 25; consumer inventory JDK 21",
+  "dependencySnapshot": {
+    "compatibilityRun": 43574895466,
+    "downloadedFiles": 1437
+  },
+  "regression": {
+    "tests": 3,
+    "beforeFixGraphCheck": "failed for upload and --validate-only",
+    "afterFix": "passed",
+    "covers": [
+      "producer ordering",
+      "missing classifier rebuilt in upload and validate-only modes",
+      "configuration-cache reuse",
+      "changed audited JSON rejected before publisher",
+      "missing audited manifest rejected before publisher",
+      "actual pinned publisher selects exact audited archive bytes"
+    ],
+    "transport": "only publisher actions replaced; unreachable loopback endpoint; verification container network=none"
+  },
+  "nativeTests": {
+    "core": {
+      "test": 132,
+      "testValidator3": 132
+    },
+    "gradle-plugin": {
+      "test": 22,
+      "workflowTest": 35
+    },
+    "maven-plugin": {
+      "test": 25
+    },
+    "spring-ai": {
+      "test": 53
+    }
+  },
+  "pythonTests": {
+    "security": 37,
+    "centralPublication": 33,
+    "portalPublication": 3,
+    "disposableRealSigning": 1,
+    "userDocsValidatorWindows": 6
+  },
+  "dependencyScan": {
+    "scopes": 16,
+    "findings": {},
+    "passed": true
+  },
+  "staging": {
+    "centralPayloads": 27,
+    "verifiedTestSignatures": 27,
+    "centralSbomSignatures": 12,
+    "bundleFiles": 162,
+    "portalSbomJarSha256": "bb63d0dbf6062d36e490c97f444501cd9e082b587799cf6ea092d572c729ca4e",
+    "portalArchiveEntries": [
+      "META-INF/LICENSE",
+      "META-INF/MANIFEST.MF",
+      "META-INF/sbom/build.cdx.json",
+      "META-INF/sbom/manifest.json",
+      "META-INF/sbom/provided.cdx.json",
+      "META-INF/sbom/runtime.cdx.json",
+      "META-INF/sbom/test.cdx.json"
+    ]
+  },
+  "verificationMetadataChanged": false,
+  "externalDependencyVersionsChanged": false,
+  "actionlint": "passed",
+  "gitDiffCheck": "passed",
+  "limits": [
+    "Local dirty candidate; new commit and complete GitHub Compatibility are still required.",
+    "No registry contact from the Portal regression; acceptance of the new release requires authorized publication.",
+    "No release key, commit, push, tag or publication used."
+  ],
+  "localEvidence": "build/portal-sbom-0.3.1/linux-aedf19df267c436aaca5130712218d67"
+}

@@ -1,0 +1,49 @@
+import org.gradle.api.Action
+import org.gradle.api.GradleException
+import org.gradle.api.Task
+
+import java.util.zip.ZipFile
+
+/** Inspect the real publisher's request files instead of running its authenticated upload action. */
+class VerifyPortalRequest implements Action<Task>, Serializable {
+    File expectedJar
+    File auditedModule
+
+    @Override
+    void execute(Task publisher) {
+        if (!expectedJar.isFile()) {
+            throw new GradleException('Portal request is missing the SBOM JAR; its producer task did not run')
+        }
+        def collector = publisher.class.classLoader.loadClass('com.gradle.publish.PublishTask')
+                .getDeclaredMethod('collectArtifacts')
+        collector.setAccessible(true)
+        Map artifacts = collector.invoke(publisher) as Map
+        if (!artifacts.values().any { (it as File).canonicalFile == expectedJar.canonicalFile }) {
+            throw new GradleException('Portal request omitted the freshly built SBOM JAR')
+        }
+        // Compare the actual archive bytes, not just the task graph or a prebuilt staging repository.
+        new ZipFile(expectedJar).withCloseable { ZipFile archive ->
+            ['runtime.cdx.json', 'build.cdx.json', 'test.cdx.json', 'provided.cdx.json', 'manifest.json'].each { name ->
+                def entry = archive.getEntry('META-INF/sbom/' + name)
+                if (entry == null || !Arrays.equals(archive.getInputStream(entry).withCloseable { it.readAllBytes() },
+                        new File(auditedModule, name).bytes)) {
+                    throw new GradleException('Portal SBOM JAR differs from the audited document: ' + name)
+                }
+            }
+        }
+        publisher.logger.lifecycle('PORTAL_PUBLICATION_PROBE_OK validateOnly=' + publisher.validateOnly.getOrElse(false))
+    }
+}
+
+gradle.projectsEvaluated { current ->
+    def owner = current.rootProject.project(':gradle-plugin')
+    File archive = owner.layout.buildDirectory.file("libs/gradle-plugin-${owner.version}-sbom.jar").get().asFile
+    File audited = current.rootProject.layout.buildDirectory.dir('publication-sboms/gradle-plugin').get().asFile
+    owner.tasks.named('publishPlugins') {
+        // Keep the production task type, options, inputs and dependency graph. Replace only its actions.
+        // The unreachable loopback endpoint is a second safeguard if a future publisher restores an upload action.
+        pluginPortalUrl.set('http://127.0.0.1:1/never-publish')
+        actions.clear()
+        doLast(new VerifyPortalRequest(expectedJar: archive, auditedModule: audited))
+    }
+}

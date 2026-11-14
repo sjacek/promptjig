@@ -7,6 +7,8 @@
 docs/user-docs/.jekyll-cache/
 docs/user-docs/.jekyll-metadata
 docs/user-docs/_site/
+# Local browser checks and screenshots are not part of the published guide.
+/output/playwright/
 # CI copies the single reviewed checksum policy into these isolated example builds.
 examples/*/gradle/verification-metadata.xml
 **/__pycache__/

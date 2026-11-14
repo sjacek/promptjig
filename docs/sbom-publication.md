@@ -1,8 +1,11 @@
 # SBOM release attachments
 
-Starting with the **unreleased 0.3.0** candidate, release workflows attach the
-audited CycloneDX 1.6 documents to both registries. Previously published Portal
-0.1.0 and Central 0.2.0 artifacts remain immutable and have no such attachments.
+Maven Central **0.3.0** includes the audited CycloneDX 1.6 JSON attachments.
+The published Portal **0.3.0** plugin is usable but is missing its separate SBOM
+JAR: the publisher selected only files that existed, and its task graph did not
+build that classifier. The **unreleased 0.3.1** patch fixes that dependency for
+upload and `--validate-only`. Existing versions remain immutable; no attachments
+are added retroactively. Portal 0.1.0 and Central 0.2.0 also have no SBOM attachments.
 This is publication of inventory documents, not an SBOM attestation or a claim
 that a distribution contains no vulnerabilities.
 
@@ -38,7 +41,13 @@ The reviewed plugin-publish **2.2.1** client collects all implementation
 publication artifacts, including classifier JARs. The offline
 `verifyPortalPublicationArtifacts` task exercises that exact selection method
 without running its network/upload action or reading publishing credentials.
-This verifies the pinned client's request preparation; actual registry
+That collector check alone cannot detect a missing producer if staging already
+built the archive. The 0.3.1 regression additionally invokes the real
+`publishPlugins` task after deleting the classifier, in both publisher modes
+and with configuration-cache reuse. Only the upload action is replaced; native
+SBOM verification and JAR production execute unchanged. Missing or modified
+audited inputs must stop the task before request collection, even with a cached JAR.
+These checks verify the pinned client's request preparation; actual registry
 availability/acceptance is confirmed only after an authorized publication.
 The [CycloneDX publisher guide](https://github.com/CycloneDX/cyclonedx-gradle-plugin#publishing-the-direct-sbom)
 also documents the Portal JSON-classifier limitation.
@@ -58,7 +67,9 @@ pollute the portable audited set. The signing test revalidates that set afterwar
 2. The job exports the unchanged 16 JSON documents plus portable manifests under
    `build/publication-sboms/`. The manifests contain relative source names and
    hashes, never local cache paths, credentials, model inputs or scanner workspaces.
-3. CI stages all attachments, checks Central/Portal contents and runs real Gradle
+3. Before staging can hide a missing producer, CI exercises clean Portal
+   publication through `test_portal_publication.py`, without credentials or upload.
+   It then stages all attachments, checks Central/Portal contents and runs real Gradle
    signing with a disposable GPG test key. Only after success does it upload the
    `publication-sboms` artifact for that run, with 30-day retention.
 4. Each release guard returns the exact accepted Compatibility run ID. The
@@ -87,6 +98,7 @@ as described in [dependency security](dependency-security.md). Then:
 
 ```bash
 python3 -B scripts/publication_sboms.py export --commit "$(git rev-parse HEAD)"
+python3 -B -m unittest discover -s scripts -p 'test_portal_publication.py' -v
 ./gradlew :core:publishAllPublicationsToStagingRepository :spring-ai:publishAllPublicationsToStagingRepository :maven-plugin:publishAllPublicationsToStagingRepository :gradle-plugin:publishAllPublicationsToStagingRepository -PpublicationSboms=true --offline --dependency-verification=strict --configuration-cache --configuration-cache-problems=fail
 python3 -B scripts/central_publication.py verify-staging
 python3 -B scripts/publication_sboms.py verify-portal
@@ -97,6 +109,12 @@ Use `gradlew.bat` on Windows. Set `PROMPTJIG_PYTHON` to the full path of a suita
 Python 3.11+ executable if `python` on PATH is unsuitable. The local staging task
 supports configuration cache; the explicit Portal client-inspection task reads
 a live publisher model and intentionally does not. No command above uploads.
+The regression uses an init script under `testing/publication/` to replace the
+publisher's actions with a check of its actual selected files and archive bytes.
+Its artifact inputs, options, producer dependencies and strict verification stay intact;
+an unreachable loopback URL provides an additional safeguard against upload.
+It restores intentionally damaged audited inputs in `finally` blocks. Run it
+serially against the prepared set; do not run a release concurrently in that tree.
 
 Bootstrap staging without `-PpublicationSboms=true` remains available while
 warming/building the candidate before native inventories exist. It is not a

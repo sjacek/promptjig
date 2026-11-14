@@ -40,6 +40,13 @@ subprojects { owner ->
                 into signingInputs
             }
             if (moduleName == 'gradle-plugin') {
+                owner.plugins.withId('com.gradle.plugin-publish') {
+                    owner.tasks.named('publishPlugins') {
+                        // plugin-publish collects existing files but does not schedule every attached artifact's
+                        // producer. Both upload and --validate-only must build/revalidate the classifier themselves.
+                        dependsOn sbomJar
+                    }
+                }
                 owner.tasks.register('verifyPortalPublicationArtifacts') {
                     group = 'verification'
                     description = 'Inspect the pinned Portal publisher artifact selection without credentials or network I/O.'
