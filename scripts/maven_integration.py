@@ -261,6 +261,20 @@ def require_native_runtime(text, version, java):
         raise ValueError('Native Maven/JDK did not match the selected matrix cell')
 
 
+def prepare_projects(directory, candidate):
+    """Test this candidate privately while the authored example keeps its published version."""
+    shutil.copytree(ROOT / 'maven-plugin/src/it/projects', directory)
+    example = directory / 'standalone-example'
+    shutil.copytree(ROOT / 'examples/maven', example, ignore=shutil.ignore_patterns('target', '.idea'))
+    pom = example / 'pom.xml'
+    model = ET.parse(pom)
+    selected = model.getroot().find('p:properties/p:promptjig.version', NS)
+    if selected is None:
+        raise ValueError('Standalone example must declare promptjig.version for candidate acceptance')
+    selected.text = candidate
+    model.write(pom, encoding='utf-8', xml_declaration=True)
+
+
 def verify(version, java_home):
     """Run native Invoker fixtures and the standalone example from restored downloads plus current staged bytes."""
     home = verification.distribution(version)  # Validate the exact pin before constructing output/work paths.
@@ -278,9 +292,7 @@ def verify(version, java_home):
     shutil.copytree(source, repository)
     policy = install_candidates(repository, work / 'consumer-checksums.sha256')
     projects = work / 'source-projects'
-    shutil.copytree(ROOT / 'maven-plugin/src/it/projects', projects)
-    shutil.copytree(ROOT / 'examples/maven', projects / 'standalone-example',
-                    ignore=shutil.ignore_patterns('target', '.idea'))
+    prepare_projects(projects, versions()['promptjig'])
     expected = sorted(path.parent.name for path in projects.glob('*/pom.xml'))
     pom = render(work, home, repository, projects)
     log = output / 'maven.log'

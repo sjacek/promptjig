@@ -184,6 +184,8 @@ class MavenDependencyTest(unittest.TestCase):
 
     def test_warmup_downloads_both_mavens_without_building_candidates_tests_or_hooks(self):
         original = integration.ROOT
+        candidate = '9.8.7'  # Deliberately independent of the authored example and the next release number.
+        catalog = integration.versions() | {'promptjig': candidate}
         (self.root / 'maven-plugin/src/it').mkdir(parents=True)
         (self.root / 'maven-plugin/src/it/pom.xml').write_bytes((original / 'maven-plugin/src/it/pom.xml').read_bytes())
         (self.root / 'gradle/libs.versions.toml').write_bytes((original / 'gradle/libs.versions.toml').read_bytes())
@@ -198,6 +200,7 @@ class MavenDependencyTest(unittest.TestCase):
             '<groupId>org.example</groupId><artifactId>core-library</artifactId><version>1.0</version>'
             '</dependency></dependencies></project>')
         with patch.object(integration, 'ROOT', self.root), patch.object(maven, 'extension'), \
+                patch.object(integration, 'versions', return_value=catalog), \
                 patch.object(maven, 'distribution', return_value=self.root / 'tool') as distributions, \
                 patch.object(maven, 'run') as run:
             integration.warm()
@@ -212,7 +215,8 @@ class MavenDependencyTest(unittest.TestCase):
             self.assertNotIn('core-bom', library)
             self.assertIn('<artifactId>promptjig-core</artifactId>', library)
             self.assertIn('<type>pom</type>', library)
-            self.assertIn('core-bom', (folder / 'core-model-repository/io/github/sjacek/promptjig/promptjig-core/0.3.0/promptjig-core-0.3.0.pom').read_text())
+            local_model = folder / 'core-model-repository/io/github/sjacek/promptjig/promptjig-core' / candidate
+            self.assertIn('core-bom', (local_model / f'promptjig-core-{candidate}.pom').read_text())
             self.assertNotIn('<artifactId>junit-jupiter</artifactId>', library)
             example_model = ET.parse(folder / 'example-dependencies.xml').getroot()
             bootstrap = [p for p in example_model.findall('p:build/p:plugins/p:plugin', integration.NS)
@@ -256,7 +260,31 @@ class MavenDependencyTest(unittest.TestCase):
             self.assertNotIn('invoker.mavenOpts', text, 'Fixtures must not replace native verification options')
         example = ET.parse(root / 'examples/maven/pom.xml').getroot()
         self.assertIsNone(example.find('p:parent', ns), 'The standalone example must not inherit a producer checkout')
-        self.assertEqual(integration.versions()['promptjig'], example.findtext('p:properties/p:promptjig.version', namespaces=ns))
+        self.assertRegex(example.findtext('p:properties/p:promptjig.version', namespaces=ns), r'^\d+\.\d+\.\d+$')
+        plugin = next(p for p in example.findall('p:build/p:plugins/p:plugin', ns)
+                      if p.findtext('p:artifactId', namespaces=ns) == 'promptjig-maven-plugin')
+        self.assertEqual('${promptjig.version}', plugin.findtext('p:version', namespaces=ns))
+
+    def test_standalone_acceptance_copy_uses_candidate_without_rewriting_published_example(self):
+        original = integration.ROOT / 'examples/maven/pom.xml'
+        published = original.read_bytes()
+        projects = self.root / 'candidate-projects'
+        integration.prepare_projects(projects, '9.8.7')
+        example = ET.parse(projects / 'standalone-example/pom.xml').getroot()
+        self.assertEqual('9.8.7', example.findtext('p:properties/p:promptjig.version', namespaces=integration.NS))
+        self.assertIsNone(example.find('p:parent', integration.NS))
+        self.assertEqual(published, original.read_bytes(), 'Candidate testing must not change the published consumer')
+        for pom in (integration.ROOT / 'maven-plugin/src/it/projects').rglob('pom.xml'):
+            relative = pom.relative_to(integration.ROOT / 'maven-plugin/src/it/projects')
+            self.assertEqual(pom.read_bytes(), (projects / relative).read_bytes())
+
+    def test_standalone_acceptance_rejects_an_example_without_a_version_override(self):
+        (self.root / 'maven-plugin/src/it/projects').mkdir(parents=True)
+        (self.root / 'examples/maven').mkdir(parents=True)
+        (self.root / 'examples/maven/pom.xml').write_text('<project/>')
+        with patch.object(integration, 'ROOT', self.root):
+            with self.assertRaisesRegex(ValueError, 'declare promptjig.version'):
+                integration.prepare_projects(self.root / 'candidate-projects', '9.8.7')
 
     def test_candidate_hashes_are_private_and_match_exact_current_staged_bytes(self):
         with patch.object(integration, 'ROOT', self.root), patch.object(integration, 'versions', return_value={'promptjig': '0.3.0'}):
@@ -299,7 +327,9 @@ class MavenDependencyTest(unittest.TestCase):
         for relative in ('maven-plugin/src/it/projects/first', 'examples/maven', 'downloads/maven/repository'):
             (self.root / relative).mkdir(parents=True)
         (self.root / 'maven-plugin/src/it/projects/first/pom.xml').write_text('<project/>')
-        (self.root / 'examples/maven/pom.xml').write_text('<project/>')
+        (self.root / 'examples/maven/pom.xml').write_text(
+            '<project xmlns="http://maven.apache.org/POM/4.0.0"><properties>'
+            '<promptjig.version>1.2.3</promptjig.version></properties></project>')
         output = self.root / 'maven-plugin/build/reports/maven/3.9.16-jdk-17'
         output.mkdir(parents=True)
         summary = output / 'summary.json'
@@ -324,7 +354,7 @@ class MavenDependencyTest(unittest.TestCase):
 
         with patch.object(integration, 'ROOT', self.root), \
                 patch.object(integration, 'java_version', return_value='17'), \
-                patch.object(integration, 'versions', return_value={'mavenInvoker': '3.9.2'}), \
+                patch.object(integration, 'versions', return_value={'mavenInvoker': '3.9.2', 'promptjig': '9.8.7'}), \
                 patch.object(integration, 'render', side_effect=lambda work, *args: work / 'pom.xml'), \
                 patch.object(integration, 'install_candidates', return_value=self.root / 'private-policy'), \
                 patch.object(maven, 'distribution', return_value=self.root / 'maven'), \
