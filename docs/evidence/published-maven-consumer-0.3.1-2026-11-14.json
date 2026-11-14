@@ -1,0 +1,233 @@
+{
+  "passed": true,
+  "checkedAt": "2026-11-14T12:05:39.113484+00:00",
+  "version": "0.3.1",
+  "platform": "Windows",
+  "maven": "3.9.16",
+  "jdk": "21.0.13",
+  "javaRelease": 17,
+  "checkoutCommit": "36e47550b62b1e59e342e971d6f65066bf799542",
+  "repositoryInitiallyEmpty": true,
+  "cacheRestored": false,
+  "localInstall": false,
+  "gradleStaging": false,
+  "onlyRepositoryUrl": "https://repo.maven.apache.org/maven2/",
+  "checksumMode": "enforce SHA-256, including cached local artifacts",
+  "mavenStrictChecksums": true,
+  "authoredExamplePinUnchanged": "0.3.0",
+  "repositoryPolicyUnchanged": true,
+  "tests": [
+    {
+      "name": "example.GeneratedModelTest",
+      "tests": 1
+    }
+  ],
+  "generatedJava": [
+    "target/generated-sources/prompt-contracts/example/generated/AnnouncementExtractionInput.java",
+    "target/generated-sources/prompt-contracts/example/generated/AnnouncementExtractionOutput.java",
+    "target/generated-sources/prompt-contracts/example/generated/AnnouncementExtractionPromptContract.java"
+  ],
+  "packagedResources": [
+    "prompts/events/announcement/announcement-extraction.prompt.yaml",
+    "prompts/events/announcement/system.st",
+    "prompts/events/announcement/user.st"
+  ],
+  "bytecodeMajors": [
+    61
+  ],
+  "jarSha256": "f4edebe9f0af4c5def6c02d1475b0bda035c0130a7400c4134a4c71806aa31e0",
+  "resolvedPromptjig": [
+    {
+      "identity": "io.github.sjacek.promptjig:promptjig-core:jar:0.3.1",
+      "sha256": "ea73c23801d9a080255db3147c6286ca3948e5666aeac40f55e8c7a474b19927",
+      "repository": "reviewed-central"
+    },
+    {
+      "identity": "io.github.sjacek.promptjig:promptjig-core:pom:0.3.1",
+      "sha256": "3095e8870321afc92119967cadc37b96304f850546b04c149ac3f5b247d4f5d1",
+      "repository": "reviewed-central"
+    },
+    {
+      "identity": "io.github.sjacek.promptjig:promptjig-maven-plugin:jar:0.3.1",
+      "sha256": "3939db3df2861a9bf060c7d37d9ce18ec9061257551ddb5baf81abe0718e92bc",
+      "repository": "reviewed-central"
+    },
+    {
+      "identity": "io.github.sjacek.promptjig:promptjig-maven-plugin:pom:0.3.1",
+      "sha256": "c285245194c0e708fcb6b49508404ccb694b68264bee159e54af85934efa3e03",
+      "repository": "reviewed-central"
+    }
+  ],
+  "reviewedPublicArtifacts": [
+    {
+      "identity": "io.github.sjacek.promptjig:promptjig-core:pom:0.3.1",
+      "source": "https://repo.maven.apache.org/maven2/io/github/sjacek/promptjig/promptjig-core/0.3.1/promptjig-core-0.3.1.pom",
+      "resolvedUrl": "https://repo.maven.apache.org/maven2/io/github/sjacek/promptjig/promptjig-core/0.3.1/promptjig-core-0.3.1.pom",
+      "sha256": "3095e8870321afc92119967cadc37b96304f850546b04c149ac3f5b247d4f5d1",
+      "size": 2487,
+      "verifiedSigner": "0AE0A30C093FDE0EA02E7502ADF2B8E6FA34B930"
+    },
+    {
+      "identity": "io.github.sjacek.promptjig:promptjig-core:jar:0.3.1",
+      "source": "https://repo.maven.apache.org/maven2/io/github/sjacek/promptjig/promptjig-core/0.3.1/promptjig-core-0.3.1.jar",
+      "resolvedUrl": "https://repo.maven.apache.org/maven2/io/github/sjacek/promptjig/promptjig-core/0.3.1/promptjig-core-0.3.1.jar",
+      "sha256": "ea73c23801d9a080255db3147c6286ca3948e5666aeac40f55e8c7a474b19927",
+      "size": 81623,
+      "verifiedSigner": "0AE0A30C093FDE0EA02E7502ADF2B8E6FA34B930"
+    },
+    {
+      "identity": "io.github.sjacek.promptjig:promptjig-core:jar:sources:0.3.1",
+      "source": "https://repo.maven.apache.org/maven2/io/github/sjacek/promptjig/promptjig-core/0.3.1/promptjig-core-0.3.1-sources.jar",
+      "resolvedUrl": "https://repo.maven.apache.org/maven2/io/github/sjacek/promptjig/promptjig-core/0.3.1/promptjig-core-0.3.1-sources.jar",
+      "sha256": "39fbd4cd1bcede393bcc84065d49c622813ce608073ddf5dd320b5359378d59b",
+      "size": 36717,
+      "verifiedSigner": "0AE0A30C093FDE0EA02E7502ADF2B8E6FA34B930",
+      "sourcesComparedWithTag": 19
+    },
+    {
+      "identity": "io.github.sjacek.promptjig:promptjig-maven-plugin:pom:0.3.1",
+      "source": "https://repo.maven.apache.org/maven2/io/github/sjacek/promptjig/promptjig-maven-plugin/0.3.1/promptjig-maven-plugin-0.3.1.pom",
+      "resolvedUrl": "https://repo.maven.apache.org/maven2/io/github/sjacek/promptjig/promptjig-maven-plugin/0.3.1/promptjig-maven-plugin-0.3.1.pom",
+      "sha256": "c285245194c0e708fcb6b49508404ccb694b68264bee159e54af85934efa3e03",
+      "size": 2125,
+      "verifiedSigner": "0AE0A30C093FDE0EA02E7502ADF2B8E6FA34B930"
+    },
+    {
+      "identity": "io.github.sjacek.promptjig:promptjig-maven-plugin:jar:0.3.1",
+      "source": "https://repo.maven.apache.org/maven2/io/github/sjacek/promptjig/promptjig-maven-plugin/0.3.1/promptjig-maven-plugin-0.3.1.jar",
+      "resolvedUrl": "https://repo.maven.apache.org/maven2/io/github/sjacek/promptjig/promptjig-maven-plugin/0.3.1/promptjig-maven-plugin-0.3.1.jar",
+      "sha256": "3939db3df2861a9bf060c7d37d9ce18ec9061257551ddb5baf81abe0718e92bc",
+      "size": 12067,
+      "verifiedSigner": "0AE0A30C093FDE0EA02E7502ADF2B8E6FA34B930"
+    },
+    {
+      "identity": "io.github.sjacek.promptjig:promptjig-maven-plugin:jar:sources:0.3.1",
+      "source": "https://repo.maven.apache.org/maven2/io/github/sjacek/promptjig/promptjig-maven-plugin/0.3.1/promptjig-maven-plugin-0.3.1-sources.jar",
+      "resolvedUrl": "https://repo.maven.apache.org/maven2/io/github/sjacek/promptjig/promptjig-maven-plugin/0.3.1/promptjig-maven-plugin-0.3.1-sources.jar",
+      "sha256": "a4a5980e091ee0903de85bf8b2046276dfd03448ecf82e828ab79aa6654397cd",
+      "size": 6131,
+      "verifiedSigner": "0AE0A30C093FDE0EA02E7502ADF2B8E6FA34B930",
+      "sourcesComparedWithTag": 5
+    }
+  ],
+  "negativeControls": [
+    "rejected-tampered-jar",
+    "rejected-tampered-pom",
+    "rejected-missing-checksum"
+  ],
+  "restoredValidOfflineValidation": true,
+  "commands": [
+    "verify",
+    "validate (offline negative controls and recovery)"
+  ],
+  "schemaVersion": 1,
+  "repositoryPayloadsRecheckedAgainstPolicy": 234,
+  "baseChecksumPolicySha256": "6ae665114f530163acc0e3dba7ea4a9d0c47713feae8cef595d6c1abb6f30f69",
+  "privateChecksumPolicySha256": "ea0857f19fd2150e82fb725a3766b245a995c67bf0035c25a45d1652b575a71a",
+  "privatePolicyAdditionalEntries": 6,
+  "privatePolicyAdditionalEntryScope": "Six exact public 0.3.1 artifact identities reviewed by official downloads and PGP signatures; no wildcard trust or disabled verification",
+  "nativeVerifier": {
+    "version": "0.0.5",
+    "url": "https://repo.maven.apache.org/maven2/codes/rafael/mavenchecksumextension/maven-checksum-extension/0.0.5/maven-checksum-extension-0.0.5.jar",
+    "sha256": "f5f573f307bfc7d71130d405a7a920a83773f405320c79053f28b1c852d95e1b"
+  },
+  "mavenDistributionSha256": "5af3b743dd8b876b5c45da33b676251e5f1687712644abb4ee519ca56e1d89ce",
+  "settingsPreserveHttpBlocker": true,
+  "personalSettingsOrCredentialsUsed": false,
+  "isolatedNativeOptions": [
+    "--batch-mode",
+    "--no-transfer-progress",
+    "--show-version",
+    "--strict-checksums",
+    "-s <private-settings>",
+    "-gs <private-settings>",
+    "-Dmaven.repo.local=<initially-empty-repository>",
+    "verify"
+  ],
+  "enforcedVerifierOptions": {
+    "mode": "enforce",
+    "algorithm": "SHA-256",
+    "snapshots": true,
+    "locals": true,
+    "reactor": false
+  },
+  "promptReports": [
+    {
+      "goal": "validate",
+      "valid": true,
+      "contracts": 1,
+      "diagnostics": [
+        {
+          "rule": "lock-baseline",
+          "severity": "INFO",
+          "file": "prompt-contracts.lock.json",
+          "line": 1,
+          "column": 1,
+          "pointer": "",
+          "message": "Baseline check skipped: no baselineLockFile supplied"
+        }
+      ]
+    },
+    {
+      "goal": "generate",
+      "valid": true,
+      "contracts": 1,
+      "diagnostics": [
+        {
+          "rule": "lock-baseline",
+          "severity": "INFO",
+          "file": "prompt-contracts.lock.json",
+          "line": 1,
+          "column": 1,
+          "pointer": "",
+          "message": "Baseline check skipped: no baselineLockFile supplied"
+        }
+      ]
+    }
+  ],
+  "contractLockUnchanged": true,
+  "baselineHistoryCheck": "Optional baseline was not configured in the authored example; current lock/fingerprint validation executed",
+  "rawEvidence": {
+    "directory": "build/published-consumer-0.3.1/948dc05e1bb747cc9f055081a47a762b",
+    "files": [
+      {
+        "file": "verify.log",
+        "sha256": "62b235354b423a0f5f7f8f84f2d2f22678cc46ccdffa76828afb86c84fa67dd1"
+      },
+      {
+        "file": "reject-jar.log",
+        "sha256": "3737ec7697db76f51244760a41be39d33fd2b3adbff301951c72d81ec1bbdfc5"
+      },
+      {
+        "file": "reject-pom.log",
+        "sha256": "deca1a69677cb01450889700ce0b958aa67c58d128fca40a7ef8ed258bca0bd4"
+      },
+      {
+        "file": "reject-missing-checksum.log",
+        "sha256": "679b0a0310b47fc27e86047a91afc42cdbed4a20262abbcf73a6f36bcb031a71"
+      },
+      {
+        "file": "restored-valid.log",
+        "sha256": "52e2217dffc2a116c7162f151a13cc04ae3ebc75646c5349235f6abbd62c5db6"
+      },
+      {
+        "file": "downloaded-artifacts.sha256",
+        "sha256": "ef1d497bfc217c83c159cb6185d92912670fa1ac1c4051a866fd28090e8f10a0"
+      },
+      {
+        "file": "reviewed-checksums.sha256",
+        "sha256": "ea0857f19fd2150e82fb725a3766b245a995c67bf0035c25a45d1652b575a71a"
+      },
+      {
+        "file": "settings.xml",
+        "sha256": "23b6090fca7e379af3acd0d9334ce474a18d79ee751777c5ae86526e52697353"
+      }
+    ],
+    "driver": {
+      "file": "build/published-consumer-0.3.1/check_consumer.py",
+      "sha256": "dd11c01719eb5e025185d167ecfdfab862a635dba004013f112459158588c9ed"
+    },
+    "initialRepositoryPayloads": 0
+  },
+  "scope": "Local Windows acceptance on Maven 3.9.16/JDK 21.0.13, Java 17 output. No Gradle build, local install, staging, dependency cache restore, inference, runtime-pilot upgrade or CI matrix rerun."
+}

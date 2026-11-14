@@ -23,6 +23,28 @@ The shared publication version is read from `versions.promptjig` in
 libraries and `promptjig-maven-plugin`. The standalone Spring AI pilot continues to pin
 public runtime 0.2.0 through the separate `promptjigRuntime` catalog version.
 
+## Published Maven consumer acceptance
+
+Release **0.3.1** passed a full `mvn verify` on Windows with Maven 3.9.16 and
+JDK 21.0.13, compiling Java 17 output. A private copy of `examples/maven` selected
+0.3.1 and started with an **empty** dependency repository. All repositories were
+mirrored to Maven Central; no dependency snapshot, local `install`, Gradle build
+or staging repository supplied Promptjig artifacts.
+
+The checksum extension enforced reviewed SHA-256 values for downloads and cached
+local artifacts, together with Maven's `--strict-checksums`. Six additional exact
+entries for the public core/plugin POMs, JARs and source archives were reviewed
+against official downloads, detached signatures and the release tag. Only the
+private policy copy received these entries; repository policies were unchanged.
+
+Validation, generation of three Java sources, compilation, one JUnit JSON-binding
+test and JAR packaging passed. The JAR contains all three authored prompt resources
+and excludes the version lock. Separate offline controls rejected a modified
+public plugin JAR, a modified POM and a missing checksum before Mojo execution;
+valid bytes were accepted again after restoration. The example's authored pin
+remains 0.3.0. See the [local consumer evidence](evidence/published-maven-consumer-0.3.1-2026-11-14.json)
+for hashes, source coverage, commands and the scope of this acceptance.
+
 ## Verify locally without publisher credentials
 
 With an authoring JDK (CI uses 25) and Python 3.12+:
