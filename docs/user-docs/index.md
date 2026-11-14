@@ -12,6 +12,8 @@ The Spring AI runtime renders the same resources and validates model responses.
 Start with [your first contract](getting-started.md),
 or run the [small public-announcement example](examples.md).
 
+![Coding agents compare a prompt template with its contract schema and review prompt versions. The screen reads: Simplify AI communication. Track prompts. Support safety and accountability.](assets/illustrations/promptjig-agent-team.png)
+
 ## Choose the pieces you need
 
 | Component | Available version | Use it for |
