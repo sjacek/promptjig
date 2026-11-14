@@ -27,6 +27,11 @@ class SecurityWorkflowTest {
             for (var step : job.path("steps")) {
                 assertFalse(step.path("continue-on-error").asBoolean());
                 if (step.path("uses").asText().startsWith("actions/upload-artifact@")) {
+                    if (step.path("with").path("name").asText().equals("publication-sboms")) {
+                        assertFalse(step.has("if"), "Release inputs must be uploaded only on success");
+                        assertTrue(step.path("with").path("overwrite").asBoolean());
+                        continue;
+                    }
                     assertEquals("always()", step.path("if").asText());
                     assertEquals("error", step.path("with").path("if-no-files-found").asText());
                     assertEquals(name + "-${{ github.run_id }}-${{ github.run_attempt }}", step.path("with").path("name").asText(),
@@ -61,6 +66,33 @@ class SecurityWorkflowTest {
                 if (step.toString().contains("secrets.")) assertTrue(guard);
             }
             assertTrue(guard);
+        }
+    }
+
+    @Test void auditedSbomsAreTransferredFromTheAcceptedRunAndVerifiedBeforeSigningOrUpload() throws Exception {
+        String security = document("compatibility").path("jobs").path("dependency-security").toString();
+        assertTrue(security.indexOf("security_reports.py scan") < security.indexOf("publication_sboms.py export"));
+        assertTrue(security.indexOf("publication_sboms.py export") < security.indexOf("test_central_signing.py"));
+        assertTrue(security.contains("verifyPortalPublicationArtifacts"));
+        for (String name : List.of("release", "release-central")) {
+            var publish = document(name).path("jobs").path("publish");
+            boolean restored = false;
+            boolean checked = false;
+            for (var step : publish.path("steps")) {
+                if (step.path("uses").asText().equals("./.github/actions/restore-publication-sboms")) {
+                    assertTrue(step.path("with").path("run-id").asText().contains("compatibility-run-id"));
+                    if (name.equals("release-central")) assertEquals("inputs.deployment_id == ''", step.path("if").asText());
+                    restored = true;
+                }
+                if (step.path("run").asText().contains("publication_sboms.py verify")) {
+                    assertTrue(restored);
+                    checked = true;
+                }
+                if (step.toString().contains("secrets.")) assertTrue(checked);
+                if (step.path("run").asText().contains(":gradle-plugin:publishPlugins"))
+                    assertTrue(step.path("run").asText().contains("-PpublicationSboms=true"));
+            }
+            assertTrue(checked);
         }
     }
 }

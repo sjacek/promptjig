@@ -1,0 +1,16 @@
+name: Restore audited publication SBOMs
+description: Download the SBOM set from the exact Compatibility run accepted by the release guard.
+inputs:
+  run-id:
+    description: Successful Compatibility run ID returned by verify_ci
+    required: true
+runs:
+  using: composite
+  steps:
+    - uses: actions/download-artifact@37930b1c2abaa49bbe596cd826c3c89aef350131 # v7
+      # noinspection UndefinedParamsPresent
+      with:
+        name: publication-sboms
+        path: build/publication-sboms
+        run-id: ${{ inputs.run-id }}
+        github-token: ${{ github.token }}

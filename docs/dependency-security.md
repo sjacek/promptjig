@@ -163,6 +163,13 @@ a failure. An absent passing aggregate is a failure, not a zero-vulnerability re
 
 ## Published versions are a different cohort
 
+For the 0.3.0 candidate, the complete audited SBOM set is also prepared as
+[versioned release attachments](sbom-publication.md): signed classifier JSON
+files in Central and a metadata-only classifier JAR for the Portal implementation.
+The release workflows restore the set from the exact accepted Compatibility run
+and reject source/JAR/hash mismatches rather than silently rebuilding a different
+inventory during publication. Older registry versions remain unchanged.
+
 ```bash
 python3 -B scripts/published_artifact_audit.py
 python3 -B scripts/published_dependency_audit.py prepare

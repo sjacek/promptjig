@@ -48,3 +48,4 @@ tasks.register('printVersion') {
 }
 
 apply from: file('gradle/security-inventories.gradle')
+apply from: file('gradle/publication-sboms.gradle')

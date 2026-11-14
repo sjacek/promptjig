@@ -30,8 +30,15 @@ contact Central. The verifier checks coordinates, required POM metadata, matchin
 core/runtime versions, Gradle module identities, JAR contents, MIT licenses,
 sources and Javadocs. Ordinary builds do not read signing credentials.
 
-CI additionally runs a real signing test on Linux with GnuPG and a disposable
-passphrase-protected key in a temporary GPG home:
+For the 0.3.0 release candidate, [prepare audited SBOMs](sbom-publication.md)
+before staging with `-PpublicationSboms=true`. This adds four classifier JSON
+documents per module. Bootstrap staging without the flag can still validate the
+original packages before inventory generation; it is not accepted as a signed
+release bundle without the SBOM attachments.
+
+After audited SBOM export, the `dependency-security` job additionally runs a real
+signing test on Linux with GnuPG and a disposable passphrase-protected key in a
+temporary GPG home. Prepare that complete SBOM set before running it locally:
 
 ```bash
 python3 -B -m unittest discover -s scripts -p 'test_central_signing.py' -v
@@ -85,7 +92,7 @@ the read-only GitHub Actions token; it needs no publisher secrets.
 The protected publication job checks out the verified SHA rather than resolving
 the tag again. It reruns acceptance/staging checks without credentials, signs the
 two libraries and the Maven adapter into separate `build/central-staging` repositories and creates a
-90-file bundle: JAR, sources, Javadocs, POM and Gradle module metadata for all three
+162-file bundle: JAR, sources, Javadocs, POM, Gradle module metadata and four SBOMs for all three
 publications, their PGP signatures, and MD5/SHA-1/SHA-256/SHA-512 sidecars. The exact
 file allowlist excludes repository metadata, caches, work directories and keys.
 MD5/SHA-1 serve Central's transport requirements; dependency verification remains

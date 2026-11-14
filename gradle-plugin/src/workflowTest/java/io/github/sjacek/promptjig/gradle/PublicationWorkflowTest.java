@@ -116,7 +116,7 @@ class PublicationWorkflowTest {
         assertEquals(List.of("verify_release", "verify_ci", "build", "validate_portal", "publish_portal"), phases);
         assertFalse(step(release, "build").path("run").asText().contains("publishPlugins"));
         assertTrue(step(release, "validate_portal").path("run").asText().contains(":gradle-plugin:publishPlugins --validate-only"));
-        assertEquals("./gradlew :gradle-plugin:publishPlugins --console=plain", step(release, "publish_portal").path("run").asText());
+        assertEquals("./gradlew :gradle-plugin:publishPlugins -PpublicationSboms=true --console=plain", step(release, "publish_portal").path("run").asText());
     }
 
     @Test void guardBuildAndPortalStepsCannotIgnoreFailuresOrUseUnconditionalUpload() throws Exception {

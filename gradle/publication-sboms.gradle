@@ -1,0 +1,89 @@
+import org.gradle.api.publish.maven.MavenPublication
+import org.gradle.api.publish.maven.MavenArtifact
+
+// Release attachments reuse the audited native inventories. Bootstrap staging
+// remains available before inventories exist; both external release paths require SBOMs.
+def enabled = providers.gradleProperty('publicationSboms').getOrElse('false') == 'true' ||
+        providers.gradleProperty('centralRelease').getOrElse('false') == 'true'
+def python = providers.environmentVariable('PROMPTJIG_PYTHON').getOrElse(
+        System.getProperty('os.name').toLowerCase().contains('windows') ? 'python' : 'python3')
+def script = rootProject.file('scripts/publication_sboms.py').absolutePath
+def directory = rootProject.layout.buildDirectory.dir('publication-sboms')
+def scopes = ['runtime': 'cyclonedx', 'build': 'cyclonedx-build', 'test': 'cyclonedx-test', 'provided': 'cyclonedx-provided']
+
+subprojects { owner ->
+    String moduleName = owner.name
+    owner.plugins.withId('maven-publish') {
+        if (enabled) {
+            def moduleDirectory = directory.map { it.dir(moduleName) }
+            def verify = owner.tasks.register('verifyPublicationSboms', Exec) {
+                group = 'verification'
+                description = 'Reject missing, changed or foreign publication SBOMs before signing/staging.'
+                dependsOn owner.tasks.named('jar')
+                workingDir rootProject.projectDir
+                commandLine python, script, 'verify', '--directory', directory.get().asFile.absolutePath, '--module', moduleName
+                // No outputs: every publication must recheck source and candidate bytes, even on cache hits.
+            }
+            def sbomJar = moduleName == 'gradle-plugin' ? owner.tasks.register('publicationSbomJar', Jar) {
+                dependsOn verify
+                archiveClassifier = 'sbom'
+                from(moduleDirectory) { include '*.cdx.json', 'manifest.json'; into 'META-INF/sbom' }
+                preserveFileTimestamps = false
+                reproducibleFileOrder = true
+            } : null
+            // Signing writes .asc beside each input. Keep those generated files
+            // outside the portable audited set uploaded for subsequent releases.
+            def signingInputs = owner.layout.buildDirectory.dir('publication-sbom-inputs')
+            def stage = moduleName == 'gradle-plugin' ? null : owner.tasks.register('stagePublicationSboms', Copy) {
+                dependsOn verify
+                from(moduleDirectory) { include '*.cdx.json' }
+                into signingInputs
+            }
+            if (moduleName == 'gradle-plugin') {
+                owner.tasks.register('verifyPortalPublicationArtifacts') {
+                    group = 'verification'
+                    description = 'Inspect the pinned Portal publisher artifact selection without credentials or network I/O.'
+                    notCompatibleWithConfigurationCache('Inspects the current pinned publisher task model.')
+                    dependsOn sbomJar
+                    doLast {
+                        // Only collectArtifacts is invoked: it hashes local files. Never execute PublishTask's upload action.
+                        def publisher = owner.tasks.named('publishPlugins').get()
+                        def collector = publisher.class.classLoader.loadClass('com.gradle.publish.PublishTask')
+                                .getDeclaredMethod('collectArtifacts')
+                        collector.setAccessible(true)
+                        Map artifacts = collector.invoke(publisher) as Map
+                        File expected = sbomJar.get().archiveFile.get().asFile.canonicalFile
+                        if (!artifacts.values().any { (it as File).canonicalFile == expected }) {
+                            throw new GradleException('Pinned Portal publisher omitted the SBOM classifier JAR')
+                        }
+                        logger.lifecycle('Pinned Portal publisher selects the SBOM classifier JAR; no upload was performed.')
+                    }
+                }
+            }
+            owner.publishing.publications.withType(MavenPublication).configureEach { MavenPublication publication ->
+                if (moduleName == 'gradle-plugin') {
+                    // The Portal publisher accepts classifier JARs, not JSON classifiers.
+                    // Its POM-only marker must never receive implementation attachments.
+                    if (publication.name == 'pluginMaven') publication.artifact(sbomJar)
+                } else {
+                    scopes.each { scope, classifierName ->
+                        publication.artifact(signingInputs.map { it.file("${scope}.cdx.json") }) { MavenArtifact artifact ->
+                            artifact.classifier = classifierName
+                            artifact.extension = 'json'
+                            artifact.builtBy(stage)
+                        }
+                    }
+                }
+            }
+        }
+    }
+    owner.plugins.withId('com.gradle.plugin-publish') {
+        if (moduleName == 'gradle-plugin') {
+            owner.tasks.named('publishPlugins') {
+                if (!enabled) {
+                    doFirst { throw new GradleException('Plugin Portal publication requires audited SBOMs: use -PpublicationSboms=true') }
+                }
+            }
+        }
+    }
+}

@@ -67,18 +67,21 @@ class CentralSigningTest(unittest.TestCase):
                     output = result.stdout.decode(errors='replace').replace(exported, '[test key omitted]')
                     self.fail('Signed Gradle staging failed:\n' + output[-5000:])
                 files = central.publication_files()
-                self.assertEqual(30, len(files))
+                self.assertEqual(54, len(files))
                 for module, artifact in central.LIBRARIES.items():
                     folder = central.ROOT / module / 'build/central-staging' / Path(*central.GROUP.split('.')) / artifact / central.version()
                     for signature in folder.glob('*.asc'):
                         gpg('--verify', str(signature), str(signature.with_suffix('')))
+                # Signing must use working copies: no .asc or other byproducts
+                # may pollute the portable set uploaded for the real release.
+                central.publication_sboms.verify()
                 bundle = central.bundle(output=home / 'bundle')
                 with zipfile.ZipFile(bundle) as archive:
-                    self.assertEqual(90, len(archive.namelist()))
+                    self.assertEqual(162, len(archive.namelist()))
                     for name in archive.namelist():
                         self.assertNotIn(b'BEGIN PGP PRIVATE KEY BLOCK', archive.read(name))
                         self.assertNotIn(passphrase.encode(), archive.read(name))
-                print('Verified 15 real Gradle signatures and all three publication payloads; no publication performed.')
+                print('Verified 27 real Gradle signatures, including 12 SBOMs; no publication performed.')
             finally:
                 # Stop only the agent attached to this temporary home before removing it.
                 subprocess.run(['gpgconf', '--homedir', str(home), '--kill', 'gpg-agent'],

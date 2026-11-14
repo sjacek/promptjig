@@ -41,6 +41,8 @@ navigation:
     url: /spring-ai/
   - title: Version history and CI
     url: /versioning/
+  - title: SBOM
+    url: /sbom/
   - title: Examples
     url: /examples/
   - title: Troubleshooting

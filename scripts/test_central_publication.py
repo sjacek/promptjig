@@ -9,13 +9,27 @@ import unittest
 from unittest.mock import patch
 import urllib.error
 import zipfile
+import uuid
 
 import central_publication as central
+import security_reports as reports
 
 VERSION = '0.2.0'
 ID = '28570f16-da32-4c14-bd2e-c1acc0782365'
 SHA = 'a' * 40
 SIGNATURE = b'-----BEGIN PGP SIGNATURE-----\nfixture-only\n-----END PGP SIGNATURE-----\n'
+
+
+def sbom_payload(module, scope, version, jar, commit=SHA, inputs=None):
+    """Synthetic protocol fixture only; real release SBOMs come from the scanned native cohort."""
+    inputs = [] if inputs is None else inputs
+    component = reports.component(reports.GROUP, reports.NAMES[module], version, hashlib.sha256(jar).hexdigest())
+    return json.dumps({'bomFormat': 'CycloneDX', 'specVersion': '1.6', 'version': 1,
+        'serialNumber': 'urn:uuid:' + str(uuid.uuid5(uuid.NAMESPACE_URL, commit + module + scope + json.dumps(inputs, sort_keys=True))),
+        'metadata': {'component': component, 'properties': [
+            {'name': 'promptjig:scope', 'value': scope}, {'name': 'promptjig:source-commit', 'value': commit},
+            {'name': 'promptjig:generator', 'value': 'synthetic-publication-testdata'}]},
+        'components': [], 'dependencies': [{'ref': component['bom-ref'], 'dependsOn': []}]}).encode()
 
 
 class HttpFixture:
@@ -49,7 +63,7 @@ class CentralPublicationTest(unittest.TestCase):
         self.environ = {'GITHUB_REPOSITORY': central.REPO, 'RELEASE_TAG': f'v{VERSION}', 'RELEASE_COMMIT': SHA,
                         'MAVEN_CENTRAL_USERNAME': 'fixture-user', 'MAVEN_CENTRAL_PASSWORD': 'fixture-token'}
 
-    def stage(self, signed=True):
+    def stage(self, signed=True, sboms=True):
         for module, artifact in central.LIBRARIES.items():
             folder = self.root / module / 'build' / ('central-staging' if signed else 'staging-repository')
             folder /= Path(*central.GROUP.split('.')) / artifact / VERSION
@@ -77,6 +91,10 @@ class CentralPublicationTest(unittest.TestCase):
                 with zipfile.ZipFile(folder / (prefix + suffix), 'w') as jar:
                     jar.writestr('META-INF/LICENSE', 'MIT fixture')
                     jar.writestr(content, 'fixture')
+            if sboms:
+                for scope, classifier in central.publication_sboms.CLASSIFIERS.items():
+                    (folder / (prefix + '-' + classifier + '.json')).write_bytes(sbom_payload(
+                        module, scope, VERSION, (folder / (prefix + '.jar')).read_bytes()))
             if signed:
                 for item in list(folder.iterdir()):
                     item.with_name(item.name + '.asc').write_bytes(SIGNATURE)
@@ -84,7 +102,7 @@ class CentralPublicationTest(unittest.TestCase):
 
     def test_unsigned_staging_is_offline_and_never_accepted_as_a_signed_bundle(self):
         self.stage(signed=False)
-        self.assertEqual(15, len(central.publication_files(self.root, signed=False)))
+        self.assertEqual(27, len(central.publication_files(self.root, signed=False)))
         with self.assertRaises(central.PublicationError):
             central.bundle(self.root, self.output)
 
@@ -93,16 +111,47 @@ class CentralPublicationTest(unittest.TestCase):
         bundle = central.bundle(self.root, self.output)
         original = bundle.read_bytes()
         with zipfile.ZipFile(bundle) as archive:
-            self.assertEqual(90, len(archive.namelist()))
+            self.assertEqual(162, len(archive.namelist()))
             self.assertTrue(all(name.startswith('io/github/sjacek/promptjig/') for name in archive.namelist()))
             self.assertFalse(any('gradle-plugin' in name or 'metadata.xml' in name for name in archive.namelist()))
             for name in archive.namelist():
-                if name.endswith(('.jar', '.pom', '.module')):
+                if name.endswith(('.jar', '.pom', '.module', '.json')):
                     self.assertEqual(SIGNATURE, archive.read(name + '.asc'))
                     for algorithm in central.HASHES:
                         self.assertEqual(hashlib.new(algorithm, archive.read(name), usedforsecurity=False).hexdigest().encode(),
                                          archive.read(name + '.' + algorithm))
         self.assertEqual(original, central.bundle(self.root, self.output).read_bytes())
+
+    def test_bootstrap_without_sboms_is_not_a_signed_release(self):
+        self.stage(signed=False, sboms=False)
+        self.assertEqual(15, len(central.publication_files(self.root, signed=False)))
+        self.stage(signed=True, sboms=False)
+        with self.assertRaisesRegex(central.PublicationError, 'Missing publication payload'):
+            central.bundle(self.root, self.output)
+
+    def test_every_sbom_is_required_signed_and_bound_to_the_actual_jar_scope_and_commit(self):
+        folder = self.stage()
+        file = next(folder.glob('*-cyclonedx.json'))
+        original = file.read_bytes()
+        for mutation in ('scope', 'hash', 'commit', 'graph', 'duplicate'):
+            bom = json.loads(original)
+            if mutation == 'scope': bom['metadata']['properties'][0]['value'] = 'test'
+            elif mutation == 'hash': bom['metadata']['component']['hashes'][0]['content'] = '0' * 64
+            elif mutation == 'commit': bom['metadata']['properties'][1]['value'] = 'b' * 40
+            elif mutation == 'graph': bom['dependencies'][0]['dependsOn'] = ['missing-component']
+            else: bom['metadata']['properties'].append(bom['metadata']['properties'][0])
+            file.write_text(json.dumps(bom))
+            with self.subTest(mutation=mutation), self.assertRaises(central.PublicationError):
+                central.bundle(self.root, self.output, expected_commit=SHA)
+        file.write_bytes(original)
+        signature = file.with_name(file.name + '.asc')
+        signature.unlink()
+        with self.assertRaisesRegex(central.PublicationError, 'signature'):
+            central.bundle(self.root, self.output)
+        signature.write_bytes(SIGNATURE)
+        file.unlink()
+        with self.assertRaisesRegex(central.PublicationError, 'payload'):
+            central.bundle(self.root, self.output)
 
     def test_missing_signature_or_payload_rejects_bundle(self):
         folder = self.stage()
@@ -221,7 +270,7 @@ class CentralPublicationTest(unittest.TestCase):
 
     def test_ci_requires_twenty_executed_successful_jobs_including_security_for_exact_sha(self):
         http = HttpFixture(*self.ci_responses())
-        central.require_ci({'commit': SHA}, 'fixture-github-token', http)
+        self.assertEqual(123, central.require_ci({'commit': SHA}, 'fixture-github-token', http))
         self.assertEqual(2, len(http.requests))
         self.assertTrue(all(r.full_url.startswith('https://api.github.com/repos/sjacek/promptjig/') for r in http.requests))
         self.assertIn('head_sha=' + SHA, http.requests[0].full_url)

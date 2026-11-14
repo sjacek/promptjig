@@ -53,16 +53,17 @@ def policy():
     return value
 
 
-def source_inputs():
+def source_inputs(root=None):
+    root = ROOT if root is None else Path(root)
     result = {}
     excluded = {'build', 'target', '.git', '.gradle', '.gradle-user-home', '.idea', '__pycache__'}
     # Prune before traversal: resolver/test workspaces can contain hundreds of
     # thousands of files and must not make every scope's freshness check expensive.
-    for directory, children, files in os.walk(ROOT, followlinks=False):
+    for directory, children, files in os.walk(root, followlinks=False):
         children[:] = [name for name in children if name not in excluded]
         for name in files:
             path = Path(directory) / name
-            relative = path.relative_to(ROOT)
+            relative = path.relative_to(root)
             selected = (path.suffix == '.gradle' or name in {'pom.xml', 'invoker.properties', 'gradle.properties', 'prompt-contracts.lock.json'} or 'src' in relative.parts
                         or relative.parts[0] in {'scripts', 'gradle', 'security', '.mvn', '.github', 'testing'}
                         or relative.as_posix() in {'.gitattributes', 'gradlew', 'gradlew.bat'})

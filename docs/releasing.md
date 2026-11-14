@@ -103,6 +103,13 @@ local verification, release guards and status-only recovery. Both libraries are
 publicly available as 0.2.0. Plugin Portal publishes the build plugin separately;
 it does not make the runtime coordinates available.
 
+The unreleased 0.3.0 release paths also require [audited SBOM attachments](sbom-publication.md).
+Central signs four classifier JSONs per module; Portal receives a separate
+implementation `-sbom.jar`, keeping the POM-only marker unchanged. Release guards
+select the exact successful Compatibility run whose SBOM artifact is downloaded
+and checked against the rebuilt bytes. Bootstrap local staging above is useful
+before inventories exist, but does not authorize a release without SBOMs.
+
 ## Publish the reviewed tag
 
 For a new release, update the build version and have the owner create and push

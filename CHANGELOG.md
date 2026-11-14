@@ -7,6 +7,11 @@ Changes under **Unreleased** are not yet published.
 
 ### Added
 
+- Download a CycloneDX SBOM alongside each new release. Maven Central provides
+  signed JSON files for runtime, build, test and provided dependencies; the
+  Gradle Plugin Portal distribution carries the same scopes in a separate SBOM
+  JAR. Each inventory identifies the main JAR by its SHA-256.
+
 - Follow a dedicated user guide for installation, contracts, Java generation,
   Spring AI integration, version history and troubleshooting, with a fictional
   public-announcement walkthrough.

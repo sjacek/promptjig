@@ -21,6 +21,7 @@ import urllib.request
 import uuid
 import xml.etree.ElementTree as ET
 import zipfile
+import publication_sboms
 
 ROOT = Path(__file__).resolve().parent.parent
 GROUP = 'io.github.sjacek.promptjig'
@@ -92,20 +93,26 @@ def validate_pom(payload, artifact, value):
                 raise PublicationError('Maven host API must remain provided')
 
 
-def publication_files(root=ROOT, signed=True):
+def publication_files(root=ROOT, signed=True, expected_commit=None):
     """Read an exact file allowlist; never include caches, repository metadata or signing keys.
 
     Gradle generates repository-level maven-metadata.xml and checksum sidecars. Those are
     deliberately not copied: Central owns repository metadata and we compute bundle checksums.
     Missing sources/Javadocs, a foreign coordinate, symlinks or unsigned payloads fail closed.
     """
-    value, files = version(root), {}
+    value, files, commits = version(root), {}, set()
+    # Bootstrap staging precedes native inventory generation. Signed releases
+    # always require all four attachments; a partial unsigned set also fails.
+    with_sboms = signed or any(any((root / module / 'build/staging-repository' /
+        Path(*GROUP.split('.')) / artifact / value).glob('*-cyclonedx*.json')) for module, artifact in LIBRARIES.items())
     for module, artifact in LIBRARIES.items():
         relative = Path(*GROUP.split('.')) / artifact / value
         repository = root / module / 'build' / ('central-staging' if signed else 'staging-repository')
         folder = repository / relative
         names = [f'{artifact}-{value}{suffix}' for suffix in
                  ('.jar', '-sources.jar', '-javadoc.jar', '.pom', '.module')]
+        if with_sboms:
+            names += [f'{artifact}-{value}-{classifier}.json' for classifier in publication_sboms.CLASSIFIERS.values()]
         expected = set(names + ([name + '.asc' for name in names] if signed else []))
         if not folder.is_dir() or any(p.is_symlink() for p in (repository, *folder.parents, folder)):
             raise PublicationError('Missing publication directory or symlink in staging path')
@@ -132,16 +139,27 @@ def publication_files(root=ROOT, signed=True):
                         raise PublicationError('Javadoc JAR has no index')
                     if name.endswith('-sources.jar') and not any(n.endswith('.java') for n in jar.namelist()):
                         raise PublicationError('Sources JAR has no Java sources')
+            elif name.endswith('.json'):
+                scope = next(scope for scope, classifier in publication_sboms.CLASSIFIERS.items()
+                             if name == f'{artifact}-{value}-{classifier}.json')
+                try:
+                    bom = publication_sboms.validate_bom(payload, module, scope, value,
+                        hashlib.sha256((folder / f'{artifact}-{value}.jar').read_bytes()).hexdigest(), expected_commit)
+                    commits.add(publication_sboms.properties(bom)['promptjig:source-commit'])
+                except (ValueError, KeyError, TypeError) as error:
+                    raise PublicationError('Invalid publication SBOM: ' + str(error)) from error
             elif not (payload.startswith(b'-----BEGIN PGP SIGNATURE-----')
                       and payload.rstrip().endswith(b'-----END PGP SIGNATURE-----')):
                 raise PublicationError('Expected an ASCII-armored PGP signature')
             files[(relative / name).as_posix()] = payload
+    if len(commits) > 1:
+        raise PublicationError('Publication SBOMs belong to different source commits')
     return files
 
 
-def bundle(root=ROOT, output=OUTPUT):
+def bundle(root=ROOT, output=OUTPUT, expected_commit=None):
     """Create a bounded, deterministic ZIP of signed payloads and freshly computed checksums."""
-    files = publication_files(root, signed=True)
+    files = publication_files(root, signed=True, expected_commit=expected_commit)
     for name, payload in list(files.items()):
         if not name.endswith('.asc'):
             for algorithm in HASHES:
@@ -211,6 +229,7 @@ def require_ci(state, token, opener=None):
             or len(jobs) != len(required) or any(j.get('status') != 'completed' or j.get('conclusion') != 'success' for j in jobs)):
         raise PublicationError('Every required Compatibility job must execute successfully')
     print(f'Confirmed Compatibility run {run["id"]}: all {len(required)} required jobs passed.', flush=True)
+    return run['id']
 
 
 def deployment_id(value):
@@ -337,7 +356,7 @@ def publish(environ, root=ROOT, output=OUTPUT, opener=None):
         state.update(deploymentId=deployment_id(identifier), status='RESUMING')
         persist(state)
     else:
-        upload_once(state, token, bundle(root, output), persist, opener)
+        upload_once(state, token, bundle(root, output, expected_commit=state['commit']), persist, opener)
     poll(state, token, persist, opener=opener)
 
 
@@ -355,7 +374,10 @@ def main(argv=None):
         token = os.environ.get('GITHUB_TOKEN', '')
         if not token:
             raise PublicationError('Missing read-only GitHub Actions token')
-        require_ci(identity(os.environ), token)
+        run_id = require_ci(identity(os.environ), token)
+        if os.environ.get('GITHUB_OUTPUT'):
+            with Path(os.environ['GITHUB_OUTPUT']).open('a', encoding='utf-8') as output:
+                output.write(f'compatibility-run-id={run_id}\n')
     else:
         publish(os.environ)
     return 0

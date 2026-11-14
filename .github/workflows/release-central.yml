@@ -28,6 +28,7 @@ jobs:
     timeout-minutes: 10
     outputs:
       commit: ${{ steps.verify_release.outputs.commit }}
+      compatibility-run-id: ${{ steps.verify_ci.outputs.compatibility-run-id }}
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
         # noinspection UndefinedParamsPresent
@@ -104,11 +105,19 @@ jobs:
           # Never restore build state or save a credentialed Gradle home to a shared cache.
           cache-disabled: true
       - run: chmod +x gradlew
+      - uses: ./.github/actions/restore-publication-sboms
+        if: inputs.deployment_id == ''
+        # Declared by the local composite action; the IDE may not resolve its inputs.
+        # noinspection UndefinedParamsPresent
+        with:
+          run-id: ${{ needs.verify.outputs.compatibility-run-id }}
       - name: Recheck all three publications without credentials
         id: build
         if: inputs.deployment_id == ''
         run: |
-          ./gradlew check assemble :core:spike :core:publishAllPublicationsToStagingRepository :spring-ai:publishAllPublicationsToStagingRepository :maven-plugin:publishAllPublicationsToStagingRepository --dependency-verification=strict --console=plain
+          ./gradlew check assemble :core:spike --dependency-verification=strict --console=plain
+          python3 -B scripts/publication_sboms.py verify
+          ./gradlew :core:publishAllPublicationsToStagingRepository :spring-ai:publishAllPublicationsToStagingRepository :maven-plugin:publishAllPublicationsToStagingRepository -PpublicationSboms=true --dependency-verification=strict --console=plain
           python3 -B scripts/central_publication.py verify-staging
           python3 -B -m unittest discover -s scripts -p 'test_central_publication.py' -v
       - name: Sign libraries and Maven adapter into an isolated local repository

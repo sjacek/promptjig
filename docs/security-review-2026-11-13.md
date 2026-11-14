@@ -56,11 +56,11 @@ the base commit, nor an independent audit.
 | Four candidate distributions, four scopes each | After the 14 November Snappy patch: 16/16 accepted, no reported findings at any severity | `build/security/reports/summary.json`, per-scope SBOM/findings/status and `build/security/native/` |
 | Scanner control | Metadata-only vulnerable Log4j fixture produced the expected Critical finding and blocking native exit | `build/security/reports/positive-control.*` |
 | Python regression suite | 132 tests passed on Linux, including real Gradle signing with a disposable fixture key | `build/security/local-linux-checks/python-tests.log`, `result.json` and frozen `source-inputs.json` |
-| Gradle adapter and workflow regression suites | 22 functional tests and 34 workflow tests passed; configuration-cache check passed | `gradle-plugin/build/test-results/test/` and `workflowTest/` |
+| Gradle adapter and workflow regression suites | Initial 22-test functional suite passed; SBOM follow-up also passed the real published-marker consumer test and 35 workflow tests; configuration-cache checks passed | `gradle-plugin/build/test-results/test/` and `workflowTest/`; initial run predates the focused consumer rerun |
 | Native Maven consumers | Maven 3.9.16/JDK 21 and 4.0.0-rc-7/JDK 25 each passed 14 Invoker scenarios, including the standalone example, plus checksum controls | `maven-plugin/build/reports/maven/3.9.16-jdk-21/` and `4.0.0-rc-7-jdk-25/` |
 | Dependency integrity | Correct bytes accepted; modified cached bytes and missing expected checksums rejected by native Gradle/Maven verification; original trust preserved | Native Gradle test XML, Maven summaries and the reviewed tooling receipts in `security/` |
 | IDE source/SDK coverage | Read-only enforcement and official-download verification passed for 214 source/SDK artifacts and one exact unpublished-source record | `build/ide-dependency-verification/`; concurrent IDE work is preserved separately |
-| Local Central packages | Three publications / 15 payloads accepted; strict verification and Javadoc checks passed | `{core,spring-ai,maven-plugin}/build/staging-repository/`; no upload |
+| Local Central packages | Initial bootstrap: 15 payloads; SBOM follow-up: 27 payloads with 12 signed JSON attachments, all 27 real test signatures verified | `{core,spring-ai,maven-plugin}/build/staging-repository/`, `central-staging/` and `build/security/publication-check/`; no upload |
 | Published registry artifacts | Fresh Portal 0.1.0 and Central core/Spring AI 0.2.0 audits passed; all three runtime scans reported no findings | `build/security/published/summary.json`, `scan-summary.json` and per-distribution evidence |
 | Isolated offline scenarios | All five cases passed on actual JDK 17 and 25; 132 core, 53 Spring AI and 25 Maven unit tests per run; blocked outbound positive control observed | The two immutable run directories listed below |
 | Workflow and policy validation | Actionlint, immutable Action/Wrapper policy and whitespace checks passed locally | Workflow tests and `scripts/dependency_policy.py` |
@@ -170,6 +170,42 @@ New CI requires 20 successful jobs, including `dependency-security` and
 the new commit before release. Only selected combinations were rerun locally.
 
 ## Next release steps
+
+### SBOM publication follow-up — 14 November
+
+The attachment implementation was checked on commit
+`d942fad41c8d34f768e1f9cee381c2fcf094ddb3` plus the uncommitted changes.
+The refreshed 16-scope cohort passed without findings. Exported documents are
+byte-identical to the scanned JSON and bound to current source hashes and JARs.
+Central's three publications now carry four signed classifier JSONs each; the
+Portal implementation uses a metadata-only `-sbom.jar` with four documents and
+its POM-only marker remains unchanged. See [the publication guide](sbom-publication.md).
+
+Local acceptance passed: 37 security-script tests, 33 Central protocol tests,
+35 workflow tests, a real TestKit marker consumer, configuration-cache storage
+and reuse, Central's 27-payload staging and the pinned Portal client's actual
+artifact-selection method. Windows skipped symlink-dependent fixtures where
+the OS denies link creation. No Portal upload/remote validation was invoked.
+
+A disposable key generated in a private Linux Docker volume signed the real
+packages through Windows Gradle. Isolated GPG verified **27 signatures**, including
+**12 SBOMs**; the **162-file** bundle contained no private key/passphrase.
+The volume was removed after verification. This local check did not read the
+publisher's key and is separate from the updated Linux CI GPG smoke test, which
+now runs after SBOM export in `dependency-security`.
+The final run also revalidated the portable set after signing: signature files
+were confined to per-module working copies. Earlier evidence from detecting
+signature byproducts beside audited inputs is retained under
+`build/security/publication-check/before-signing-copy-fix/`.
+
+Evidence: `build/security/publication-check/{cache-reuse.log,signing-result.json,signatures.log}`,
+`build/publication-sboms/`, `build/security/reports/`, native Gradle test XML and
+the staged registries. The user guide rendered as 12 pages; all 209 internal
+links/assets and six documentation regression tests passed. The new release
+flow still requires confirmation on GitHub runners after push; actual registry
+acceptance and public URLs can only be confirmed after authorized publication.
+
+### Release sequence
 
 1. Review the Snappy remediation, source/binary checksum receipt and any remaining
    concurrent changes, then let the owner commit and push the reviewed candidate.
