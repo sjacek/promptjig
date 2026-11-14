@@ -1,0 +1,28 @@
+{
+  "schemaVersion": 1,
+  "reviewed": "2026-11-14",
+  "purpose": "Explicitly trust missing native Gradle module metadata; no dependency version or existing checksum changes",
+  "artifact": {
+    "group": "org.junit",
+    "name": "junit-bom",
+    "version": "5.13.1",
+    "file": "junit-bom-5.13.1.module",
+    "sha256": "33c07ab9724790a6e5859ba07d69117ac530439724545a81c4179e3272c75de8"
+  },
+  "evidence": [
+    {
+      "url": "https://repo.maven.apache.org/maven2/org/junit/junit-bom/5.13.1/junit-bom-5.13.1.module",
+      "resolvedUrl": "https://repo.maven.apache.org/maven2/org/junit/junit-bom/5.13.1/junit-bom-5.13.1.module",
+      "sha256": "33c07ab9724790a6e5859ba07d69117ac530439724545a81c4179e3272c75de8",
+      "sha256Sidecar": "https://repo.maven.apache.org/maven2/org/junit/junit-bom/5.13.1/junit-bom-5.13.1.module.sha256",
+      "size": 6994
+    },
+    {
+      "url": "https://plugins.gradle.org/m2/org/junit/junit-bom/5.13.1/junit-bom-5.13.1.module",
+      "resolvedUrl": "https://repo.maven.apache.org/maven2/org/junit/junit-bom/5.13.1/junit-bom-5.13.1.module",
+      "sha256": "33c07ab9724790a6e5859ba07d69117ac530439724545a81c4179e3272c75de8",
+      "sha256Sidecar": "https://repo.maven.apache.org/maven2/org/junit/junit-bom/5.13.1/junit-bom-5.13.1.module.sha256",
+      "size": 6994
+    }
+  ]
+}

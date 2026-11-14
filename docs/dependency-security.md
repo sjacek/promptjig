@@ -39,7 +39,7 @@ hash matches `security/gradle-sdk-artifacts.json` and official Maven Central
 identity. Generic SDK entries are not a complete scan of Gradle/JDK/OS internals.
 
 The patched descriptor-generator dependencies are pinned in `libs.versions.toml`
-and applied to its buildscript classpath only. The final 34 additional checksums
+and applied to its buildscript classpath only. The initial 34 additional checksums
 were independently compared with fresh Maven Central bytes and published sidecars;
 the receipt is `security/descriptor-tooling-review.json`. Existing trust entries
 were preserved. Two separately verified Maven checksums cover the native resources
@@ -47,6 +47,13 @@ plugin's Plexus 3.x patch. Native dependency-tool BeanUtils and Invoker Commons 
 patches affect their real plugin realms, including warmup and fixtures; the
 standalone Maven example uses the same resources patch. Gradlex 1.0.3 retains its compatible Plugin Tools API; these pins
 do not force build-tool versions onto a consuming application's runtime.
+
+The subsequent `junit-bom:5.13.1` Gradle `.module` checksum was reviewed separately
+after a clean CI resolver requested metadata absent from the earlier trust list.
+`security/junit-bom-metadata-review.json` records fresh Central/Portal downloads,
+their actual redirect destinations and matching official SHA-256 sidecars. This
+adds one exact metadata artifact without changing dependency versions, replacing
+old hashes, adding trust exceptions or collecting sums in CI.
 
 The Invoker's archive tooling explicitly selects Snappy **0.5**, the fix for
 [CVE-2024-36124](https://github.com/dain/snappy/security/advisories/GHSA-8wh2-6qhj-h7j9).

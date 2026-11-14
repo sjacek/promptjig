@@ -169,6 +169,49 @@ New CI requires 20 successful jobs, including `dependency-security` and
 `offline-security`; every Gradle/JDK and Maven/JDK combination must execute on
 the new commit before release. Only selected combinations were rerun locally.
 
+## CI metadata verification follow-up — 14 November
+
+Compatibility run **43560141242**, commit
+`35b25d17c5940bbef9a753d2eec5ba633facc7f4`, failed in dependency preparation:
+the native verifier reported **missing checksums**, not a mismatched download,
+for `org.junit:junit-bom:5.13.1` / `junit-bom-5.13.1.module`. Security scanning,
+SBOM export and signing were not reached and no publication SBOM artifact was
+created by that run.
+
+Fresh official Central bytes and the Portal route (which redirects to Central)
+matched their `.sha256` sidecars:
+`33c07ab9724790a6e5859ba07d69117ac530439724545a81c4179e3272c75de8`.
+The content SHA-1 also matched the CI cache's recorded content address
+`b3c6e34138c8ee0befa60784860167bc95701ab8`. Coordinates, Gradle metadata format
+and both platform variants/18 JUnit constraints were inspected. Exactly one
+SHA-256 entry was added; existing checksums/configuration and dependency versions
+were preserved. See `security/junit-bom-metadata-review.json`.
+
+Local enforcement checks passed: the IDE updater added zero source checksums,
+official-download verification covered 214 source/SDK artifacts and one exact
+unpublished-source record, and all 17 IDE-policy regression tests passed.
+An isolated Linux JDK 25/21 reproduction passed the seven preparation commands:
+cold-home IDE verification, snapshot restore, restored-home IDE verification,
+17 IDE regressions, complete producer/TestKit/examples/Maven warmup, 49 cache
+regressions and packing **1464** reviewed downloads. Warmup did not run
+application tests, fixture verification hooks or publishing tasks.
+
+That local harness's additional postcheck assumed the default warm cache would
+necessarily retain this optional metadata file and failed after the seven
+successful commands. Its failure is retained, rather than counted as a passing
+harness. A separate Linux Gradle 9.9.1 test explicitly requested the exact
+`.module` artifact: correct official bytes passed strict verification, the
+original missing-hash policy rejected the cached file, and the new policy rejected
+modified cached bytes with the expected SHA-256 mismatch. The temporary policies
+and corruption were confined to a disposable fixture; repository enforcement
+was never relaxed.
+
+Evidence is under `build/ci-investigation/junit-bom-metadata/`: the `linux-*`
+directory contains `progress.json`, individual command logs and the preserved
+postcheck failure; the `native-*` directory contains the three native controls,
+HTML rejection reports and `result.json`. These local results do not change the
+red GitHub run; a new owner commit/push must rerun the complete pipeline.
+
 ## Next release steps
 
 ### SBOM publication follow-up — 14 November
