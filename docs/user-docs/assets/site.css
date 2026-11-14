@@ -29,6 +29,7 @@ a:focus-visible, main:focus-visible { outline: 3px solid #3b8427; outline-offset
 .release-note span { display: block; }
 .content { min-width: 0; max-width: 940px; padding: 2.5rem clamp(1.4rem, 5vw, 4rem) 3rem; }
 .content img { max-width: 100%; height: auto; }
+.content img[src*="/illustrations/"] { width: 50%; height: auto; }
 h1, h2, h3 { line-height: 1.2; letter-spacing: -.025em; }
 h1 { margin: 0 0 1.3rem; font-size: clamp(2rem, 4vw, 2.8rem); color: var(--forest); }
 h2 { margin-top: 2.5rem; font-size: 1.5rem; }
