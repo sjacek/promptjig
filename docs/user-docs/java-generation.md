@@ -5,7 +5,7 @@ permalink: /java-generation/
 
 Generation turns the same checked schemas into Java 17 records, enums and
 contract constants. With Gradle, opt in using `promptContracts.generate`.
-The upcoming Maven adapter uses its `generate` goal. Both validate the lock and
+The Maven plugin uses its `generate` goal. Both validate the lock and
 any supplied baseline before writing sources.
 
 For `events.announcement-extraction`, generation produces:

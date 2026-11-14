@@ -1,11 +1,16 @@
 # SBOM release attachments
 
-Maven Central **0.3.0** includes the audited CycloneDX 1.6 JSON attachments.
-The published Portal **0.3.0** plugin is usable but is missing its separate SBOM
-JAR: the publisher selected only files that existed, and its task graph did not
-build that classifier. The **unreleased 0.3.1** patch fixes that dependency for
-upload and `--validate-only`. Existing versions remain immutable; no attachments
-are added retroactively. Portal 0.1.0 and Central 0.2.0 also have no SBOM attachments.
+Promptjig **0.3.1** is published with audited CycloneDX 1.6 attachments in both
+registries. The Central libraries and Maven plugin carry twelve signed JSON
+documents; the Portal classifier JAR carries four exact audited documents.
+Their public bytes were checked against the accepted CI, along with all 27
+Central signatures; see [release evidence](evidence/publication-0.3.1.json).
+
+Portal **0.3.0** is usable but has no separate SBOM JAR: its publisher selected
+only existing files and did not schedule the classifier producer. Release 0.3.1
+fixes that dependency for upload and `--validate-only`. Existing versions remain
+immutable; attachments are not added retroactively. Central 0.3.0 already has
+its JSON attachments; Portal 0.1.0 and Central 0.2.0 have none.
 This is publication of inventory documents, not an SBOM attestation or a claim
 that a distribution contains no vulnerabilities.
 

@@ -1,0 +1,75 @@
+{
+  "schemaVersion": 1,
+  "version": "0.3.1",
+  "tag": "v0.3.1",
+  "sourceCommit": "605c8b26e2ca0978bce213802aaada03deef7b31",
+  "publishedOn": "2026-11-14",
+  "compatibility": {
+    "runId": 43587257806,
+    "url": "https://github.com/sjacek/promptjig/actions/runs/43587257806",
+    "conclusion": "success",
+    "successfulJobs": 20,
+    "gradleJdkCombinations": 8,
+    "mavenJdkCombinations": 6,
+    "cacheTests": 51,
+    "dependencySnapshotFiles": 1437,
+    "portalPublicationRegressionTests": 3
+  },
+  "central": {
+    "runId": 43587972410,
+    "url": "https://github.com/sjacek/promptjig/actions/runs/43587972410",
+    "conclusion": "success",
+    "deploymentId": "8f163730-b1f8-43bd-8dc7-218e05d1ca32",
+    "status": "PUBLISHED",
+    "bundleSha256": "ede9916732896241dd2246f8aa43919c39e26b898de808b29af7b7370b3d3888",
+    "verifiedAt": "2026-11-14T12:14:09.268343+01:00",
+    "publicPayloadsVerified": 27,
+    "publicSignaturesVerified": 27,
+    "reviewedSignerFingerprint": "0AE0A30C093FDE0EA02E7502ADF2B8E6FA34B930",
+    "sbomDocumentsMatchingCi": 12,
+    "jarHashesMatchingCi": [
+      {
+        "url": "https://repo.maven.apache.org/maven2/io/github/sjacek/promptjig/promptjig-core/0.3.1/promptjig-core-0.3.1.jar",
+        "sha256": "ea73c23801d9a080255db3147c6286ca3948e5666aeac40f55e8c7a474b19927"
+      },
+      {
+        "url": "https://repo.maven.apache.org/maven2/io/github/sjacek/promptjig/promptjig-spring-ai/0.3.1/promptjig-spring-ai-0.3.1.jar",
+        "sha256": "d46b9278904ab434c63d87fa3918340e04f7709a52ca6e20cfad6b661b65275d"
+      },
+      {
+        "url": "https://repo.maven.apache.org/maven2/io/github/sjacek/promptjig/promptjig-maven-plugin/0.3.1/promptjig-maven-plugin-0.3.1.jar",
+        "sha256": "3939db3df2861a9bf060c7d37d9ce18ec9061257551ddb5baf81abe0718e92bc"
+      }
+    ]
+  },
+  "portal": {
+    "runId": 43587989664,
+    "url": "https://github.com/sjacek/promptjig/actions/runs/43587989664",
+    "conclusion": "success",
+    "verifiedAt": "2026-11-14T12:04:58.381353+01:00",
+    "publicPayloadsVerified": 4,
+    "sbomDocumentsMatchingCi": 4,
+    "pomOnlyMarkerPointsToImplementation": true,
+    "implementationAndSbom": [
+      {
+        "url": "https://plugins.gradle.org/m2/io/github/sjacek/promptjig/promptjig-gradle-plugin/0.3.1/promptjig-gradle-plugin-0.3.1.jar",
+        "sha256": "f0fb019467d9bfe8324e03bbebaa222e84de6bb3eb034610c00c8de7abee4014"
+      },
+      {
+        "url": "https://plugins.gradle.org/m2/io/github/sjacek/promptjig/promptjig-gradle-plugin/0.3.1/promptjig-gradle-plugin-0.3.1-sbom.jar",
+        "sha256": "d5935a9a3a2cf13a6665a0886df98b6af725583f85a1bcf5461dc5e52c793e00"
+      }
+    ]
+  },
+  "userDocumentation": {
+    "deploymentRunId": 43586345897,
+    "url": "https://github.com/sjacek/promptjig/actions/runs/43586345897",
+    "buildAndDeployment": "success",
+    "siteUrl": "https://sjacek.github.io/promptjig/",
+    "htmlPages": 12,
+    "internalLinksAndAssets": 222,
+    "validatorTests": 6,
+    "releaseTextUpdate": "Local follow-up changes; requires owner commit, push and successful Pages deployment"
+  },
+  "verificationScope": "Read-only verification of public registry bytes after successful publication. Central signatures checked with an isolated public-only keyring. Main JAR SHA-256 and all 16 scoped SBOM documents compared with the accepted tag CI. No inference or service GitLab acceptance was repeated."
+}

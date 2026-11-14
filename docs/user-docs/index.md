@@ -4,6 +4,11 @@ permalink: /
 description: Start with a versioned prompt contract, validate it in your build and use typed responses with Spring AI.
 ---
 
+{% capture overview_illustration %}
+![Coding agents compare a prompt template with its contract schema and review prompt versions. The screen reads: Simplify AI communication. Track prompts. Support safety and accountability.](assets/illustrations/promptjig-agent-team.png)
+{% endcapture %}
+
+{% capture overview_copy %}
 Promptjig keeps a prompt's templates, input schema and output schema in one
 versioned contract. It checks them during your build, records their fingerprints
 in an append-only lock and can generate Java types for your application.
@@ -11,8 +16,12 @@ The Spring AI runtime renders the same resources and validates model responses.
 
 Start with [your first contract](getting-started.md),
 or run the [small public-announcement example](examples.md).
+{% endcapture %}
 
-![Coding agents compare a prompt template with its contract schema and review prompt versions. The screen reads: Simplify AI communication. Track prompts. Support safety and accountability.](assets/illustrations/promptjig-agent-team.png)
+<div class="overview-intro">
+  <div class="overview-illustration">{{ overview_illustration | markdownify }}</div>
+  <div class="overview-copy">{{ overview_copy | markdownify }}</div>
+</div>
 
 ## Choose the pieces you need
 
@@ -21,11 +30,15 @@ or run the [small public-announcement example](examples.md).
 | [Gradle plugin](gradle.md) | {{ site.releases.gradle_plugin }}, Gradle Plugin Portal | Build-time validation, history protection and Java generation |
 | Core library | {{ site.releases.runtime }}, Maven Central | Contract operations without a build-tool or Spring dependency |
 | [Spring AI library](spring-ai.md) | {{ site.releases.runtime }}, Maven Central | Validated rendering and reading typed responses |
-| [Maven plugin](maven.md) | {{ site.releases.maven_plugin }}, **unreleased** | Maven lifecycle integration; currently tested from source |
+| [Maven plugin](maven.md) | {{ site.releases.maven_plugin }}, Maven Central | Build-time validation, history protection and Java generation |
 
-These components have independent release numbers. Applying the build plugin
+These components are published separately; the current release is 0.3.1 for all
+four. Applying the build plugin
 does not add the runtime to your application. Adding the runtime does not
 generate Java sources or check the version lock during the build.
+
+Release 0.3.1 includes signed SBOM JSON attachments in Maven Central and a
+separate SBOM JAR in Plugin Portal. See [how to download and read them](sbom.md).
 
 ## The workflow
 

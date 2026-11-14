@@ -45,6 +45,12 @@ a:focus-visible, main:focus-visible { outline: 3px solid #3b8427; outline-offset
 .page-toc a[aria-current="location"] { color: var(--forest); font-weight: 650; border-left-color: var(--forest); background: var(--wash); }
 .content img { max-width: 100%; height: auto; }
 .content img[src*="/illustrations/"] { width: 50%; height: auto; }
+.overview-intro { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.1fr); align-items: center; gap: clamp(1.25rem, 3vw, 3rem); margin: 1.5rem 0 2.5rem; }
+.overview-illustration, .overview-copy { min-width: 0; }
+.overview-illustration p { margin: 0; }
+.content .overview-illustration img { display: block; width: 100%; }
+.overview-copy > :first-child { margin-top: 0; }
+.overview-copy > :last-child { margin-bottom: 0; }
 h1, h2, h3 { line-height: 1.2; letter-spacing: -.025em; }
 h1 { margin: 0 0 1.3rem; font-size: clamp(2rem, 4vw, 2.8rem); color: var(--forest); }
 h2 { margin-top: 2.5rem; font-size: 1.5rem; }
@@ -84,5 +90,9 @@ footer { margin-top: 3.5rem; border-top: 1px solid var(--border); padding-top: 1
   .site-navigation[open] .release-note span + span::before { content: ' · '; }
   .content { padding: 2rem 1.2rem; }
   .page-toc { padding: 1rem; }
+}
+@media (max-width: 960px) {
+  .overview-intro { grid-template-columns: minmax(0, 1fr); gap: 1.5rem; }
+  .overview-illustration { width: 100%; max-width: 36rem; }
 }
 @media (prefers-reduced-motion: no-preference) { html { scroll-behavior: smooth; } }

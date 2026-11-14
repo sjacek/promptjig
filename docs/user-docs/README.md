@@ -6,8 +6,10 @@ in `docs/`. This file is excluded from the published site.
 
 The site uses the existing Promptjig icon and a small responsive layout with no
 remote fonts, JavaScript framework, tracking or external theme. Release numbers
-and navigation live in `_config.yml`. Mark the Maven adapter as unreleased until
-its actual publication; changing the producer's version alone is not publication.
+and navigation live in `_config.yml`. All four current publications are 0.3.1.
+Update release numbers only after verifying actual registry availability;
+changing the producer's version alone is not publication. Keep the examples'
+reviewed older pins explicit instead of describing them with the latest versions.
 
 ## Build and validate locally
 
@@ -40,11 +42,13 @@ PRs, forks and non-main branches only build. Only `main` in `sjacek/promptjig`
 can deploy, using the `github-pages` environment and job-scoped `pages: write`
 and `id-token: write`. No publishing secret or PAT is required.
 
-After these changes are merged to `main`, select **Settings → Pages → Build and
-deployment → Source: GitHub Actions** in the repository. The workflow does not
-change repository settings or bypass environment approval rules. The intended
-address is `https://sjacek.github.io/promptjig/`; it is not claimed to be live
-until a deployment succeeds. Manual runs on `main` can also publish.
+GitHub Pages is configured with **Settings → Pages → Build and deployment →
+Source: GitHub Actions**. Build and deployment from `main` succeeded on
+2026-11-14 in [this workflow](https://github.com/sjacek/promptjig/actions/runs/43586345897).
+The guide is available at `https://sjacek.github.io/promptjig/`.
+Local edits appear there only after a successful deployment of the updated sources.
+The workflow does not change repository settings or bypass environment approval
+rules. Manual runs on `main` can also publish.
 
 See the official [Pages workflow documentation](https://docs.github.com/en/pages/getting-started-with-github-pages/using-custom-workflows-with-github-pages).
 If the repository name or domain changes, update `_config.yml`, the workflow's

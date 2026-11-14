@@ -1,16 +1,21 @@
 # Release procedure
 
-Published Gradle plugin: **0.3.0** in the
-[Plugin Portal](https://plugins.gradle.org/plugin/io.github.sjacek.promptjig/0.3.0),
+Published Gradle plugin: **0.3.1** in the
+[Plugin Portal](https://plugins.gradle.org/plugin/io.github.sjacek.promptjig/0.3.1),
 availability confirmed on 2026-11-14. That version is immutable; further releases
 need a new build version, reviewed commit and release tag.
 Verification and local staging do not upload artifacts.
-The core and Spring AI runtime libraries and Maven adapter **0.3.0** were published
+The core and Spring AI runtime libraries and Maven adapter **0.3.1** were published
 to Maven Central on 2026-11-14. Strict response reading has been the default since
 0.2.0. Set the shared
 publication/runtime version in `gradle/libs.versions.toml` (`versions.promptjig`);
 the root build reads it for
 all project publications. Gradle Plugin Portal publication remains independent.
+Both [Central](https://github.com/sjacek/promptjig/actions/runs/43587972410)
+and [Portal](https://github.com/sjacek/promptjig/actions/runs/43587989664) release
+workflows succeeded for `v0.3.1` at `605c8b26e2ca0978bce213802aaada03deef7b31`.
+Public JARs, Central signatures and both registries' SBOMs were checked against
+the accepted CI; [release evidence](evidence/publication-0.3.1.json) records the result.
 Commits, tags and pushes are performed by the owner; Codex does not commit or push.
 
 Historical plugin-release checks: [publication readiness](publication-readiness.md).
@@ -95,19 +100,20 @@ and MIT metadata:
 .\gradlew.bat :core:publishAllPublicationsToStagingRepository :spring-ai:publishAllPublicationsToStagingRepository :maven-plugin:publishAllPublicationsToStagingRepository
 ```
 
-The unreleased 0.3.1 candidate stages `promptjig-core`, `promptjig-spring-ai`
+The current build stages `promptjig-core`, `promptjig-spring-ai`
 and `promptjig-maven-plugin` under their respective
 `build/staging-repository/` directories. It does not upload to Maven Central.
 The separate manual **Publish Maven Central artifacts** workflow prepares signed
 packages and uploads them through the Central Publisher API. It is described in
 [Maven Central releases](maven-central.md), including required environment secrets,
 local verification, release guards and status-only recovery. Both libraries are
-publicly available as 0.3.0, alongside the Maven adapter. Plugin Portal publishes the build plugin separately;
+publicly available as 0.3.1, alongside the Maven adapter. Plugin Portal publishes the build plugin separately;
 it does not make the runtime coordinates available.
 
 The 0.3.1 release paths require [audited SBOM attachments](sbom-publication.md)
 and a clean Portal publication regression before staging. The published 0.3.0
-Portal plugin omitted its SBOM JAR; 0.3.0 Central attachments are available.
+Portal plugin omitted its SBOM JAR; the public 0.3.1 classifier is present and
+contains the four exact audited documents. Central 0.3.0 attachments remain available.
 Central signs four classifier JSONs per module; Portal receives a separate
 implementation `-sbom.jar`, keeping the POM-only marker unchanged. Release guards
 select the exact successful Compatibility run whose SBOM artifact is downloaded

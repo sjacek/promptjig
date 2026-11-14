@@ -3,18 +3,16 @@ title: Maven plugin
 permalink: /maven/
 ---
 
-> The Maven adapter is being prepared for **{{ site.releases.maven_plugin }}**.
-> It is not published yet. The coordinates below become independently usable
-> after that release reaches Maven Central. They do not identify a currently
-> available release.
+The Maven plugin **{{ site.releases.maven_plugin }}** is available in Maven
+Central. Add it to your application without building Promptjig from source.
 
 Maven projects need Java 17+ and Maven 3.9+. Maven 4 compatibility is checked
-against 4.0.0-rc-7, not every future preview. The published Gradle plugin and
-runtime libraries have separate version numbers.
+against 4.0.0-rc-7, not every future preview. The Gradle plugin and runtime
+libraries are separate publications; choose the components your application needs.
 
 ## Configure the adapter
 
-After publication, add this plugin inside your application's `build/plugins`:
+Add this plugin inside your application's `build/plugins`:
 
 ```xml
 <plugin>
@@ -91,7 +89,9 @@ Read the rule IDs before changing inputs. Filesystem/report errors are execution
 errors, separate from contract validation failures. Generated source registration
 happens only after validation, generation and report writing succeed.
 
-Until publication, source acceptance is described in the repository's
-[Maven development guide](https://github.com/sjacek/promptjig/blob/main/docs/maven-plugin.md).
 The [standalone example](https://github.com/sjacek/promptjig/tree/main/examples/maven)
-is currently tested with privately staged current build artifacts.
+uses published artifacts and runs with `mvn verify`; its reviewed POM remains
+pinned to 0.3.0. Follow [the example instructions](examples.md#maven-example).
+For source development, the repository's
+[Maven development guide](https://github.com/sjacek/promptjig/blob/main/docs/maven-plugin.md)
+describes acceptance with privately staged current build artifacts.

@@ -28,7 +28,7 @@ than compiling stale files manually.
 ## Generated classes cannot be found
 
 With Gradle, apply Java and enable the `generate {}` block with a valid package.
-With Maven, bind the upcoming adapter's `generate` goal. Run the normal build
+With Maven, bind the plugin's `generate` goal. Run the normal build
 instead of only opening generated Java files. Supply matching Jackson dependencies.
 Check for colliding final ID segments that would generate the same class name.
 
@@ -65,9 +65,10 @@ change tokens, model selection, deadlines or fallback automatically.
 
 The published versions are Portal plugin **{{ site.releases.gradle_plugin }}**
 and core/Spring AI libraries **{{ site.releases.runtime }}** from Maven Central.
-Maven plugin **{{ site.releases.maven_plugin }} is unreleased**. Do not infer a
-plugin version from a runtime release number or add a source checkout merely to
-resolve an incorrect coordinate.
+The Maven plugin **{{ site.releases.maven_plugin }}** is also available in Central.
+All current components are 0.3.1, but are published separately; check the exact
+group, artifact, version and repository when resolving a dependency. The bundled
+examples deliberately keep the older published pins listed in [examples](examples.md).
 
 When reporting an issue, include software versions, task/goal, rule IDs, relative
 resource paths and JSON Pointers. Share a fictional minimal reproduction rather

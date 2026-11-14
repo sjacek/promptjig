@@ -11,7 +11,7 @@ application resources. Review it with the contract and templates.
 
 1. Edit the contract or referenced `.st` files.
 2. Increment the contract's `version`.
-3. Explicitly run `./gradlew promptContractsLock` (or the upcoming Maven goal
+3. Explicitly run `./gradlew promptContractsLock` (or the Maven goal
    `mvn promptjig:lock`).
 4. Review the appended entry and run normal verification.
 
@@ -39,7 +39,7 @@ Gradle:
 ./gradlew check -Ppromptjig.baselineLockFile=baseline-lock.json
 ```
 
-The upcoming Maven adapter accepts:
+The Maven plugin accepts:
 
 ```shell
 mvn verify -Dpromptjig.baselineLockFile=baseline-lock.json
@@ -87,5 +87,5 @@ against the previous protected revision rather than the newly pushed lock itself
 
 The contract's integer version identifies instructions and schema. The Promptjig
 library/plugin version identifies software behavior. Record both when comparing
-model runs. For example, runtime {{ site.releases.runtime }} changed the default
-read policy without inserting `strict` into unchanged authored contracts.
+model runs. For example, runtime 0.2.0 changed the default read policy without
+inserting `strict` into unchanged authored contracts; 0.3.1 retains that strict default.

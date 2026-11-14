@@ -17,9 +17,9 @@
         generated types with safe validation findings.
       </p>
       <p>
-        Gradle plugin <strong>0.1.0</strong> is available in the
-        <a href="https://plugins.gradle.org/plugin/io.github.sjacek.promptjig/0.1.0">Gradle Plugin Portal</a>.
-        The core and Spring AI runtime libraries <strong>0.2.0</strong> are available in Maven Central,
+        Gradle plugin <strong>0.3.1</strong> is available in the
+        <a href="https://plugins.gradle.org/plugin/io.github.sjacek.promptjig/0.3.1">Gradle Plugin Portal</a>.
+        The core, Spring AI runtime and Maven plugin <strong>0.3.1</strong> are available in Maven Central,
         independently of the build plugin release. The runtime rejects schema
         violations by default; repairing responses requires <code>output.strict: false</code>.
         The core targets Java 17; the plugin supports Gradle 9.0+ on a supported JDK 17+.
@@ -35,9 +35,10 @@ Read the [user guide](docs/user-docs/index.md) for setup, contracts, Java genera
 Spring AI integration and troubleshooting. Its GitHub Pages source is in `docs/user-docs`.
 
 See the [changelog](CHANGELOG.md) for user-visible changes and compatibility notes.
-The next release also prepares a [Maven adapter](docs/maven-plugin.md) with
-validation, append-only locks and Java generation. This adapter is unreleased;
-the [Maven example](examples/maven/README.md) is currently verified from source.
+The published [Maven adapter](docs/maven-plugin.md) provides validation,
+append-only locks and Java generation. The [Maven example](examples/maven/README.md)
+uses its reviewed published 0.3.0 pin and runs independently with `mvn verify`.
+Release 0.3.1 includes [signed SBOM JSONs in Central and a separate Portal SBOM JAR](docs/user-docs/sbom.md).
 Maintainers can prepare a [signed Maven Central release](docs/maven-central.md)
 independently of the Gradle Plugin Portal publication.
 
@@ -47,11 +48,11 @@ Apply the published plugin:
 
 ```groovy
 plugins {
-    id 'io.github.sjacek.promptjig' version '0.1.0'
+    id 'io.github.sjacek.promptjig' version '0.3.1'
 }
 ```
 
-Try the checked-in validation consumer with the published release:
+Try the checked-in validation consumer, which retains its published 0.1.0 pin:
 
 ```powershell
 .\gradlew.bat -p examples/gradle check
@@ -74,7 +75,8 @@ Spring AI 2.0.x and Java 17+, with Jackson 2/3 bindings. Applications own model
 options, sensitivity policy and durable audit before response reading.
 
 Try the [small standalone Spring AI pilot](examples/runtime/README.md) to extract
-a fictional public event announcement into generated Java types. Its default
+a fictional public event announcement into generated Java types. It retains
+Portal plugin 0.1.0 and Central core/runtime 0.2.0. Its default
 run uses synthetic responses; an explicit task can call a pinned local model.
 
 ```powershell
@@ -131,6 +133,6 @@ for findings and limitations.
 
 The Gradle validator, located diagnostics and immutable lock/baseline are part
 of stage 1; code generation is implemented in stage 2. The Spring AI runtime and
-response repair implement stage 3. The Maven adapter remains later work. The
+response repair implement stage 3. The Maven adapter completes stage 4. The
 stage-0 report records the original experiment; current behavior is documented
 in the guides above.

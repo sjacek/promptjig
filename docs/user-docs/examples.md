@@ -4,9 +4,13 @@ permalink: /examples/
 ---
 
 Run these commands from a Promptjig checkout using its wrapper. On Windows use
-`.\gradlew.bat`; on Linux/macOS use `./gradlew`. The small runtime example uses
-the published Portal plugin {{ site.releases.gradle_plugin }} and Central libraries
-{{ site.releases.runtime }} by default.
+`.\gradlew.bat`; on Linux/macOS use `./gradlew`.
+
+The examples retain their reviewed, published version pins. The small Spring AI
+pilot uses Portal plugin **0.1.0** and Central core/runtime **0.2.0**; the
+validation-only Gradle consumer uses Portal **0.1.0**, and the standalone Maven
+example uses **0.3.0**. Publishing 0.3.1 does not upgrade these examples.
+The installation guides show the current 0.3.1 release for new applications.
 
 ## Public announcement: no model required
 
@@ -65,7 +69,14 @@ For your own application, begin with the public-announcement contract in
 
 The [standalone Maven example](https://github.com/sjacek/promptjig/tree/main/examples/maven)
 exercises lifecycle generation, Java compilation, Jackson binding and packaged
-resources. Its build plugin is **unreleased {{ site.releases.maven_plugin }}**,
-so it currently runs in source acceptance with privately staged artifacts.
-It is not yet an independently resolvable Central consumer. See
-[Maven availability and setup](maven.md).
+resources using the published **0.3.0** Maven plugin from Central:
+
+```shell
+cd examples/maven
+mvn verify
+```
+
+No private staging repository or local Promptjig installation is needed.
+The source acceptance harness separately tests the current candidate in a private
+copy; it does not rewrite the example's published version pin. See
+[Maven availability and setup](maven.md) to use 0.3.1 in your own project.

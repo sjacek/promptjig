@@ -20,9 +20,9 @@ defaults:
     values:
       layout: default
 releases:
-  gradle_plugin: 0.1.0
-  runtime: 0.2.0
-  maven_plugin: 0.3.0
+  gradle_plugin: 0.3.1
+  runtime: 0.3.1
+  maven_plugin: 0.3.1
   spring_ai: 2.0.2
 navigation:
   - title: Overview
@@ -31,7 +31,7 @@ navigation:
     url: /getting-started/
   - title: Gradle
     url: /gradle/
-  - title: Maven (unreleased)
+  - title: Maven
     url: /maven/
   - title: Contract reference
     url: /contracts/

@@ -1,14 +1,14 @@
 # Gradle plugin
 
-Version 0.1.0 is available in the
-[Gradle Plugin Portal](https://plugins.gradle.org/plugin/io.github.sjacek.promptjig/0.1.0).
+Version 0.3.1 is available in the
+[Gradle Plugin Portal](https://plugins.gradle.org/plugin/io.github.sjacek.promptjig/0.3.1).
 The declaration below resolves the published plugin without a Promptjig checkout.
 
 ## Setup
 
 ```groovy
 plugins {
-    id 'io.github.sjacek.promptjig' version '0.1.0'
+    id 'io.github.sjacek.promptjig' version '0.3.1'
 }
 
 promptContracts {
@@ -111,5 +111,5 @@ JDK 21+ and are never invoked by consumer `check`. Isolated Projects support is
 not declared for this release.
 
 The [generation guide](code-generation.md) describes `promptContractsGenerate`,
-the opt-in `generate {}` DSL and automatic Java source wiring. This plugin does
-not yet provide the Spring AI runtime or response repair.
+the opt-in `generate {}` DSL and automatic Java source wiring. For runtime
+rendering and response reading, add the separate [Spring AI library](spring-ai.md).

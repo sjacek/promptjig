@@ -1,9 +1,12 @@
 # Maven Central releases
 
-The latest published Central release is **0.3.0**, including `promptjig-core`,
+The latest published Central release is **0.3.1**, including `promptjig-core`,
 `promptjig-spring-ai` and `promptjig-maven-plugin`. Publication completed on
-2026-11-14 in [this workflow](https://github.com/sjacek/promptjig/actions/runs/43575843613).
-The three JAR hashes and twelve SBOM JSON attachments were checked against CI.
+2026-11-14 in [this workflow](https://github.com/sjacek/promptjig/actions/runs/43587972410).
+Deployment `8f163730-b1f8-43bd-8dc7-218e05d1ca32` reached `PUBLISHED`.
+All 27 public payloads and detached signatures were verified. The three main
+JAR hashes and twelve SBOM JSON attachments match the accepted tag CI exactly.
+See the [release evidence](evidence/publication-0.3.1.json).
 
 The previous runtime library release **0.2.0** has these two coordinates:
 
@@ -15,9 +18,9 @@ Both were published on 2026-11-13.
 confirmed `PUBLISHED`; public payloads, SHA-256 and GPG signatures were checked.
 Plugin Portal distribution is independent;
 publishing the Gradle plugin does not publish these Maven coordinates. The 0.2.0 release did not contain a Maven build adapter.
-The next, **unreleased 0.3.1** candidate is read from `versions.promptjig` in
-`gradle/libs.versions.toml` and stages three artifacts: both runtime libraries
-and `promptjig-maven-plugin`. The standalone Spring AI pilot continues to pin
+The shared publication version is read from `versions.promptjig` in
+`gradle/libs.versions.toml`. Local staging produces three artifacts: both runtime
+libraries and `promptjig-maven-plugin`. The standalone Spring AI pilot continues to pin
 public runtime 0.2.0 through the separate `promptjigRuntime` catalog version.
 
 ## Verify locally without publisher credentials
@@ -35,7 +38,7 @@ contact Central. The verifier checks coordinates, required POM metadata, matchin
 core/runtime versions, Gradle module identities, JAR contents, MIT licenses,
 sources and Javadocs. Ordinary builds do not read signing credentials.
 
-For the 0.3.1 release candidate, [prepare audited SBOMs](sbom-publication.md)
+For release preparation, [prepare audited SBOMs](sbom-publication.md)
 before staging with `-PpublicationSboms=true`. This adds four classifier JSON
 documents per module. Bootstrap staging without the flag can still validate the
 original packages before inventory generation; it is not accepted as a signed
@@ -84,7 +87,7 @@ snapshots. The workflow artifact retains only `state.json` for recovery.
    to pass for that exact commit. The new workflow must also be present on the
    repository's default branch before GitHub accepts manual dispatches.
    Codex does not commit or push.
-2. Have the owner create/push the immutable matching tag, for example `v0.3.0`.
+2. Have the owner create/push the immutable matching tag, for example `v0.3.1`.
 3. Dispatch **Publish Maven Central artifacts** with that tag and an empty
    `deployment_id`. A tag/push alone never uploads.
 
@@ -158,4 +161,4 @@ unchanged tasks reused existing outputs. All three workflows passed actionlint
 for missing OS privileges; that case passed on Linux.
 See [the preparation evidence](evidence/central-preparation-2026-11-13.json).
 The [stage-4 report](stage4-report.md) records preparation of the third publication,
-the Maven adapter, for the unreleased 0.3.0 candidate.
+the Maven adapter, for the then-unreleased 0.3.0 candidate.

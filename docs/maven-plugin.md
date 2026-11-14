@@ -1,8 +1,8 @@
 # Maven plugin
 
-The Maven adapter is being prepared for **0.3.0** and is not yet published.
-The existing Gradle Portal plugin 0.1.0 and Central runtime libraries 0.2.0
-remain independent releases. Maven projects need Java 17+ and Maven 3.9+.
+The Maven adapter **0.3.1** is published in Maven Central. The Gradle Portal
+plugin and Central runtime libraries are separate publications, also available
+as 0.3.1. Maven projects need Java 17+ and Maven 3.9+.
 Maven 4 compatibility is checked against the pinned preview 4.0.0-rc-7;
 this does not promise compatibility with every future Maven 4 preview.
 
@@ -15,7 +15,7 @@ Store UTF-8 `.prompt.yaml` contracts and referenced `.st` templates in
 <plugin>
   <groupId>io.github.sjacek.promptjig</groupId>
   <artifactId>promptjig-maven-plugin</artifactId>
-  <version>0.3.0</version>
+  <version>0.3.1</version>
   <configuration>
     <packageName>example.generated</packageName>
     <jackson>v3</jackson>
@@ -45,7 +45,7 @@ not add Spring AI or a model client to your application's dependencies.
 For a new contract version, explicitly run:
 
 ```shell
-mvn io.github.sjacek.promptjig:promptjig-maven-plugin:0.3.0:lock
+mvn io.github.sjacek.promptjig:promptjig-maven-plugin:0.3.1:lock
 mvn verify
 ```
 
