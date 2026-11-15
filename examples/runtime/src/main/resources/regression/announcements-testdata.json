@@ -1,0 +1,209 @@
+{
+  "version": 1,
+  "cases": [
+    {
+      "id": "public-event-testdata",
+      "tags": [
+        "in-person",
+        "free"
+      ],
+      "reviewNote": "Explicit in-person event and free admission; the original smoke case."
+    },
+    {
+      "id": "online-event-testdata",
+      "tags": [
+        "online",
+        "free"
+      ],
+      "reviewNote": "A stated online URL is the location; it is never fetched."
+    },
+    {
+      "id": "paid-event-testdata",
+      "tags": [
+        "in-person",
+        "paid"
+      ],
+      "reviewNote": "Paid admission must remain false, not be confused with a missing price."
+    },
+    {
+      "id": "missing-details-testdata",
+      "tags": [
+        "missing",
+        "unknown"
+      ],
+      "reviewNote": "A title alone leaves four explicit nulls."
+    },
+    {
+      "id": "missing-price-testdata",
+      "tags": [
+        "missing",
+        "admission"
+      ],
+      "reviewNote": "Known venue and date do not establish an admission price."
+    },
+    {
+      "id": "hybrid-event-testdata",
+      "tags": [
+        "hybrid",
+        "free"
+      ],
+      "reviewNote": "A physical venue and stream are explicitly one hybrid event."
+    },
+    {
+      "id": "ambiguous-date-testdata",
+      "tags": [
+        "ambiguous",
+        "date"
+      ],
+      "reviewNote": "Neither candidate date is confirmed; a scalar date must remain null."
+    },
+    {
+      "id": "conflicting-place-testdata",
+      "tags": [
+        "ambiguous",
+        "location"
+      ],
+      "reviewNote": "Two alternative venues are equally unconfirmed; neither is an established location."
+    },
+    {
+      "id": "postponed-date-testdata",
+      "tags": [
+        "date",
+        "correction"
+      ],
+      "reviewNote": "A clearly superseded date is replaced by the explicitly confirmed new date."
+    },
+    {
+      "id": "registration-date-testdata",
+      "tags": [
+        "date",
+        "registration"
+      ],
+      "reviewNote": "The registration deadline is not the event date."
+    },
+    {
+      "id": "cross-year-testdata",
+      "tags": [
+        "date",
+        "in-person"
+      ],
+      "reviewNote": "An explicit year is preserved even at a calendar boundary."
+    },
+    {
+      "id": "leap-day-testdata",
+      "tags": [
+        "date",
+        "leap-year"
+      ],
+      "reviewNote": "The stated leap day is valid in 2028."
+    },
+    {
+      "id": "no-year-testdata",
+      "tags": [
+        "missing",
+        "date"
+      ],
+      "reviewNote": "A missing year must not be filled from the system clock."
+    },
+    {
+      "id": "multi-day-testdata",
+      "tags": [
+        "ambiguous",
+        "date-range"
+      ],
+      "reviewNote": "The single-date contract cannot represent a two-day event; no unique event day is stated."
+    },
+    {
+      "id": "free-registration-testdata",
+      "tags": [
+        "registration",
+        "free"
+      ],
+      "reviewNote": "Mandatory registration does not make explicitly free admission paid."
+    },
+    {
+      "id": "optional-donation-testdata",
+      "tags": [
+        "admission",
+        "free"
+      ],
+      "reviewNote": "An optional donation does not override explicitly free entry."
+    },
+    {
+      "id": "deposit-paid-testdata",
+      "tags": [
+        "admission",
+        "paid"
+      ],
+      "reviewNote": "A booking deposit is part of an explicitly paid ticket."
+    },
+    {
+      "id": "mixed-admission-testdata",
+      "tags": [
+        "hybrid",
+        "ambiguous",
+        "admission"
+      ],
+      "reviewNote": "One boolean cannot represent free streaming and paid room admission, so admission remains unknown."
+    },
+    {
+      "id": "quoted-instructions-testdata",
+      "tags": [
+        "quoted-text",
+        "in-person"
+      ],
+      "reviewNote": "Quoted instructions in the announcement are source data and must not override event facts."
+    },
+    {
+      "id": "json-braces-testdata",
+      "tags": [
+        "literal-text",
+        "missing"
+      ],
+      "reviewNote": "Braces belong to the stated title and must survive template rendering unchanged."
+    },
+    {
+      "id": "online-no-url-testdata",
+      "tags": [
+        "online",
+        "missing",
+        "location"
+      ],
+      "reviewNote": "Online format does not supply an unstated URL."
+    },
+    {
+      "id": "venue-named-online-testdata",
+      "tags": [
+        "in-person",
+        "literal-text"
+      ],
+      "reviewNote": "A venue named Online is still in-person when the format is explicit."
+    },
+    {
+      "id": "registration-not-admission-testdata",
+      "tags": [
+        "registration",
+        "missing",
+        "admission"
+      ],
+      "reviewNote": "Free registration says nothing about the price of entering the event."
+    },
+    {
+      "id": "ambiguous-format-testdata",
+      "tags": [
+        "ambiguous",
+        "format",
+        "location"
+      ],
+      "reviewNote": "Alternative formats are not a confirmed hybrid event; neither a venue nor URL is provided."
+    },
+    {
+      "id": "missing-title-testdata",
+      "tags": [
+        "missing",
+        "title"
+      ],
+      "reviewNote": "The document explicitly gives no event title; a generic description must not become an invented title."
+    }
+  ]
+}

@@ -351,7 +351,10 @@ jobs:
           fi
           ./gradlew -p examples/runtime check installDist "-Ppromptjig.baselineLockFile=$baseline" --configuration-cache --configuration-cache-problems=fail --console=plain
       - name: Run the packaged synthetic demo
-        run: examples/runtime/build/install/promptjig-runtime-pilot/bin/promptjig-runtime-pilot
+        # Replay is deterministic; model inference remains an explicit local task outside required CI.
+        run: |
+          examples/runtime/build/install/promptjig-runtime-pilot/bin/promptjig-runtime-pilot
+          examples/runtime/build/install/promptjig-runtime-pilot/bin/promptjig-runtime-pilot --regression-report=examples/runtime/build/reports/regression/synthetic
       - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7
         if: always()
         # noinspection UndefinedParamsPresent

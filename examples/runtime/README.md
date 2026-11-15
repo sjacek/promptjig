@@ -27,8 +27,8 @@ HTTP in its dedicated CI job; E1 database guarantees have their own integration
 tests. Its scope and adoption steps are recorded in the service repository's
 `doc/PROMPTJIG_RUNTIME_PILOT.md`.
 
-Next, expand the reviewed public fixture set and compare model settings with
-reproducible reports. Keep inference explicit and required CI deterministic.
+The regression corpus now has 25 reviewed cases and JSON/Markdown reports (see
+below). Keep inference explicit and required CI deterministic.
 Both pilots now consume the released core/runtime libraries from Maven Central;
 default service runtime adoption remains a separate reviewed change.
 
@@ -158,6 +158,82 @@ and JSON validation. Missing counters remain null; reasoning text is not recorde
 `finishReason: length` rejects the response even if its partial text is valid JSON.
 The timeout applies to each request, including initial model loading.
 All fixtures are bundled classpath resources; no sample URL is fetched.
+
+### Full regression corpus and saved quality reports
+
+The original five-case suite above remains available for quick experiments.
+The full **25-case corpus** adds hybrid events, ambiguous and corrected dates,
+registration deadlines, leap days, missing years, date ranges, conflicting
+venues, optional donations, mixed admission prices, missing titles/URLs,
+literal braces and instructions quoted as document data. Every source is
+fictional public test data, with a separately reviewed expected JSON answer.
+
+Check the evaluator and packaged corpus **without a model**:
+
+```powershell
+.\gradlew.bat -p examples/runtime regressionReport --configuration-cache --configuration-cache-problems=fail
+```
+
+Read `build/reports/regression/synthetic/quality-report.md` and
+`quality-report.json` under this example. The mode is `SYNTHETIC_REPLAY`: it
+replays expected answers to check rendering, reading, comparisons and report
+generation. **Its scores do not measure model quality.** Missing provider token
+counters stay null. The same replay runs from the installed distribution in CI;
+reports are included in the `runtime-pilot-reports` artifact.
+
+To evaluate an already installed local model on all 25 cases:
+
+```powershell
+$env:PROMPTJIG_MODEL = 'sha256:<64-lowercase-hex-digits-from-inspect>'
+$env:PROMPTJIG_MAX_TOKENS = '4096'
+.\gradlew.bat -p examples/runtime runLocalRegression -PpilotReportDir=build/reports/regression/qwen-baseline --configuration-cache --configuration-cache-problems=fail
+```
+
+The default destination is `build/reports/regression/local/` under this example.
+`-PpilotReportDir` selects a destination relative to the working directory from
+which the launcher runs (`examples/runtime` for the Gradle tasks), or an absolute
+path. Choose a fresh directory for each comparison: files in the selected
+directory are replaced. The installed launcher accepts
+`--regression-report=<directory>` or `--local-regression-report=<directory>`.
+Local inference makes one independent request per case, with temperature 0,
+zero retries and the configured per-case timeout. A full run may take much
+longer than the five-case smoke suite. It is not attached to `check` or CI.
+
+The report records corpus revision/content SHA-256, contract version/fingerprint,
+model digest and settings, and per-case expected/actual values, finish reason,
+usage, findings count and duration. Resource hashes use UTF-8 content with LF
+line endings so Windows and Linux runs identify the same reviewed corpus.
+It retains neither raw provider bodies, exception messages nor reasoning text.
+Reader findings include safe field pointers, rules and repair/rejection actions,
+so a repaired null can be investigated even when it matches the expected value.
+Interpret its measurements separately:
+
+- **Case pass:** all five fields exactly match, the reader accepted the answer,
+  no repair was needed and no provider/truncation error occurred.
+- **Field match:** normalized actual equals expected. A repaired answer can
+  match fields but still fail its case. Strings are compared exactly; there is
+  no fuzzy matching, date guessing or automatic oracle update.
+- **Known/unknown facts:** separate totals show extracted stated facts and
+  correctly preserved nulls. A rejected or unavailable response gets no field
+  credit, including fields whose expected value is null.
+- **Outcomes:** distinguish wrong facts, repaired or rejected JSON, truncation,
+  response errors and provider errors. Schema acceptance alone is not a pass.
+- **Usage:** sums include only reported counters and state how many cases
+  reported each counter; a partial sum is not the total cost of the full run.
+
+Both reports are saved before a failed comparison makes the command exit with
+failure. Remaining cases still run after a provider or response failure. A
+missing/invalid reviewed fixture instead fails preflight before model access.
+These cases expose specific regressions, not general model accuracy.
+
+The corpus manifest is `src/main/resources/regression/announcements-testdata.json`.
+Its entries list IDs, tags and review notes; sources live in `documents/` and
+oracles in `responses/`. Review the stated and unknown facts when adding or
+changing an oracle, then increment the corpus `version`. In particular, the
+single-date/single-price contract cannot represent an unresolved date range or
+different prices for hybrid attendance, so those ambiguous fields remain null.
+Changing these fixture files does not change the authored prompt. A deliberate
+`.st` or schema change still requires a new contract version and lock entry.
 
 These few reviewed examples check specific behavior, not overall model accuracy.
 The real-model suite is optional and is never attached to `check` or regular CI.

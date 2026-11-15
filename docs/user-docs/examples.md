@@ -40,16 +40,49 @@ Fictional announcements are under `src/main/resources/documents/*-testdata.txt`;
 reviewed response fixtures are under `src/main/resources/responses/*-testdata.json`.
 Its README describes the scenario options.
 
+## Regression reports for 25 announcements
+
+Check the reviewed fictional corpus and report generation without a model:
+
+```shell
+./gradlew -p examples/runtime regressionReport --configuration-cache --configuration-cache-problems=fail
+```
+
+Open `examples/runtime/build/reports/regression/synthetic/quality-report.md` or
+`quality-report.json`. This is a **synthetic replay**, clearly labelled in both
+files; its scores check the evaluator and do not measure model quality.
+The corpus includes ambiguous dates/venues, hybrid events, different admission
+prices, missing facts and instructions quoted inside the announcement.
+
+After selecting an installed model digest, use `runLocalRegression` for a real
+evaluation. Reports go to `examples/runtime/build/reports/regression/local/` by
+default. Select another destination with `-PpilotReportDir=<directory>` to keep
+separate experiments; files in that destination are replaced.
+
+Reports compare every expected and actual field and separately count accepted
+answers, repairs, rejections, truncation and provider failures. Unknown facts
+must remain null; an unavailable answer earns no field credit. A repaired
+answer may match normalized fields but still fail the case. Each run retains
+dataset/contract identities, model settings, finish reasons, reported token
+usage and time. Both reports are saved even when a case fails, and the command
+then exits with failure. The remaining announcements still run after a failed
+request. These measurements describe the reviewed corpus, not general accuracy.
+
+Required CI runs only replay and deterministic tests, and uploads their reports
+with `runtime-pilot-reports`. See the
+[corpus and report instructions](https://github.com/sjacek/promptjig/blob/main/examples/runtime/README.md#full-regression-corpus-and-saved-quality-reports)
+for oracle review rules, field comparisons and output paths.
+
 ## Local-model experiments
 
-The same example has explicit `runLocal`, `runLocalCase` and `runLocalSuite`
+The same example has explicit `runLocal`, `runLocalCase`, `runLocalSuite` and `runLocalRegression`
 tasks. They are separate from ordinary `check` and CI. Configure a supported local
 OpenAI-compatible endpoint, install a model and select its digest as described
 in the [local-model instructions](https://github.com/sjacek/promptjig/blob/main/examples/runtime/README.md).
 These tasks perform real inference; the default command above does not.
 
-The five reviewed scenarios include in-person, online, paid and incomplete
-announcements. Compare schema acceptance and factual correctness separately.
+The original five-case suite includes in-person, online, paid and incomplete
+announcements; the full regression run uses 25 cases. Compare schema acceptance and factual correctness separately.
 Keep model digest, contract identity, finish reason, token usage and duration
 with each experiment. A response ending because of the token limit is incomplete;
 do not treat a blank or truncated response as evidence that nullable fields are

@@ -1,0 +1,130 @@
+{
+  "schemaVersion": 1,
+  "date": "2026-11-15",
+  "scope": "Stage 5 corpus and evaluator acceptance; synthetic replay only",
+  "baseCommit": "e35dcbf32bfccff34792ff819de591ce3c9bf732",
+  "corpus": {
+    "version": 1,
+    "sha256": "9e99f47ab001a16989de44596cdabd97c50819dee2ef00d2b6ecac371ed38690",
+    "cases": 25,
+    "fieldsPerCase": 5,
+    "digestNormalization": "UTF-8 with LF line endings",
+    "manifest": "examples/runtime/src/main/resources/regression/announcements-testdata.json"
+  },
+  "contract": {
+    "version": "events.announcement-extraction-v1",
+    "fingerprint": "sha256:1b9b411a389962e450869bd6b3d982c62a65533700fe42e674ffd283c23d1b7d",
+    "authoredInputsUnchanged": true
+  },
+  "dependencies": {
+    "pluginAndLibraries": "0.3.1",
+    "nativeGradleVerification": "strict",
+    "policyAndVersionPinsUnchanged": true,
+    "windowsInstalledJars": {
+      "promptjig-core-0.3.1.jar": "ea73c23801d9a080255db3147c6286ca3948e5666aeac40f55e8c7a474b19927",
+      "promptjig-spring-ai-0.3.1.jar": "d46b9278904ab434c63d87fa3918340e04f7709a52ca6e20cfad6b661b65275d"
+    },
+    "linuxOrigins": {
+      "includedBuilds": [],
+      "gradle": "9.9.1",
+      "java": "17.0.20.1",
+      "modules": [
+        {
+          "module": "promptjig-core",
+          "version": "0.3.1",
+          "file": "promptjig-core-0.3.1.jar",
+          "sha256": "ea73c23801d9a080255db3147c6286ca3948e5666aeac40f55e8c7a474b19927"
+        },
+        {
+          "module": "promptjig-spring-ai",
+          "version": "0.3.1",
+          "file": "promptjig-spring-ai-0.3.1.jar",
+          "sha256": "d46b9278904ab434c63d87fa3918340e04f7709a52ca6e20cfad6b661b65275d"
+        }
+      ],
+      "plugin": {
+        "version": "0.3.1",
+        "sha256": "f0fb019467d9bfe8324e03bbebaa222e84de6bb3eb034610c00c8de7abee4014",
+        "codeSource": "file:/work/dependencies/gradle/caches/modules-2/files-2.1/io.github.sjacek.promptjig/promptjig-gradle-plugin/0.3.1/1f133e913f48485931d55d565e0559781d689eb4/promptjig-gradle-plugin-0.3.1.jar"
+      }
+    }
+  },
+  "windows": {
+    "java": "openjdk version \"25.0.1\" 2025-10-21 LTS",
+    "tests": {
+      "tests": 122,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    "configurationCacheReused": true,
+    "packagedReplayPassed": true
+  },
+  "linux": {
+    "java": "openjdk version \"17.0.20.1\" 2026-08-18",
+    "tests": {
+      "tests": 122,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    "network": "none",
+    "producerSourcesPresent": false,
+    "restoredVerifiedDownloadedFiles": 1451,
+    "restoredProjectOutputs": false,
+    "configurationCacheReused": true,
+    "packagedReplayPassed": true,
+    "image": "sha256:7378542d7f3a04c67ac2256de9d7df2dee990913690a0bf4d80af25c1d01037b"
+  },
+  "workflowTests": {
+    "tests": 35,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0
+  },
+  "documentation": {
+    "validatorTests": 6,
+    "jekyllBuildPassed": true,
+    "renderedPages": 12,
+    "internalLinksAndAssets": 225
+  },
+  "syntheticReplay": {
+    "mode": "SYNTHETIC_REPLAY",
+    "passedCases": 25,
+    "matchingFields": 125,
+    "measuresModelQuality": false,
+    "providerTokenUsageKnown": false,
+    "reportVersion": 1
+  },
+  "evaluationRegressions": [
+    "Schema-valid wrong facts; repair matching an expected null still fails",
+    "Unavailable/truncated/rejected output earns no field credit",
+    "Continue after provider/response errors without retry; retain finish reason",
+    "Unknown token counters and partial sums retain reporting coverage",
+    "Invalid/missing oracle fails preflight; duplicate/traversal IDs are rejected",
+    "Reject incomplete/reordered results and changed oracles",
+    "Save failed reports before command failure; escape provider text in Markdown",
+    "Reject flags/counts contradicting actual output or reader findings",
+    "Loopback SDK/CLI evaluation of 25 independent requests; HTTP 429 does not retry or skip later cases",
+    "Invalid report destination is rejected before any provider request",
+    "Known zero token counters and long-precision aggregate sums remain distinct from unknown values",
+    "Report collections/findings remain immutable snapshots; incomplete review metadata fails preflight"
+  ],
+  "hostedCi": "Pending after user commit/push; packaged replay and report upload are configured",
+  "realModelEvaluation": "NOT_RUN for the 25-case corpus",
+  "devAcceptance": "DEFERRED until server migration completes; AI was not enabled",
+  "unchangedInputs": [
+    "examples/runtime/prompt-contracts.lock.json",
+    "examples/runtime/src/main/resources/prompts/events/announcement/announcement-extraction.prompt.yaml",
+    "examples/runtime/src/main/resources/prompts/events/announcement/system.st",
+    "examples/runtime/src/main/resources/prompts/events/announcement/user.st",
+    "gradle/libs.versions.toml",
+    "gradle/verification-metadata.xml",
+    "gradle/wrapper/gradle-wrapper.properties"
+  ],
+  "localArtifacts": {
+    "report": "examples/runtime/build/reports/regression/synthetic/quality-report.json",
+    "windowsLog": "build/stage5-regression-20261115/windows-check.log",
+    "linuxResults": "build/stage5-regression-20261115/linux-volume-results/"
+  }
+}

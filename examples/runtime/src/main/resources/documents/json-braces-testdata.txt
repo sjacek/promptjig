@@ -1,0 +1,4 @@
+Fikcyjne ogłoszenie publiczne — dane testowe.
+Tytuł wydarzenia brzmi dokładnie: Warsztat {mapy}
+Data: 11 grudnia 2027. Warsztat online: https://spotkanie.example.org/nawiasy.
+Informacji o cenie udziału nie podano.

@@ -5,6 +5,19 @@ Changes under **Unreleased** are not yet published.
 
 ## Unreleased
 
+### Added
+
+- Evaluate announcement extraction against 25 reviewed fictional documents,
+  including conflicting dates or venues, hybrid events, mixed admission prices
+  and missing facts. Keep the original five-case suite for shorter experiments.
+- Save JSON and Markdown quality reports showing expected and actual fields,
+  preserved unknowns, repairs, rejections, truncation and provider failures.
+  Reports retain model settings, contract and dataset identities, finish reasons,
+  reported token usage and extraction time, even when a case fails.
+- Try the full regression report without a model using an explicitly labelled
+  synthetic replay, then run the same corpus on a local model with
+  `runLocalRegression`. Real inference remains opt-in.
+
 ### Changed
 
 - Run the small public-announcement pilot with the published Gradle plugin and

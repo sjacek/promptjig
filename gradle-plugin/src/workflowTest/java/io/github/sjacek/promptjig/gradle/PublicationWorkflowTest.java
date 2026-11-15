@@ -69,6 +69,8 @@ class PublicationWorkflowTest {
         assertTrue(commands.toString().contains("--configuration-cache-problems=fail"));
         assertTrue(commands.toString().contains("$BASE_SHA:examples/runtime/prompt-contracts.lock.json"));
         assertTrue(commands.toString().contains("examples/runtime/build/install/promptjig-runtime-pilot/bin/promptjig-runtime-pilot"));
+        assertTrue(commands.toString().contains("--regression-report=examples/runtime/build/reports/regression/synthetic"));
+        assertFalse(commands.toString().contains("--local-regression-report"), "Required CI must never opt into inference");
         assertFalse(commands.toString().contains("runLocal"));
         assertFalse(pilot.toString().contains("PROMPTJIG_MODEL"));
     }

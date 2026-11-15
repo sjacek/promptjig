@@ -74,3 +74,31 @@ tasks.register('runLocalCase', JavaExec) {
     jvmArgs application.applicationDefaultJvmArgs
     args providers.gradleProperty('pilotCase').map { "--local-case=${it}".toString() }.orElse('--local-case=online-event-testdata').get()
 }
+
+// A deterministic replay checks the evaluator and packaged corpus; its report explicitly disclaims model accuracy.
+tasks.register('regressionReport', JavaExec) {
+    group = 'verification'
+    description = 'Writes JSON/Markdown reports for the reviewed corpus using synthetic replay, without inference.'
+    classpath = sourceSets.main.runtimeClasspath
+    mainClass = application.mainClass
+    jvmArgs application.applicationDefaultJvmArgs
+    String directory = providers.gradleProperty('pilotReportDir').orNull
+    if (directory == null) {
+        directory = layout.buildDirectory.dir('reports/regression/synthetic').get().asFile.absolutePath
+    }
+    args "--regression-report=${directory}".toString()
+}
+
+// Never attach this task to check: a real run requires an explicit immutable model digest and may take hours.
+tasks.register('runLocalRegression', JavaExec) {
+    group = 'application'
+    description = 'Evaluates all reviewed fictional announcements on an explicit local model and saves quality reports.'
+    classpath = sourceSets.main.runtimeClasspath
+    mainClass = application.mainClass
+    jvmArgs application.applicationDefaultJvmArgs
+    String directory = providers.gradleProperty('pilotReportDir').orNull
+    if (directory == null) {
+        directory = layout.buildDirectory.dir('reports/regression/local').get().asFile.absolutePath
+    }
+    args "--local-regression-report=${directory}".toString()
+}
