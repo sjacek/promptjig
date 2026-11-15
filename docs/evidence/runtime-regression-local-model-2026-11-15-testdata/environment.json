@@ -1,0 +1,19 @@
+{
+  "clientExecution": "Windows PowerShell and Gradle; local Docker Model Runner endpoint",
+  "os": {"name": "Microsoft Windows 11 Pro", "version": "10.0.26300", "architecture": "amd64"},
+  "javaHome": "C:\\Develop\\JDK\\temurin-25.0.1",
+  "configuredLibraryVersions": {"promptjigPlugin": "0.3.1", "promptjigRuntime": "0.3.1", "springAi": "2.0.2", "jacksonDatabind": "3.1.8"},
+  "docker": {"clientVersion": "29.9.3", "serverVersion": "29.9.3"},
+  "modelRunner": {"clientVersion": "v1.2.9", "serverVersion": "v1.2.9", "engine": "Docker Desktop"},
+  "model": {
+    "tagObservedBeforeRun": "docker.io/ai/qwen3.5:9b-q4_K_XL",
+    "digestUsedForRequests": "sha256:f799fb1ad223f00fc55cf4d6c12de7dc9b71d10ca427bb0ff7b644f49d9a7960",
+    "format": "GGUF"
+  },
+  "host": {"cpu": "Intel(R) Core(TM) Ultra 9 285H", "cores": 16, "logicalProcessors": 16, "totalPhysicalKiB": 32896240},
+  "memoryObservation": {"observedAtUtc": "2026-11-15T05:41:37.9259199Z", "freePhysicalKiB": 858308},
+  "acceleratorAndOffload": "Not captured; no assertion of CPU-only or GPU execution",
+  "performanceScope": "One sequential run on an active workstation. Memory is a single timestamped sample, not continuous monitoring or proof of a failure cause.",
+  "serviceDevEnvironmentAccessed": false,
+  "serviceDevAiEnabledByThisRun": false
+}

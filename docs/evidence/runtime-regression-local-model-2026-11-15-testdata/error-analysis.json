@@ -1,0 +1,563 @@
+{
+  "sourceCommit": "cc7a70ffed7100503465d332a9232f15063f93d9",
+  "model": "sha256:f799fb1ad223f00fc55cf4d6c12de7dc9b71d10ca427bb0ff7b644f49d9a7960",
+  "corpusVersion": 1,
+  "corpusSha256": "9e99f47ab001a16989de44596cdabd97c50819dee2ef00d2b6ecac371ed38690",
+  "contractVersion": "events.announcement-extraction-v1",
+  "contractFingerprint": "sha256:1b9b411a389962e450869bd6b3d982c62a65533700fe42e674ffd283c23d1b7d",
+  "settings": {
+    "mode": "LOCAL_MODEL",
+    "settings": {
+      "baseUrl": "http://127.0.0.1:12434/engines/v1",
+      "model": "sha256:f799fb1ad223f00fc55cf4d6c12de7dc9b71d10ca427bb0ff7b644f49d9a7960",
+      "timeout": "PT10M",
+      "maxTokens": 4096
+    },
+    "temperature": 0.0,
+    "maxRetries": 0
+  },
+  "summary": {
+    "totalCases": 25,
+    "passedCases": 10,
+    "schemaAcceptedCases": 20,
+    "matchingFields": 90,
+    "totalFields": 125,
+    "elapsedMillis": 10185311,
+    "outcomes": {
+      "PASSED": 10,
+      "FACT_MISMATCH": 10,
+      "REPAIRED": 0,
+      "REJECTED": 0,
+      "TRUNCATED": 2,
+      "RESPONSE_ERROR": 0,
+      "PROVIDER_ERROR": 3
+    }
+  },
+  "fieldScores": [
+    {
+      "field": "title",
+      "total": 25,
+      "available": 20,
+      "matched": 20,
+      "expectedKnown": 24,
+      "matchedKnown": 19,
+      "expectedUnknown": 1,
+      "matchedUnknown": 1
+    },
+    {
+      "field": "date",
+      "total": 25,
+      "available": 20,
+      "matched": 20,
+      "expectedKnown": 21,
+      "matchedKnown": 17,
+      "expectedUnknown": 4,
+      "matchedUnknown": 3
+    },
+    {
+      "field": "location",
+      "total": 25,
+      "available": 20,
+      "matched": 11,
+      "expectedKnown": 21,
+      "matchedKnown": 8,
+      "expectedUnknown": 4,
+      "matchedUnknown": 3
+    },
+    {
+      "field": "format",
+      "total": 25,
+      "available": 20,
+      "matched": 20,
+      "expectedKnown": 23,
+      "matchedKnown": 18,
+      "expectedUnknown": 2,
+      "matchedUnknown": 2
+    },
+    {
+      "field": "free",
+      "total": 25,
+      "available": 20,
+      "matched": 19,
+      "expectedKnown": 20,
+      "matchedKnown": 15,
+      "expectedUnknown": 5,
+      "matchedUnknown": 4
+    }
+  ],
+  "usage": {
+    "promptTokens": {
+      "reportedCases": 22,
+      "total": 4539
+    },
+    "completionTokens": {
+      "reportedCases": 22,
+      "total": 51156
+    },
+    "totalTokens": {
+      "reportedCases": 22,
+      "total": 55695
+    },
+    "reasoningTokens": {
+      "reportedCases": 0,
+      "total": null
+    }
+  },
+  "finishReasons": {
+    "STOP": 20,
+    "LENGTH": 2,
+    "UNKNOWN": 3
+  },
+  "timingMillis": {
+    "sum": 10185311,
+    "median": 386195,
+    "min": 161678,
+    "max": 601210
+  },
+  "failures": [
+    {
+      "id": "ambiguous-date-testdata",
+      "outcome": "FACT_MISMATCH",
+      "mismatches": [
+        {
+          "field": "location",
+          "expected": "Przykładowa Pracownia",
+          "actual": "Przykładowej Pracowni",
+          "comparison": "MISMATCH"
+        }
+      ],
+      "unavailableFields": [],
+      "validationFindings": [],
+      "error": null,
+      "diagnostics": {
+        "finishReason": "STOP",
+        "promptTokens": 219,
+        "completionTokens": 2257,
+        "totalTokens": 2476,
+        "reasoningTokens": null,
+        "outputCharacters": 131
+      },
+      "elapsedMillis": 305838,
+      "manualReview": {
+        "category": "location-representation",
+        "field": "location",
+        "expected": "Przykładowa Pracownia",
+        "actual": "Przykładowej Pracowni",
+        "interpretation": "The model preserved the inflected form from the source phrase 'w Przykładowej Pracowni'; the oracle uses nominative. The date correctly remained null. This is an exact-string representation mismatch, with no evidence of an invented venue.",
+        "nextStep": "Agree and state a venue-name representation policy before any prompt or oracle revision. Retain the failed score in this frozen baseline."
+      }
+    },
+    {
+      "id": "conflicting-place-testdata",
+      "outcome": "TRUNCATED",
+      "mismatches": [],
+      "unavailableFields": [
+        "title",
+        "date",
+        "location",
+        "format",
+        "free"
+      ],
+      "validationFindings": null,
+      "error": "IllegalStateException",
+      "diagnostics": {
+        "finishReason": "LENGTH",
+        "promptTokens": 223,
+        "completionTokens": 4096,
+        "totalTokens": 4319,
+        "reasoningTokens": null,
+        "outputCharacters": 0
+      },
+      "elapsedMillis": 544396,
+      "manualReview": {
+        "category": "generation-budget-exhausted",
+        "interpretation": "The provider reported LENGTH after all 4096 completion tokens, with zero output characters. No usable answer reached validation; all five fields must remain unavailable and receive no correctness credit. Separate reasoning-token usage is not reported, so its exact contribution cannot be established.",
+        "nextStep": "Keep this baseline unchanged. In a later controlled comparison, investigate the generation budget and model reasoning configuration while holding the digest, corpus, contract and other settings fixed. Do not retry this case inside the baseline."
+      }
+    },
+    {
+      "id": "postponed-date-testdata",
+      "outcome": "FACT_MISMATCH",
+      "mismatches": [
+        {
+          "field": "location",
+          "expected": "Przykładowa Galeria",
+          "actual": "Przykładowej Galerii",
+          "comparison": "MISMATCH"
+        }
+      ],
+      "unavailableFields": [],
+      "validationFindings": [],
+      "error": null,
+      "diagnostics": {
+        "finishReason": "STOP",
+        "promptTokens": 217,
+        "completionTokens": 3760,
+        "totalTokens": 3977,
+        "reasoningTokens": null,
+        "outputCharacters": 133
+      },
+      "elapsedMillis": 552930,
+      "manualReview": {
+        "category": "location-representation",
+        "field": "location",
+        "expected": "Przykładowa Galeria",
+        "actual": "Przykładowej Galerii",
+        "interpretation": "The model correctly selected the new confirmed event date, 2027-05-16, rather than the superseded date. The sole mismatch preserves the venue's inflected form from 'w Przykładowej Galerii'; the oracle uses nominative. No evidence of an invented venue.",
+        "nextStep": "Review together with ambiguous-date-testdata when agreeing the venue representation policy. Retain the strict failed score."
+      }
+    },
+    {
+      "id": "registration-date-testdata",
+      "outcome": "FACT_MISMATCH",
+      "mismatches": [
+        {
+          "field": "location",
+          "expected": "https://spotkanie.example.org/dane",
+          "actual": null,
+          "comparison": "MISMATCH"
+        }
+      ],
+      "unavailableFields": [],
+      "validationFindings": [],
+      "error": null,
+      "diagnostics": {
+        "finishReason": "STOP",
+        "promptTokens": 211,
+        "completionTokens": 2346,
+        "totalTokens": 2557,
+        "reasoningTokens": null,
+        "outputCharacters": 122
+      },
+      "elapsedMillis": 381178,
+      "manualReview": {
+        "category": "explicit-location-omitted",
+        "field": "location",
+        "expected": "https://spotkanie.example.org/dane",
+        "actual": null,
+        "interpretation": "The source explicitly supplies the online meeting URL, but the model returned null. The event date is correctly 2027-06-12 rather than the registration deadline. This is lost source information under the reviewed location oracle, rather than a grammatical representation difference. The generic location field also lacks an explicit URL-mapping instruction in the current prompt.",
+        "nextStep": "Keep the failed baseline score. Consider a separately versioned prompt clarifying that an online meeting URL belongs in location, evaluated over all 25 cases rather than this case alone."
+      }
+    },
+    {
+      "id": "cross-year-testdata",
+      "outcome": "PROVIDER_ERROR",
+      "mismatches": [],
+      "unavailableFields": [
+        "title",
+        "date",
+        "location",
+        "format",
+        "free"
+      ],
+      "validationFindings": null,
+      "error": "OpenAIInvalidDataException",
+      "diagnostics": null,
+      "elapsedMillis": 601210,
+      "manualReview": {
+        "category": "provider-error-at-time-budget-boundary",
+        "interpretation": "OpenAIInvalidDataException after 601210 ms, with no reply diagnostics or usable output. This timing is consistent with the configured 600-second timeout, but the report intentionally excludes exception messages and raw provider bodies, so timeout is a hypothesis, not a confirmed root cause. No date or other factual behavior can be scored from this call.",
+        "nextStep": "Keep all fields unavailable and retain the provider-error outcome. A later diagnostic run should correlate sanitized transport failure categories and runner-side timing before changing a budget or blaming the model's date handling. Do not re-infer this case inside the frozen baseline."
+      }
+    },
+    {
+      "id": "leap-day-testdata",
+      "outcome": "TRUNCATED",
+      "mismatches": [],
+      "unavailableFields": [
+        "title",
+        "date",
+        "location",
+        "format",
+        "free"
+      ],
+      "validationFindings": null,
+      "error": "IllegalStateException",
+      "diagnostics": {
+        "finishReason": "LENGTH",
+        "promptTokens": 191,
+        "completionTokens": 4096,
+        "totalTokens": 4287,
+        "reasoningTokens": null,
+        "outputCharacters": 0
+      },
+      "elapsedMillis": 584720,
+      "manualReview": {
+        "category": "generation-budget-exhausted",
+        "interpretation": "LENGTH at 4096 completion tokens and zero output characters after 584720 ms. The source date, 2028-02-29, is valid, but no answer is available to establish whether the model interpreted it correctly. This is a generation failure, not evidence of a wrong leap-day fact; reasoning-token usage is unknown.",
+        "nextStep": "Include this case in a later whole-corpus comparison of one generation setting. Retain the original truncated outcome and unavailable fields."
+      }
+    },
+    {
+      "id": "no-year-testdata",
+      "outcome": "FACT_MISMATCH",
+      "mismatches": [
+        {
+          "field": "location",
+          "expected": "Przykładowa Szkicownia",
+          "actual": "Przykładowej Szkicowni",
+          "comparison": "MISMATCH"
+        }
+      ],
+      "unavailableFields": [],
+      "validationFindings": [],
+      "error": null,
+      "diagnostics": {
+        "finishReason": "STOP",
+        "promptTokens": 194,
+        "completionTokens": 2745,
+        "totalTokens": 2939,
+        "reasoningTokens": null,
+        "outputCharacters": 128
+      },
+      "elapsedMillis": 401822,
+      "manualReview": {
+        "category": "location-representation",
+        "field": "location",
+        "expected": "Przykładowa Szkicownia",
+        "actual": "Przykładowej Szkicowni",
+        "interpretation": "The date correctly remained null because the source provides no year. The only mismatch is the venue name's grammatical case, with no evidence of an invented venue.",
+        "nextStep": "Review the venue representation policy together with the other inflection mismatches. Retain the strict failed score."
+      }
+    },
+    {
+      "id": "multi-day-testdata",
+      "outcome": "PROVIDER_ERROR",
+      "mismatches": [],
+      "unavailableFields": [
+        "title",
+        "date",
+        "location",
+        "format",
+        "free"
+      ],
+      "validationFindings": null,
+      "error": "OpenAIIoException",
+      "diagnostics": null,
+      "elapsedMillis": 600800,
+      "manualReview": {
+        "category": "provider-error-at-time-budget-boundary",
+        "interpretation": "OpenAIIoException after 600800 ms, with no reply diagnostics or usable output. Timing is consistent with the 600-second request timeout, but no cause-specific diagnostics were retained. The corpus expects date=null for a two-day event with no primary date; this run provides no factual result against that policy.",
+        "nextStep": "Retain PROVIDER_ERROR and unavailable fields. Correlate sanitized transport/runner timing in a later controlled diagnostic comparison. Separately document the multi-day date policy before any future prompt change."
+      }
+    },
+    {
+      "id": "free-registration-testdata",
+      "outcome": "FACT_MISMATCH",
+      "mismatches": [
+        {
+          "field": "location",
+          "expected": "Przykładowa Czytelnia",
+          "actual": "Przykładowej Czytelni",
+          "comparison": "MISMATCH"
+        }
+      ],
+      "unavailableFields": [],
+      "validationFindings": [],
+      "error": null,
+      "diagnostics": {
+        "finishReason": "STOP",
+        "promptTokens": 205,
+        "completionTokens": 3096,
+        "totalTokens": 3301,
+        "reasoningTokens": null,
+        "outputCharacters": 150
+      },
+      "elapsedMillis": 506381,
+      "manualReview": {
+        "category": "location-representation",
+        "field": "location",
+        "expected": "Przykładowa Czytelnia",
+        "actual": "Przykładowej Czytelni",
+        "interpretation": "The model correctly kept free=true despite mandatory registration. The sole mismatch preserves the source venue's inflected form ('w Przykładowej Czytelni') while the oracle uses nominative. No evidence of an invented venue.",
+        "nextStep": "Include with the other venue representation differences; preserve the original failed score."
+      }
+    },
+    {
+      "id": "optional-donation-testdata",
+      "outcome": "FACT_MISMATCH",
+      "mismatches": [
+        {
+          "field": "location",
+          "expected": "Przykładowy Ogród",
+          "actual": "Przykładowym Ogrodzie",
+          "comparison": "MISMATCH"
+        }
+      ],
+      "unavailableFields": [],
+      "validationFindings": [],
+      "error": null,
+      "diagnostics": {
+        "finishReason": "STOP",
+        "promptTokens": 215,
+        "completionTokens": 1924,
+        "totalTokens": 2139,
+        "reasoningTokens": null,
+        "outputCharacters": 145
+      },
+      "elapsedMillis": 319835,
+      "manualReview": {
+        "category": "location-representation",
+        "field": "location",
+        "expected": "Przykładowy Ogród",
+        "actual": "Przykładowym Ogrodzie",
+        "interpretation": "The model correctly retained free=true for explicitly free admission with an optional donation. The sole mismatch is the source's inflected venue name ('w Przykładowym Ogrodzie') rather than the oracle's nominative.",
+        "nextStep": "Review with the venue representation group; retain the strict failed score and unchanged oracle."
+      }
+    },
+    {
+      "id": "deposit-paid-testdata",
+      "outcome": "FACT_MISMATCH",
+      "mismatches": [
+        {
+          "field": "location",
+          "expected": "Przykładowa Pracownia Gliny",
+          "actual": "Przykładowej Pracowni Gliny",
+          "comparison": "MISMATCH"
+        }
+      ],
+      "unavailableFields": [],
+      "validationFindings": [],
+      "error": null,
+      "diagnostics": {
+        "finishReason": "STOP",
+        "promptTokens": 221,
+        "completionTokens": 1538,
+        "totalTokens": 1759,
+        "reasoningTokens": null,
+        "outputCharacters": 146
+      },
+      "elapsedMillis": 290409,
+      "manualReview": {
+        "category": "location-representation",
+        "field": "location",
+        "expected": "Przykładowa Pracownia Gliny",
+        "actual": "Przykładowej Pracowni Gliny",
+        "interpretation": "The model correctly returned free=false for a paid ticket including a reservation deposit. The sole mismatch is the inflected venue name copied from the source, compared with nominative in the oracle.",
+        "nextStep": "Review with the venue representation group. Preserve the strict failed score."
+      }
+    },
+    {
+      "id": "mixed-admission-testdata",
+      "outcome": "FACT_MISMATCH",
+      "mismatches": [
+        {
+          "field": "free",
+          "expected": null,
+          "actual": false,
+          "comparison": "MISMATCH"
+        }
+      ],
+      "unavailableFields": [],
+      "validationFindings": [],
+      "error": null,
+      "diagnostics": {
+        "finishReason": "STOP",
+        "promptTokens": 227,
+        "completionTokens": 3994,
+        "totalTokens": 4221,
+        "reasoningTokens": null,
+        "outputCharacters": 189
+      },
+      "elapsedMillis": 569310,
+      "manualReview": {
+        "category": "mixed-price-policy-underspecified",
+        "field": "free",
+        "expected": null,
+        "actual": false,
+        "interpretation": "The source states both a free online stream and a paid room ticket. The reviewed oracle uses null because a single free boolean cannot represent both prices. The prompt defines true for explicitly free admission and false for explicitly paid admission, but has no rule for conflicting modalities; false describes the paid option rather than inventing a price. All other fields match, including HYBRID and the complete composite location.",
+        "nextStep": "Agree an explicit mixed-admission policy before a separately versioned prompt or schema change. Preserve the original mismatch and do not adapt the oracle to this response."
+      }
+    },
+    {
+      "id": "quoted-instructions-testdata",
+      "outcome": "PROVIDER_ERROR",
+      "mismatches": [],
+      "unavailableFields": [
+        "title",
+        "date",
+        "location",
+        "format",
+        "free"
+      ],
+      "validationFindings": null,
+      "error": "OpenAIIoException",
+      "diagnostics": null,
+      "elapsedMillis": 600430,
+      "manualReview": {
+        "category": "provider-error-at-time-budget-boundary",
+        "interpretation": "OpenAIIoException after 600430 ms, with no reply diagnostics or usable output. Timing is consistent with the 600-second timeout, but the retained evidence does not confirm the transport root cause. This run establishes neither resistance nor susceptibility to the instruction quoted in the source: title, price and all other fields are unavailable.",
+        "nextStep": "Keep the unsuccessful outcome without security or factual credit. Re-evaluate this case as part of a later complete controlled run after diagnosing the generation/transport budget."
+      }
+    },
+    {
+      "id": "json-braces-testdata",
+      "outcome": "FACT_MISMATCH",
+      "mismatches": [
+        {
+          "field": "location",
+          "expected": "https://spotkanie.example.org/nawiasy",
+          "actual": null,
+          "comparison": "MISMATCH"
+        }
+      ],
+      "unavailableFields": [],
+      "validationFindings": [],
+      "error": null,
+      "diagnostics": {
+        "finishReason": "STOP",
+        "promptTokens": 202,
+        "completionTokens": 1690,
+        "totalTokens": 1892,
+        "reasoningTokens": null,
+        "outputCharacters": 114
+      },
+      "elapsedMillis": 255438,
+      "manualReview": {
+        "category": "explicit-location-omitted",
+        "field": "location",
+        "expected": "https://spotkanie.example.org/nawiasy",
+        "actual": null,
+        "interpretation": "The literal title 'Warsztat {mapy}' and the unknown admission price were retained correctly. The model omitted the explicitly stated online URL, returning location=null. This repeats the information-loss pattern observed in registration-date-testdata; the current prompt does not explicitly map an online URL into location.",
+        "nextStep": "Preserve the failed result and review an explicit URL-to-location rule in a separately versioned prompt, evaluated against the whole corpus."
+      }
+    },
+    {
+      "id": "registration-not-admission-testdata",
+      "outcome": "FACT_MISMATCH",
+      "mismatches": [
+        {
+          "field": "location",
+          "expected": "Przykładowe Biuro Pomysłów",
+          "actual": "Przykładowym Biurze Pomysłów",
+          "comparison": "MISMATCH"
+        }
+      ],
+      "unavailableFields": [],
+      "validationFindings": [],
+      "error": null,
+      "diagnostics": {
+        "finishReason": "STOP",
+        "promptTokens": 214,
+        "completionTokens": 1492,
+        "totalTokens": 1706,
+        "reasoningTokens": null,
+        "outputCharacters": 152
+      },
+      "elapsedMillis": 459116,
+      "manualReview": {
+        "category": "location-representation",
+        "field": "location",
+        "expected": "Przykładowe Biuro Pomysłów",
+        "actual": "Przykładowym Biurze Pomysłów",
+        "interpretation": "The model correctly returned free=null: free registration does not establish free admission. The sole mismatch is the source's inflected venue name, compared with nominative in the oracle.",
+        "nextStep": "Retain the strict failed result and include it in the venue representation policy review."
+      }
+    }
+  ],
+  "reportSha256": "5b6b5b9c38b2e3f474b0181095ed01f9d46c2f901fb408e7e2fbac724b154392",
+  "realInference": true,
+  "automaticRetries": 0,
+  "originalCorpusAndPromptsRetained": true,
+  "scope": "One run of 25 fictional public announcements; results do not estimate general model accuracy"
+}

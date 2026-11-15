@@ -1,0 +1,14 @@
+{
+  "complete": true,
+  "mode": "LOCAL_MODEL",
+  "cases": 25,
+  "fields": 125,
+  "uniqueOrderedCasesMatchManifest": true,
+  "normalizedSourceAndOracleHashesMatch": true,
+  "corpusDigestIndependentlyRecomputed": "9e99f47ab001a16989de44596cdabd97c50819dee2ef00d2b6ecac371ed38690",
+  "frozenPilotInputsMatchSourceCommit": true,
+  "dependencyVerificationPoliciesUnchanged": true,
+  "summaryFieldAndUsageCountersRecomputed": true,
+  "reportSha256": "5b6b5b9c38b2e3f474b0181095ed01f9d46c2f901fb408e7e2fbac724b154392",
+  "inferenceRerunForVerification": false
+}

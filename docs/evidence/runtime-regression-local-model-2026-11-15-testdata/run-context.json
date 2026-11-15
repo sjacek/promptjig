@@ -1,0 +1,19 @@
+{
+  "startedAtUtc": "2026-11-15T04:15:22.0360625Z",
+  "sourceCommit": "cc7a70ffed7100503465d332a9232f15063f93d9",
+  "model": "sha256:f799fb1ad223f00fc55cf4d6c12de7dc9b71d10ca427bb0ff7b644f49d9a7960",
+  "endpoint": "http://127.0.0.1:12434/engines/v1",
+  "temperature": 0,
+  "maxRetries": 0,
+  "maxTokens": 4096,
+  "timeoutSeconds": 600,
+  "corpusVersion": 1,
+  "corpusSha256": "9e99f47ab001a16989de44596cdabd97c50819dee2ef00d2b6ecac371ed38690",
+  "mode": "LOCAL_MODEL",
+  "execution": "Windows; local Docker Model Runner; published Promptjig 0.3.1; native strict Gradle verification",
+  "status": "REPORT_SAVED",
+  "inferenceAttempt": "one independent request per corpus case, no retries",
+  "devAiConfigurationChanged": false,
+  "finishedAtUtc": "2026-11-15T07:05:58.3728340Z",
+  "gradleExitCode": 1
+}
