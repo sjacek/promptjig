@@ -70,6 +70,15 @@ public final class AnnouncementQualityReportWriter {
             var diagnostics = item.diagnostics();
             text.append("Finish reason: ").append(cell(diagnostics == null ? null : diagnostics.finishReason()))
                     .append("; error category: ").append(cell(item.error())).append(".\n\n");
+            var failure = item.failureDiagnostics();
+            var timing = item.callTiming();
+            if (timing != null) text.append("Client interval UTC: ").append(cell(timing.startedAtUtc())).append(" → ")
+                    .append(cell(timing.finishedAtUtc())).append(".\n\n");
+            if (failure != null) text.append("Failure classification: ").append(failure.category())
+                    .append("; cause classes: ").append(cell(String.join(" → ", failure.causeClasses())))
+                    .append("; complete cause chain: ").append(failure.causeChainComplete())
+                    .append("; HTTP status: ").append(failure.httpStatus())
+                    .append("; observed at UTC: ").append(cell(failure.observedAtUtc())).append(".\n\n");
             var findings = item.validationFindings();
             if (findings != null && !findings.isEmpty()) {
                 text.append("| Finding pointer | Rule | Action |\n| --- | --- | --- |\n");

@@ -1,0 +1,16 @@
+{
+  "tests": {
+    "tests": 134,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0
+  },
+  "syntheticReplay": {
+    "cases": 25,
+    "matchingFields": 125
+  },
+  "strictVerification": true,
+  "offline": true,
+  "configurationCacheReuse": true,
+  "documentationTests": 6
+}

@@ -1,0 +1,27 @@
+{
+  "experiment": "LM-01",
+  "startedAtUtc": "2026-11-15T15:49:12.918475+00:00",
+  "status": "PREPARED_NOT_STARTED",
+  "baseCommit": "c5c256ca01a253e28e93d66361003e9de8f5819c",
+  "supervisorPid": 32468,
+  "powerManagement": "Temporary ES_CONTINUOUS|ES_SYSTEM_REQUIRED on AC; cleared in finally",
+  "interruptedTrial": "../lm01-local-model-2026-11-15-testdata",
+  "freshPairAfterReboot": true,
+  "engineCorrelation": "Unavailable: live Docker CLI log polling disabled after pipe stall in interrupted trial. Safe Java cause classes and client UTC intervals are retained.",
+  "model": "sha256:f799fb1ad223f00fc55cf4d6c12de7dc9b71d10ca427bb0ff7b644f49d9a7960",
+  "corpusSha256": "9e99f47ab001a16989de44596cdabd97c50819dee2ef00d2b6ecac371ed38690",
+  "contractFingerprint": "sha256:1b9b411a389962e450869bd6b3d982c62a65533700fe42e674ffd283c23d1b7d",
+  "budgets": [
+    4096,
+    8192
+  ],
+  "timeoutSeconds": 600,
+  "temperature": 0,
+  "maxRetries": 0,
+  "inferenceAttemptsPerCasePerArm": 1,
+  "sourceInventory": "source-inventory.json",
+  "devAiConfigurationChanged": false,
+  "arms": [],
+  "inferenceStarted": false,
+  "reason": "User is considering moving development and model workloads to a 128GB k3s server because of laptop load; no fresh model arm has started"
+}

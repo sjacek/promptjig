@@ -12,6 +12,7 @@ import java.util.concurrent.atomic.AtomicReference;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Timeout;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
@@ -21,6 +22,25 @@ import static org.junit.jupiter.api.Assertions.*;
 /** Real Spring AI/OpenAI serialization and error handling against loopback HTTP; no inference. */
 @Timeout(20)
 class LocalModelTransportTest {
+    /** Load SDK serializers on a loopback fixture before measuring individual transport deadlines. */
+    @BeforeAll
+    @Timeout(120)
+    static void initializeSdkWithASyntheticReply() throws Exception {
+        var json = JsonMapper.builder().build();
+        byte[] reply = json.writeValueAsBytes(Map.of("id", "warmup-testdata", "object", "chat.completion", "created", 0,
+                "model", LocalModelSettingsTest.DIGEST, "choices", List.of(Map.of("index", 0, "finish_reason", "stop",
+                        "message", Map.of("role", "assistant", "content", AnnouncementPilotTest.resource("responses/public-event-testdata.json"))))));
+        var calls = new AtomicInteger();
+        var server = responseServer(200, reply, calls);
+        try (var session = settings(server).open()) {
+            assertTrue(AnnouncementPilot.builder().model(session.model()).build()
+                    .extract(AnnouncementPilotTest.resource("documents/public-event-testdata.txt")).accepted());
+            assertEquals(1, calls.get());
+        } finally {
+            server.stop(0);
+        }
+    }
+
     @ParameterizedTest
     @ValueSource(ints = {1024, 4096, 8192})
     void sdkSendsTheContractSchemaAndPinnedModelAndReadsTheResponse(int maxTokens) throws Exception {
@@ -110,7 +130,10 @@ class LocalModelTransportTest {
         var server = responseServer(status, reply, calls);
         try (var session = settings(server).open()) {
             var pilot = AnnouncementPilot.builder().model(session.model()).build();
-            assertThrows(RuntimeException.class, () -> pilot.extract("synthetic announcement-testdata"));
+            var exception = assertThrows(RuntimeException.class, () -> pilot.extract("synthetic announcement-testdata"));
+            var failure = ModelFailureDiagnostics.from(exception, false);
+            assertEquals(ModelFailureDiagnostics.Category.HTTP_STATUS, failure.category());
+            assertEquals(status, failure.httpStatus());
             assertEquals(1, calls.get());
         } finally {
             server.stop(0);
@@ -172,8 +195,17 @@ class LocalModelTransportTest {
         try (var session = bounded.open()) {
             var pilot = AnnouncementPilot.builder().model(session.model()).build();
             // Allow scheduling margin while still failing well before the stub's ten-second response window.
-            assertTimeoutPreemptively(Duration.ofSeconds(5),
+            var exception = assertTimeoutPreemptively(Duration.ofSeconds(5),
                     () -> assertThrows(RuntimeException.class, () -> pilot.extract("synthetic announcement-testdata")));
+            var failure = ModelFailureDiagnostics.from(exception, false);
+            // The SDK's total deadline and the socket read deadline can race. A typed timeout
+            // may be nested below InterruptedIOException; a generic interruption alone is ambiguous.
+            assertTrue(java.util.Set.of(ModelFailureDiagnostics.Category.TIMEOUT,
+                    ModelFailureDiagnostics.Category.INTERRUPTED_IO).contains(failure.category()), failure.toString());
+            if (failure.category() == ModelFailureDiagnostics.Category.TIMEOUT)
+                assertTrue(failure.causeClasses().stream().anyMatch(name -> java.util.Set.of(
+                        "java.net.SocketTimeoutException", "java.net.http.HttpTimeoutException",
+                        "java.util.concurrent.TimeoutException", "java.nio.channels.InterruptedByTimeoutException").contains(name)));
             assertEquals(1, calls.get());
         } finally {
             release.countDown();

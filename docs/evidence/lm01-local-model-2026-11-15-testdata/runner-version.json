@@ -1,0 +1,15 @@
+{
+  "observedAtUtc": "2026-11-15T12:39:49.088300+00:00",
+  "status": "Docker Model Runner is running\n\nBACKEND    STATUS         DETAILS                                                                                                \nllama.cpp  Running        llama.cpp b9879-cpu (sha256:35e147cf9eec5d2116541e8490bda4762610613c2e16a9cf057debb6287732d6) 72874f5  \ndiffusers  Not Installed                                                                                                         \nvllm       Not Installed  only supported on Linux",
+  "version": "Client:\n Version:    v1.2.9\n OS/Arch:    windows/amd64\n\nServer:\n Version:    v1.2.9\n Engine:     Docker Desktop",
+  "modelInspect": {
+    "id": "sha256:f799fb1ad223f00fc55cf4d6c12de7dc9b71d10ca427bb0ff7b644f49d9a7960",
+    "tags": [
+      "docker.io/ai/qwen3.5:9b-q4_K_XL"
+    ],
+    "created": 0,
+    "config": {
+      "format": "gguf"
+    }
+  }
+}

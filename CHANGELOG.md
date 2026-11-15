@@ -14,6 +14,11 @@ Changes under **Unreleased** are not yet published.
   preserved unknowns, repairs, rejections, truncation and provider failures.
   Reports retain model settings, contract and dataset identities, finish reasons,
   reported token usage and extraction time, even when a case fails.
+- Investigate failed local-model calls using cause-based failure categories,
+  exception class names, HTTP status and UTC call intervals. Reports distinguish
+  confirmed timeout causes from interrupted I/O and unknown failures without
+  retaining error messages or provider bodies. JSON report format 2 adds
+  `failureDiagnostics` and `callTiming`; historical format 1 reports stay valid.
 - Try the full regression report without a model using an explicitly labelled
   synthetic replay, then run the same corpus on a local model with
   `runLocalRegression`. Real inference remains opt-in.

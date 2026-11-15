@@ -1,0 +1,14 @@
+{
+  "modelRequestsChanged": false,
+  "modelOrGradleProcessesTerminated": false,
+  "firstObservationGap": {
+    "lastResourceSampleUtc": "2026-11-15T12:46:10.353371Z",
+    "readerStoppedAndProgressResumedUtc": "2026-11-15T12:51:39.894326Z",
+    "cause": "Docker CLI log-reader plugin outlived its timed-out parent and held the observer pipe open",
+    "action": "Stopped only the verified orphan log-reader plugin, PID 47668; inference continued independently",
+    "effect": "Missing intermediate resource/engine observations; completed case results retained in Gradle output"
+  },
+  "subsequentMitigation": "A watchdog bounds only this experiment owner's Docker CLI LOGS plugins to approximately 15-25 seconds; PID ownership, command kind and process creation are checked",
+  "scope": "The watchdog started during arm A after the first two completed cases and remains active for the rest of A and all of B. This is an observer recovery, not a token/timeout/prompt/model change. Observer timing is an additional limitation.",
+  "serverCorrelation": "Only numeric evaluation timing events and their observation windows are retained; exact per-case server request IDs/timestamps are not captured"
+}

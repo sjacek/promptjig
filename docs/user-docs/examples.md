@@ -88,6 +88,13 @@ with each experiment. A response ending because of the token limit is incomplete
 do not treat a blank or truncated response as evidence that nullable fields are
 the correct answer.
 
+JSON report format 2 also records safe failure categories, cause class names,
+HTTP status when available and UTC call intervals for runner correlation.
+`TIMEOUT` requires a recognized timeout cause. Generic `INTERRUPTED_IO`, even
+near the configured deadline, does not establish the exact cause. Error messages,
+provider bodies and reasoning text are excluded. Keep historical format 1
+reports unchanged and use a separate output directory for every comparison.
+
 ## Validation-only Gradle consumer
 
 ```shell

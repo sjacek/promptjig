@@ -5,6 +5,7 @@ import io.github.sjacek.promptjig.core.ResponseViolation;
 import io.github.sjacek.promptjig.springai.PromptJsonBinding;
 import java.io.PrintStream;
 import java.nio.charset.StandardCharsets;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 import lombok.Builder;
@@ -60,6 +61,8 @@ public final class AnnouncementScenarioSuite {
      * @throws Exception if progress evidence cannot be serialized
      */
     public List<ScenarioResult> runRegression(@NonNull AnnouncementRegressionCorpus corpus, @NonNull PrintStream output) throws Exception {
+        // Local supervisor can bind a process handle to this exact client for cancellation on power loss.
+        output.println("clientPid=" + ProcessHandle.current().pid());
         var results = new ArrayList<ScenarioResult>();
         for (var item : corpus.cases()) results.add(runScenario(item.id(), item.document(), item.expected(), output));
         return List.copyOf(results);
@@ -81,18 +84,27 @@ public final class AnnouncementScenarioSuite {
 
     private ScenarioResult runScenario(String id, String document, AnnouncementExtractionOutput expected, PrintStream output) throws Exception {
         output.println("case=" + id + "; status=running");
+        // UTC correlates with runner events; elapsed time stays monotonic if the system clock changes.
         long started = System.nanoTime();
+        var startedAt = Instant.now().toString();
         var result = ScenarioResult.builder().id(id).expected(expected);
+        // A reply can fail locally (for example LENGTH) after its provider metadata has been captured.
+        var replyReturned = new java.util.concurrent.atomic.AtomicBoolean();
         try {
-            var response = pilot.extract(document, result::diagnostics);
+            var response = pilot.extract(document, metadata -> {
+                replyReturned.set(true);
+                result.diagnostics(metadata);
+            });
             result.accepted(response.accepted()).findings(response.violations().size())
                     .validationFindings(response.violations())
                     .actual(response.value()).matchesExpected(expected.equals(response.value()));
         } catch (RuntimeException exception) {
             // Exception messages can contain provider bodies. Retain only the category and safe metadata.
-            result.error(exception.getClass().getSimpleName());
+            result.error(exception.getClass().getSimpleName())
+                    .failureDiagnostics(ModelFailureDiagnostics.from(exception, replyReturned.get()));
         }
-        var finished = result.elapsedMillis((System.nanoTime() - started) / 1_000_000).build();
+        var finished = result.elapsedMillis((System.nanoTime() - started) / 1_000_000)
+                .callTiming(CallTiming.builder().startedAtUtc(startedAt).finishedAtUtc(Instant.now().toString()).build()).build();
         output.println(PromptJsonBinding.jackson3().write(finished));
         return finished;
     }
@@ -113,14 +125,21 @@ public final class AnnouncementScenarioSuite {
      * @param elapsedMillis elapsed extraction time, excluding fixture loading
      * @param diagnostics provider metadata, including finish reason before response validation; null on transport failure
      * @param validationFindings value-free reader findings, or null if reading was never reached
+     * @param failureDiagnostics safe cause classification and observation timestamp, or null without an exception
+     * @param callTiming client UTC interval for runner correlation; monotonic elapsedMillis remains the duration
      */
     @Builder
     public record ScenarioResult(@NonNull String id, @NonNull AnnouncementExtractionOutput expected,
             @Nullable AnnouncementExtractionOutput actual, boolean accepted, int findings,
             boolean matchesExpected, @Nullable String error, long elapsedMillis, @Nullable ModelReplyDiagnostics diagnostics,
-            @Nullable List<ResponseViolation> validationFindings) {
+            @Nullable List<ResponseViolation> validationFindings, @Nullable ModelFailureDiagnostics failureDiagnostics,
+            @Nullable CallTiming callTiming) {
         public ScenarioResult { if (validationFindings != null) validationFindings = List.copyOf(validationFindings); }
         /** {@return whether extraction matched the source without repair, rejection or provider failure} */
         public boolean passed() { return accepted && matchesExpected && findings == 0 && error == null; }
     }
+
+    /** UTC wall-clock observations for correlation; clock adjustments must not replace monotonic duration. */
+    @Builder
+    public record CallTiming(@NonNull String startedAtUtc, @NonNull String finishedAtUtc) { }
 }

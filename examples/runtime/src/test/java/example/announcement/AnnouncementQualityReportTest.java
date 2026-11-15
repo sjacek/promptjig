@@ -103,6 +103,37 @@ class AnnouncementQualityReportTest {
     }
 
     @Test
+    void recordsTimeoutCauseAndClientIntervalWithoutChangingUnavailableScoringOrLeakingMessages() throws Exception {
+        var corpus = AnnouncementRegressionCorpus.load();
+        var calls = new AtomicInteger();
+        var model = model(corpus, calls, item -> {
+            if (item.id().equals("public-event-testdata")) throw new IllegalStateException("private-wrapper-testdata",
+                    new java.net.SocketTimeoutException("private-timeout-testdata"));
+            return response(item.expectedJson(), "STOP");
+        });
+        var report = AnnouncementQualityReport.create(corpus, local(), run(corpus, model));
+        assertEquals(25, calls.get());
+        assertEquals(24, report.summary().passedCases());
+        assertEquals(120, report.summary().matchingFields());
+        assertEquals(125, report.summary().totalFields());
+        var first = report.cases().get(0);
+        var failure = assertInstanceOf(ModelFailureDiagnostics.class, first.failureDiagnostics());
+        assertEquals(ModelFailureDiagnostics.Category.TIMEOUT, failure.category());
+        assertTrue(failure.causeClasses().contains("java.net.SocketTimeoutException"));
+        assertNull(first.diagnostics());
+        var timing = assertInstanceOf(AnnouncementScenarioSuite.CallTiming.class, first.callTiming());
+        assertFalse(java.time.Instant.parse(timing.finishedAtUtc()).isBefore(java.time.Instant.parse(timing.startedAtUtc())));
+        assertTrue(first.fields().stream().allMatch(field -> field.comparison() == AnnouncementQualityReport.Comparison.UNAVAILABLE));
+        AnnouncementQualityReportWriter.write(directory, report);
+        String evidence = Files.readString(directory.resolve("quality-report.json")) + Files.readString(directory.resolve("quality-report.md"));
+        assertTrue(evidence.contains("TIMEOUT"));
+        assertTrue(evidence.contains(timing.startedAtUtc()));
+        assertFalse(evidence.contains("private-wrapper-testdata"));
+        assertFalse(evidence.contains("private-timeout-testdata"));
+        assertNull(report.cases().get(24).failureDiagnostics());
+    }
+
+    @Test
     void tokenTotalsExposePartialCoverageAndDoNotTurnMissingCountersIntoZero() throws Exception {
         var corpus = AnnouncementRegressionCorpus.load(AnnouncementRegressionCorpusTest.manifest("public-event-testdata", "online-event-testdata"),
                 path -> new org.springframework.core.io.ClassPathResource(path).getContentAsString(StandardCharsets.UTF_8));
@@ -142,7 +173,7 @@ class AnnouncementQualityReportTest {
     }
 
     @ParameterizedTest
-    @ValueSource(strings = {"accepted", "matches", "findings-count", "missing-findings", "negative-findings", "negative-time", "failed-output", "truncated-output"})
+    @ValueSource(strings = {"accepted", "matches", "findings-count", "missing-findings", "negative-findings", "negative-time", "failed-output", "truncated-output", "failure-without-error"})
     void contradictoryEvidenceCannotProduceMisleadingScores(String mutation) throws Exception {
         var corpus = AnnouncementRegressionCorpus.load();
         var results = new ArrayList<>(run(corpus, corpus.replayModel()));
@@ -160,10 +191,58 @@ class AnnouncementQualityReportTest {
             case "negative-time" -> changed.elapsedMillis(-1);
             case "failed-output" -> changed.error("ProviderFailureTestdata");
             case "truncated-output" -> changed.diagnostics(ModelReplyDiagnostics.builder().finishReason("LENGTH").build());
+            case "failure-without-error" -> changed.failureDiagnostics(ModelFailureDiagnostics.from(new java.net.SocketTimeoutException(), false));
             default -> throw new AssertionError("Unknown evidence mutation");
         }
         results.set(0, changed.build());
         assertThrows(IllegalArgumentException.class, () -> AnnouncementQualityReport.create(corpus, local(), results));
+    }
+
+    @ParameterizedTest
+    @ValueSource(strings = {"LENGTH", "STOP"})
+    void replyProcessingFailuresKeepProviderMetadataAndDoNotBecomeTransportTimeouts(String finishReason) throws Exception {
+        var corpus = AnnouncementRegressionCorpus.load(AnnouncementRegressionCorpusTest.manifest("public-event-testdata", "online-event-testdata"),
+                path -> new org.springframework.core.io.ClassPathResource(path).getContentAsString(StandardCharsets.UTF_8));
+        var calls = new AtomicInteger();
+        var report = AnnouncementQualityReport.create(corpus, local(), run(corpus, model(corpus, calls,
+                item -> item.id().equals("public-event-testdata") ? response(" ", finishReason) : response(item.expectedJson(), "STOP"))));
+        assertEquals(2, calls.get(), "A failed reply must not retry or stop the next case");
+        var first = report.cases().get(0);
+        assertEquals(finishReason.equals("LENGTH") ? AnnouncementQualityReport.Outcome.TRUNCATED
+                : AnnouncementQualityReport.Outcome.RESPONSE_ERROR, first.outcome());
+        assertEquals(finishReason, assertInstanceOf(ModelReplyDiagnostics.class, first.diagnostics()).finishReason());
+        var failure = assertInstanceOf(ModelFailureDiagnostics.class, first.failureDiagnostics());
+        assertEquals(ModelFailureDiagnostics.Category.RESPONSE_PROCESSING, failure.category());
+        assertNull(failure.httpStatus());
+        assertNull(first.schemaAccepted(), "The reader was not reached");
+        assertEquals(5, report.summary().matchingFields());
+        assertEquals(10, report.summary().totalFields());
+        assertEquals(AnnouncementQualityReport.Outcome.PASSED, report.cases().get(1).outcome());
+        assertNull(report.cases().get(1).failureDiagnostics());
+        AnnouncementQualityReportWriter.write(directory, report);
+        var json = JsonMapper.builder().build().readTree(Files.readString(directory.resolve("quality-report.json")));
+        assertNotNull(json);
+        assertEquals("RESPONSE_PROCESSING", json.at("/cases/0/failureDiagnostics/category").asString());
+        assertTrue(Files.readString(directory.resolve("quality-report.md")).contains("Failure classification: RESPONSE_PROCESSING"));
+    }
+
+    @Test
+    void clockCorrectionDoesNotReplaceMonotonicDurationOrInventFailureEvidence() throws Exception {
+        var corpus = AnnouncementRegressionCorpus.load(AnnouncementRegressionCorpusTest.manifest("public-event-testdata"),
+                path -> new org.springframework.core.io.ClassPathResource(path).getContentAsString(StandardCharsets.UTF_8));
+        var original = run(corpus, corpus.replayModel()).get(0);
+        // Simulate a wall-clock correction during an otherwise successful extraction.
+        var timing = AnnouncementScenarioSuite.CallTiming.builder().startedAtUtc("2026-11-15T12:00:01Z")
+                .finishedAtUtc("2026-11-15T12:00:00Z").build();
+        var result = AnnouncementScenarioSuite.ScenarioResult.builder().id(original.id()).expected(original.expected())
+                .actual(original.actual()).accepted(true).matchesExpected(true).validationFindings(original.validationFindings())
+                .elapsedMillis(123).callTiming(timing).build();
+        var report = AnnouncementQualityReport.create(corpus, replay(), List.of(result));
+        assertEquals(123, report.summary().elapsedMillis());
+        assertEquals(1, report.summary().passedCases());
+        assertEquals(timing, report.cases().get(0).callTiming());
+        assertNull(report.cases().get(0).failureDiagnostics());
+        assertFalse(AnnouncementQualityReportWriter.markdown(report).contains("Failure classification:"));
     }
 
     @Test

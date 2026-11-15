@@ -1,0 +1,592 @@
+{
+  "complete": false,
+  "mode": "LOCAL_MODEL",
+  "configuredMaxTokens": 4096,
+  "configuredTimeoutSeconds": 600,
+  "reason": "Interrupted after confirmed Windows standby and battery operation; unsuitable as controlled A/B arm",
+  "completedCases": [
+    {
+      "id": "public-event-testdata",
+      "expected": {
+        "date": "2026-12-10",
+        "format": "IN_PERSON",
+        "free": true,
+        "location": "Przykładowy Dom Kultury",
+        "title": "Wieczór z Javą"
+      },
+      "actual": {
+        "date": "2026-12-10",
+        "format": "IN_PERSON",
+        "free": true,
+        "location": "Przykładowy Dom Kultury",
+        "title": "Wieczór z Javą"
+      },
+      "accepted": true,
+      "findings": 0,
+      "matchesExpected": true,
+      "error": null,
+      "elapsedMillis": 217376,
+      "diagnostics": {
+        "finishReason": "STOP",
+        "promptTokens": 212,
+        "completionTokens": 1005,
+        "totalTokens": 1217,
+        "reasoningTokens": null,
+        "outputCharacters": 137
+      },
+      "validationFindings": [],
+      "failureDiagnostics": null,
+      "callTiming": {
+        "startedAtUtc": "2026-11-15T12:39:56.638584600Z",
+        "finishedAtUtc": "2026-11-15T12:43:34.021433500Z"
+      }
+    },
+    {
+      "id": "online-event-testdata",
+      "expected": {
+        "date": "2027-01-15",
+        "format": "ONLINE",
+        "free": true,
+        "location": "https://spotkanie.example.org/mapy",
+        "title": "Mapy w przeglądarce"
+      },
+      "actual": {
+        "date": "2027-01-15",
+        "format": "ONLINE",
+        "free": true,
+        "location": "https://spotkanie.example.org/mapy",
+        "title": "Mapy w przeglądarce"
+      },
+      "accepted": true,
+      "findings": 0,
+      "matchesExpected": true,
+      "error": null,
+      "elapsedMillis": 391784,
+      "diagnostics": {
+        "finishReason": "STOP",
+        "promptTokens": 200,
+        "completionTokens": 2255,
+        "totalTokens": 2455,
+        "reasoningTokens": null,
+        "outputCharacters": 150
+      },
+      "validationFindings": [],
+      "failureDiagnostics": null,
+      "callTiming": {
+        "startedAtUtc": "2026-11-15T12:43:34.069039700Z",
+        "finishedAtUtc": "2026-11-15T12:50:05.852626100Z"
+      }
+    },
+    {
+      "id": "paid-event-testdata",
+      "expected": {
+        "date": "2027-02-20",
+        "format": "IN_PERSON",
+        "free": false,
+        "location": "Przykładowa Pracownia Papieru",
+        "title": "Warsztaty papierowych lampionów"
+      },
+      "actual": {
+        "date": "2027-02-20",
+        "format": "IN_PERSON",
+        "free": false,
+        "location": "Przykładowa Pracownia Papieru",
+        "title": "Warsztaty papierowych lampionów"
+      },
+      "accepted": true,
+      "findings": 0,
+      "matchesExpected": true,
+      "error": null,
+      "elapsedMillis": 193383,
+      "diagnostics": {
+        "finishReason": "STOP",
+        "promptTokens": 212,
+        "completionTokens": 1225,
+        "totalTokens": 1437,
+        "reasoningTokens": null,
+        "outputCharacters": 161
+      },
+      "validationFindings": [],
+      "failureDiagnostics": null,
+      "callTiming": {
+        "startedAtUtc": "2026-11-15T12:50:06.054319900Z",
+        "finishedAtUtc": "2026-11-15T12:53:19.438457800Z"
+      }
+    },
+    {
+      "id": "missing-details-testdata",
+      "expected": {
+        "date": null,
+        "format": null,
+        "free": null,
+        "location": null,
+        "title": "Klub pomysłów"
+      },
+      "actual": {
+        "date": null,
+        "format": null,
+        "free": null,
+        "location": null,
+        "title": "Klub pomysłów"
+      },
+      "accepted": true,
+      "findings": 0,
+      "matchesExpected": true,
+      "error": null,
+      "elapsedMillis": 180641,
+      "diagnostics": {
+        "finishReason": "STOP",
+        "promptTokens": 152,
+        "completionTokens": 1428,
+        "totalTokens": 1580,
+        "reasoningTokens": null,
+        "outputCharacters": 100
+      },
+      "validationFindings": [],
+      "failureDiagnostics": null,
+      "callTiming": {
+        "startedAtUtc": "2026-11-15T12:53:19.481983900Z",
+        "finishedAtUtc": "2026-11-15T12:56:20.123667100Z"
+      }
+    },
+    {
+      "id": "missing-price-testdata",
+      "expected": {
+        "date": "2027-03-08",
+        "format": "IN_PERSON",
+        "free": null,
+        "location": "Przykładowa Galeria Sąsiedzka",
+        "title": "Rozmowy o fotografii"
+      },
+      "actual": {
+        "date": "2027-03-08",
+        "format": "IN_PERSON",
+        "free": null,
+        "location": "Przykładowa Galeria Sąsiedzka",
+        "title": "Rozmowy o fotografii"
+      },
+      "accepted": true,
+      "findings": 0,
+      "matchesExpected": true,
+      "error": null,
+      "elapsedMillis": 493487,
+      "diagnostics": {
+        "finishReason": "STOP",
+        "promptTokens": 194,
+        "completionTokens": 3477,
+        "totalTokens": 3671,
+        "reasoningTokens": null,
+        "outputCharacters": 149
+      },
+      "validationFindings": [],
+      "failureDiagnostics": null,
+      "callTiming": {
+        "startedAtUtc": "2026-11-15T12:56:20.151208300Z",
+        "finishedAtUtc": "2026-11-15T13:04:33.637752400Z"
+      }
+    },
+    {
+      "id": "hybrid-event-testdata",
+      "expected": {
+        "date": "2027-02-18",
+        "format": "HYBRID",
+        "free": true,
+        "location": "Przykładowe Centrum Sąsiedzkie oraz https://wydarzenia.example.org/mosty",
+        "title": "Mosty między salą a siecią"
+      },
+      "actual": {
+        "date": "2027-02-18",
+        "format": "HYBRID",
+        "free": true,
+        "location": "Przykładowe Centrum Sąsiedzkie oraz https://wydarzenia.example.org/mosty",
+        "title": "Mosty między salą a siecią"
+      },
+      "accepted": true,
+      "findings": 0,
+      "matchesExpected": true,
+      "error": null,
+      "elapsedMillis": 447188,
+      "diagnostics": {
+        "finishReason": "STOP",
+        "promptTokens": 223,
+        "completionTokens": 3301,
+        "totalTokens": 3524,
+        "reasoningTokens": null,
+        "outputCharacters": 195
+      },
+      "validationFindings": [],
+      "failureDiagnostics": null,
+      "callTiming": {
+        "startedAtUtc": "2026-11-15T13:04:33.970613800Z",
+        "finishedAtUtc": "2026-11-15T13:12:01.160019200Z"
+      }
+    },
+    {
+      "id": "ambiguous-date-testdata",
+      "expected": {
+        "date": null,
+        "format": "IN_PERSON",
+        "free": true,
+        "location": "Przykładowa Pracownia",
+        "title": "Wieczór prototypów"
+      },
+      "actual": {
+        "date": null,
+        "format": "IN_PERSON",
+        "free": true,
+        "location": "Przykładowej Pracowni",
+        "title": "Wieczór prototypów"
+      },
+      "accepted": true,
+      "findings": 0,
+      "matchesExpected": false,
+      "error": null,
+      "elapsedMillis": 258659,
+      "diagnostics": {
+        "finishReason": "STOP",
+        "promptTokens": 219,
+        "completionTokens": 2257,
+        "totalTokens": 2476,
+        "reasoningTokens": null,
+        "outputCharacters": 131
+      },
+      "validationFindings": [],
+      "failureDiagnostics": null,
+      "callTiming": {
+        "startedAtUtc": "2026-11-15T13:12:01.301962600Z",
+        "finishedAtUtc": "2026-11-15T13:16:19.961812900Z"
+      }
+    },
+    {
+      "id": "conflicting-place-testdata",
+      "expected": {
+        "date": "2027-04-06",
+        "format": "IN_PERSON",
+        "free": false,
+        "location": null,
+        "title": "Papierowe konstrukcje"
+      },
+      "actual": null,
+      "accepted": false,
+      "findings": 0,
+      "matchesExpected": false,
+      "error": "IllegalStateException",
+      "elapsedMillis": 462381,
+      "diagnostics": {
+        "finishReason": "LENGTH",
+        "promptTokens": 223,
+        "completionTokens": 4096,
+        "totalTokens": 4319,
+        "reasoningTokens": null,
+        "outputCharacters": 0
+      },
+      "validationFindings": null,
+      "failureDiagnostics": {
+        "category": "RESPONSE_PROCESSING",
+        "exceptionClass": "java.lang.IllegalStateException",
+        "causeClasses": [
+          "java.lang.IllegalStateException"
+        ],
+        "causeChainComplete": true,
+        "httpStatus": null,
+        "observedAtUtc": "2026-11-15T13:24:02.377771200Z"
+      },
+      "callTiming": {
+        "startedAtUtc": "2026-11-15T13:16:19.996823700Z",
+        "finishedAtUtc": "2026-11-15T13:24:02.378773100Z"
+      }
+    },
+    {
+      "id": "postponed-date-testdata",
+      "expected": {
+        "date": "2027-05-16",
+        "format": "IN_PERSON",
+        "free": true,
+        "location": "Przykładowa Galeria",
+        "title": "Kolory miasta"
+      },
+      "actual": {
+        "date": "2027-05-16",
+        "format": "IN_PERSON",
+        "free": true,
+        "location": "Przykładowej Galerii",
+        "title": "Kolory miasta"
+      },
+      "accepted": true,
+      "findings": 0,
+      "matchesExpected": false,
+      "error": null,
+      "elapsedMillis": 402508,
+      "diagnostics": {
+        "finishReason": "STOP",
+        "promptTokens": 217,
+        "completionTokens": 3760,
+        "totalTokens": 3977,
+        "reasoningTokens": null,
+        "outputCharacters": 133
+      },
+      "validationFindings": [],
+      "failureDiagnostics": null,
+      "callTiming": {
+        "startedAtUtc": "2026-11-15T13:24:02.494429500Z",
+        "finishedAtUtc": "2026-11-15T13:30:45.003436800Z"
+      }
+    },
+    {
+      "id": "registration-date-testdata",
+      "expected": {
+        "date": "2027-06-12",
+        "format": "ONLINE",
+        "free": true,
+        "location": "https://spotkanie.example.org/dane",
+        "title": "Otwarte dane w praktyce"
+      },
+      "actual": {
+        "date": "2027-06-12",
+        "format": "ONLINE",
+        "free": true,
+        "location": null,
+        "title": "Otwarte dane w praktyce"
+      },
+      "accepted": true,
+      "findings": 0,
+      "matchesExpected": false,
+      "error": null,
+      "elapsedMillis": 267950,
+      "diagnostics": {
+        "finishReason": "STOP",
+        "promptTokens": 211,
+        "completionTokens": 2346,
+        "totalTokens": 2557,
+        "reasoningTokens": null,
+        "outputCharacters": 122
+      },
+      "validationFindings": [],
+      "failureDiagnostics": null,
+      "callTiming": {
+        "startedAtUtc": "2026-11-15T13:30:45.026141900Z",
+        "finishedAtUtc": "2026-11-15T13:35:12.976586900Z"
+      }
+    },
+    {
+      "id": "cross-year-testdata",
+      "expected": {
+        "date": "2026-12-31",
+        "format": "IN_PERSON",
+        "free": false,
+        "location": "Przykładowe Obserwatorium",
+        "title": "Ostatnia mapa roku"
+      },
+      "actual": null,
+      "accepted": false,
+      "findings": 0,
+      "matchesExpected": false,
+      "error": "IllegalStateException",
+      "elapsedMillis": 443722,
+      "diagnostics": {
+        "finishReason": "LENGTH",
+        "promptTokens": 199,
+        "completionTokens": 4096,
+        "totalTokens": 4295,
+        "reasoningTokens": null,
+        "outputCharacters": 0
+      },
+      "validationFindings": null,
+      "failureDiagnostics": {
+        "category": "RESPONSE_PROCESSING",
+        "exceptionClass": "java.lang.IllegalStateException",
+        "causeClasses": [
+          "java.lang.IllegalStateException"
+        ],
+        "causeChainComplete": true,
+        "httpStatus": null,
+        "observedAtUtc": "2026-11-15T13:42:36.720983500Z"
+      },
+      "callTiming": {
+        "startedAtUtc": "2026-11-15T13:35:12.998731200Z",
+        "finishedAtUtc": "2026-11-15T13:42:36.720983500Z"
+      }
+    },
+    {
+      "id": "leap-day-testdata",
+      "expected": {
+        "date": "2028-02-29",
+        "format": "ONLINE",
+        "free": true,
+        "location": "https://spotkanie.example.org/luty",
+        "title": "Dodatkowy dzień na pomysły"
+      },
+      "actual": null,
+      "accepted": false,
+      "findings": 0,
+      "matchesExpected": false,
+      "error": "IllegalStateException",
+      "elapsedMillis": 471174,
+      "diagnostics": {
+        "finishReason": "LENGTH",
+        "promptTokens": 191,
+        "completionTokens": 4096,
+        "totalTokens": 4287,
+        "reasoningTokens": null,
+        "outputCharacters": 0
+      },
+      "validationFindings": null,
+      "failureDiagnostics": {
+        "category": "RESPONSE_PROCESSING",
+        "exceptionClass": "java.lang.IllegalStateException",
+        "causeClasses": [
+          "java.lang.IllegalStateException"
+        ],
+        "causeChainComplete": true,
+        "httpStatus": null,
+        "observedAtUtc": "2026-11-15T13:50:27.914615900Z"
+      },
+      "callTiming": {
+        "startedAtUtc": "2026-11-15T13:42:36.741440800Z",
+        "finishedAtUtc": "2026-11-15T13:50:27.915617400Z"
+      }
+    },
+    {
+      "id": "no-year-testdata",
+      "expected": {
+        "date": null,
+        "format": "IN_PERSON",
+        "free": true,
+        "location": "Przykładowa Szkicownia",
+        "title": "Marcowe szkice"
+      },
+      "actual": {
+        "date": null,
+        "format": "IN_PERSON",
+        "free": true,
+        "location": "Przykładowej Szkicowni",
+        "title": "Marcowe szkice"
+      },
+      "accepted": true,
+      "findings": 0,
+      "matchesExpected": false,
+      "error": null,
+      "elapsedMillis": 301178,
+      "diagnostics": {
+        "finishReason": "STOP",
+        "promptTokens": 194,
+        "completionTokens": 2745,
+        "totalTokens": 2939,
+        "reasoningTokens": null,
+        "outputCharacters": 128
+      },
+      "validationFindings": [],
+      "failureDiagnostics": null,
+      "callTiming": {
+        "startedAtUtc": "2026-11-15T13:50:27.940083300Z",
+        "finishedAtUtc": "2026-11-15T13:55:29.118394400Z"
+      }
+    },
+    {
+      "id": "multi-day-testdata",
+      "expected": {
+        "date": null,
+        "format": "IN_PERSON",
+        "free": false,
+        "location": "Przykładowa Modelarnia",
+        "title": "Dwa dni z makietą"
+      },
+      "actual": null,
+      "accepted": false,
+      "findings": 0,
+      "matchesExpected": false,
+      "error": "OpenAIIoException",
+      "elapsedMillis": 601984,
+      "diagnostics": null,
+      "validationFindings": null,
+      "failureDiagnostics": {
+        "category": "TIMEOUT",
+        "exceptionClass": "com.openai.errors.OpenAIIoException",
+        "causeClasses": [
+          "com.openai.errors.OpenAIIoException",
+          "java.io.InterruptedIOException",
+          "java.net.SocketTimeoutException",
+          "java.net.SocketException"
+        ],
+        "causeChainComplete": true,
+        "httpStatus": null,
+        "observedAtUtc": "2026-11-15T14:05:31.130468700Z"
+      },
+      "callTiming": {
+        "startedAtUtc": "2026-11-15T13:55:29.146856300Z",
+        "finishedAtUtc": "2026-11-15T14:05:31.131131200Z"
+      }
+    },
+    {
+      "id": "free-registration-testdata",
+      "expected": {
+        "date": "2027-07-08",
+        "format": "IN_PERSON",
+        "free": true,
+        "location": "Przykładowa Czytelnia",
+        "title": "Rezerwacja miejsca przy stole"
+      },
+      "actual": null,
+      "accepted": false,
+      "findings": 0,
+      "matchesExpected": false,
+      "error": "OpenAIIoException",
+      "elapsedMillis": 1116415,
+      "diagnostics": null,
+      "validationFindings": null,
+      "failureDiagnostics": {
+        "category": "TIMEOUT",
+        "exceptionClass": "com.openai.errors.OpenAIIoException",
+        "causeClasses": [
+          "com.openai.errors.OpenAIIoException",
+          "java.net.SocketTimeoutException"
+        ],
+        "causeChainComplete": true,
+        "httpStatus": null,
+        "observedAtUtc": "2026-11-15T14:24:07.617249100Z"
+      },
+      "callTiming": {
+        "startedAtUtc": "2026-11-15T14:05:31.201049500Z",
+        "finishedAtUtc": "2026-11-15T14:24:07.617249100Z"
+      }
+    },
+    {
+      "id": "optional-donation-testdata",
+      "expected": {
+        "date": "2027-08-22",
+        "format": "IN_PERSON",
+        "free": true,
+        "location": "Przykładowy Ogród",
+        "title": "Wymiana roślin z papieru"
+      },
+      "actual": null,
+      "accepted": false,
+      "findings": 0,
+      "matchesExpected": false,
+      "error": "OpenAIIoException",
+      "elapsedMillis": 600463,
+      "diagnostics": null,
+      "validationFindings": null,
+      "failureDiagnostics": {
+        "category": "TIMEOUT",
+        "exceptionClass": "com.openai.errors.OpenAIIoException",
+        "causeClasses": [
+          "com.openai.errors.OpenAIIoException",
+          "java.io.InterruptedIOException",
+          "java.net.SocketTimeoutException"
+        ],
+        "causeChainComplete": true,
+        "httpStatus": null,
+        "observedAtUtc": "2026-11-15T14:34:08.741181300Z"
+      },
+      "callTiming": {
+        "startedAtUtc": "2026-11-15T14:24:08.287967100Z",
+        "finishedAtUtc": "2026-11-15T14:34:08.750259600Z"
+      }
+    }
+  ],
+  "completedCount": 16,
+  "remainingCasesNotEvaluated": 9,
+  "cancelledActiveCasePossible": true,
+  "mustNotScoreAsFullCorpus": true
+}

@@ -15,7 +15,7 @@ import org.junit.jupiter.api.Timeout;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.ValueSource;
+import org.junit.jupiter.params.provider.CsvSource;
 import tools.jackson.databind.json.JsonMapper;
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -52,8 +52,8 @@ class RegressionCliTransportTest {
     }
 
     @ParameterizedTest
-    @ValueSource(booleans = {false, true})
-    void cliReportsAllIndependentCallsAndKeepsEvidenceAfterHttp429WithoutRetry(boolean firstRequestFails) throws Exception {
+    @CsvSource({"4096,false", "4096,true", "8192,false", "8192,true"})
+    void cliReportsAllIndependentCallsAndKeepsEvidenceAfterHttp429WithoutRetry(int maxTokens, boolean firstRequestFails) throws Exception {
         var corpus = AnnouncementRegressionCorpus.load();
         var mapper = JsonMapper.builder().build();
         var calls = new AtomicInteger();
@@ -82,7 +82,7 @@ class RegressionCliTransportTest {
         var destination = directory.resolve("local-report");
         String baseUrl = "http://127.0.0.1:" + server.getAddress().getPort() + "/engines/v1";
         var environment = Map.of("PROMPTJIG_MODEL", LocalModelSettingsTest.DIGEST, "PROMPTJIG_BASE_URL", baseUrl,
-                "PROMPTJIG_TIMEOUT_SECONDS", "5", "PROMPTJIG_MAX_TOKENS", "4096");
+                "PROMPTJIG_TIMEOUT_SECONDS", "5", "PROMPTJIG_MAX_TOKENS", Integer.toString(maxTokens));
         try (var output = new PrintStream(bytes, true, StandardCharsets.UTF_8)) {
             String[] args = {"--local-regression-report=" + destination};
             if (firstRequestFails) assertThrows(IllegalStateException.class, () -> PilotApplication.run(args, environment, output));
@@ -94,13 +94,14 @@ class RegressionCliTransportTest {
         }
 
         assertEquals(25, calls.get(), "Exactly one request per case, including the failed case");
+        assertTrue(bytes.toString(StandardCharsets.UTF_8).contains("clientPid=" + ProcessHandle.current().pid()));
         var wireRequests = List.copyOf(requests);
         for (int index = 0; index < wireRequests.size(); index++) {
             var wire = mapper.readTree(wireRequests.get(index));
             assertNotNull(wire);
             assertEquals(LocalModelSettingsTest.DIGEST, wire.path("model").asString());
             assertEquals(0.0, wire.required("temperature").asDouble());
-            assertEquals(4096, wire.has("max_completion_tokens")
+            assertEquals(maxTokens, wire.has("max_completion_tokens")
                     ? wire.required("max_completion_tokens").asInt() : wire.required("max_tokens").asInt());
             assertEquals(2, wire.path("messages").size(), "No previous case is appended to the conversation");
             assertTrue(wire.at("/messages/1/content").asString().replace("\r\n", "\n")
@@ -119,7 +120,8 @@ class RegressionCliTransportTest {
         assertEquals("LOCAL_MODEL", report.at("/context/mode").asString());
         assertEquals(LocalModelSettingsTest.DIGEST, report.at("/context/settings/model").asString());
         assertEquals(baseUrl, report.at("/context/settings/baseUrl").asString());
-        assertEquals(4096, report.at("/context/settings/maxTokens").asInt());
+        assertEquals(maxTokens, report.at("/context/settings/maxTokens").asInt());
+        assertEquals(2, report.path("reportVersion").asInt());
         assertEquals(0, report.at("/context/maxRetries").asInt());
         assertEquals(successful, report.at("/usage/totalTokens/reportedCases").asInt());
         assertEquals(successful * 140, report.at("/usage/totalTokens/total").asInt());
@@ -130,6 +132,9 @@ class RegressionCliTransportTest {
             assertEquals("PROVIDER_ERROR", report.at("/cases/0/outcome").asString());
             assertTrue(report.at("/cases/0/schemaAccepted").isNull());
             assertTrue(report.at("/cases/0/diagnostics").isNull());
+            assertEquals("HTTP_STATUS", report.at("/cases/0/failureDiagnostics/category").asString());
+            assertEquals(429, report.at("/cases/0/failureDiagnostics/httpStatus").asInt());
+            assertTrue(report.at("/cases/24/failureDiagnostics").isNull());
             assertEquals("PASSED", report.at("/cases/24/outcome").asString());
         }
     }

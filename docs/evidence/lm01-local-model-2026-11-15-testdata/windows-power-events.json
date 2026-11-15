@@ -1,0 +1,22 @@
+[
+  {
+    "timeUtc": "2026-11-15T14:24:09.8193020Z",
+    "id": 507,
+    "description": "System wychodzi ze stanu wstrzymania przy zachowaniu połączenia "
+  },
+  {
+    "timeUtc": "2026-11-15T14:02:09.5472451Z",
+    "id": 506,
+    "description": "System przechodzi do stanu wstrzymania przy zachowaniu połączenia "
+  },
+  {
+    "timeUtc": "2026-11-15T14:02:05.8856737Z",
+    "id": 507,
+    "description": "System wychodzi ze stanu wstrzymania przy zachowaniu połączenia "
+  },
+  {
+    "timeUtc": "2026-11-15T14:00:32.2539793Z",
+    "id": 506,
+    "description": "System przechodzi do stanu wstrzymania przy zachowaniu połączenia "
+  }
+]

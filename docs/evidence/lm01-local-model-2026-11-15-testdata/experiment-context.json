@@ -1,0 +1,45 @@
+{
+  "experiment": "LM-01",
+  "startedAtUtc": "2026-11-15T12:39:49.005169+00:00",
+  "status": "INTERRUPTED_POWER_STATE",
+  "baseCommit": "c5c256ca01a253e28e93d66361003e9de8f5819c",
+  "model": "sha256:f799fb1ad223f00fc55cf4d6c12de7dc9b71d10ca427bb0ff7b644f49d9a7960",
+  "corpusSha256": "9e99f47ab001a16989de44596cdabd97c50819dee2ef00d2b6ecac371ed38690",
+  "contractFingerprint": "sha256:1b9b411a389962e450869bd6b3d982c62a65533700fe42e674ffd283c23d1b7d",
+  "budgets": [
+    4096,
+    8192
+  ],
+  "timeoutSeconds": 600,
+  "temperature": 0,
+  "maxRetries": 0,
+  "inferenceAttemptsPerCasePerArm": 1,
+  "sourceInventory": "source-inventory.json",
+  "devAiConfigurationChanged": false,
+  "arms": [
+    {
+      "budget": 4096,
+      "startedAtUtc": "2026-11-15T12:39:51.893600+00:00",
+      "status": "INTERRUPTED_POWER_STATE",
+      "runnerStatus": "Docker Model Runner is running\n\nBACKEND    STATUS         DETAILS                                                                                                \nllama.cpp  Running        llama.cpp b9879-cpu (sha256:35e147cf9eec5d2116541e8490bda4762610613c2e16a9cf057debb6287732d6) 72874f5  \ndiffusers  Not Installed                                                                                                         \nvllm       Not Installed  only supported on Linux",
+      "loadedModelsBefore": "MODEL NAME  BACKEND  MODE  UNTIL",
+      "resourcesBefore": {
+        "observedAtUtc": "2026-11-15T12:39:52.572045+00:00",
+        "memoryLoadPercent": 92,
+        "totalPhysicalBytes": 33685749760,
+        "freePhysicalBytes": 2653671424,
+        "freeCommitBytes": 22749958144,
+        "cpuBusyPercentSinceLastSample": null,
+        "cpuSampleIntervalSeconds": null
+      },
+      "normalization": "Only target Qwen unloaded before each arm; no runner tuning",
+      "completedCount": 16
+    }
+  ],
+  "interruptedAtUtc": "2026-11-15T14:43:53.877690+00:00",
+  "complete": false,
+  "comparability": "INVALID_CONTROL",
+  "reason": "Interrupted after confirmed Windows standby and battery operation; unsuitable as controlled A/B arm",
+  "completedCount": 16,
+  "nextAttempt": "Fresh complete A/B after AC power confirmation; preserve this partial trial"
+}

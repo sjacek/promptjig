@@ -204,6 +204,16 @@ model digest and settings, and per-case expected/actual values, finish reason,
 usage, findings count and duration. Resource hashes use UTF-8 content with LF
 line endings so Windows and Linux runs identify the same reviewed corpus.
 It retains neither raw provider bodies, exception messages nor reasoning text.
+JSON report format 2 adds `failureDiagnostics` and `callTiming` to each case.
+The diagnostics retain cause class names, a bounded/cycle-safe cause-chain flag,
+an available HTTP status and a UTC observation time. Call intervals use UTC for
+runner correlation; elapsed durations still use a monotonic clock. Successful
+calls have no failure diagnostics. Historical format 1 reports are preserved.
+`TIMEOUT` requires a recognized timeout exception in the cause chain.
+`INTERRUPTED_IO` also occurs when this SDK's total call timeout expires, but
+the generic exception type cannot distinguish it from other interruption.
+Neither a message containing "timeout" nor a duration near 600 seconds proves
+the cause. Keep unknown failures and unavailable token counters explicit.
 Reader findings include safe field pointers, rules and repair/rejection actions,
 so a repaired null can be investigated even when it matches the expected value.
 Interpret its measurements separately:

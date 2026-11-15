@@ -2,6 +2,7 @@ package example.announcement;
 
 import example.announcement.generated.AnnouncementExtractionOutput;
 import example.announcement.generated.AnnouncementExtractionPromptContract;
+import example.announcement.AnnouncementScenarioSuite.CallTiming;
 import io.github.sjacek.promptjig.core.ResponseViolation;
 import java.time.Instant;
 import java.util.ArrayList;
@@ -80,6 +81,8 @@ public record AnnouncementQualityReport(int reportVersion, @NonNull String creat
                     .findings(result.error() == null ? result.findings() : null).expected(result.expected()).actual(result.actual())
                     .error(result.error()).elapsedMillis(result.elapsedMillis()).diagnostics(result.diagnostics())
                     .validationFindings(result.validationFindings())
+                    .failureDiagnostics(result.failureDiagnostics())
+                    .callTiming(result.callTiming())
                     .fields(comparisons).build());
         }
         var scores = FIELD_NAMES.stream().map(name -> score(name, cases)).toList();
@@ -88,7 +91,7 @@ public record AnnouncementQualityReport(int reportVersion, @NonNull String creat
                 .matchingFields(scores.stream().mapToLong(FieldScore::matched).sum()).totalFields(cases.size() * FIELD_NAMES.size())
                 .elapsedMillis(results.stream().mapToLong(AnnouncementScenarioSuite.ScenarioResult::elapsedMillis).sum())
                 .outcomes(outcomes).build();
-        return builder().reportVersion(1).createdAt(Instant.now().toString()).corpusVersion(corpus.version())
+        return builder().reportVersion(2).createdAt(Instant.now().toString()).corpusVersion(corpus.version())
                 .corpusSha256(corpus.sha256()).contractVersion(AnnouncementExtractionPromptContract.VERSION_REF)
                 .contractFingerprint(AnnouncementExtractionPromptContract.FINGERPRINT).context(context).summary(summary)
                 .fields(scores).usage(Usage.builder().promptTokens(counter(cases, ModelReplyDiagnostics::promptTokens))
@@ -99,6 +102,8 @@ public record AnnouncementQualityReport(int reportVersion, @NonNull String creat
 
     // Recompute invariants at the evidence boundary. Otherwise a stale matchesExpected flag could
     // label a wrong answer PASSED while the same report's field table shows a mismatch.
+    // Optional diagnostics support manually assembled results; their absence never invents a cause.
+    // Wall-clock intervals are correlation evidence, so clock corrections cannot redefine duration.
     private static void validateResult(AnnouncementScenarioSuite.ScenarioResult result) {
         var findings = result.validationFindings();
         boolean truncated = result.diagnostics() != null && result.diagnostics().truncated();
@@ -108,7 +113,8 @@ public record AnnouncementQualityReport(int reportVersion, @NonNull String creat
                 || (result.error() == null) != (findings != null)
                 || (findings != null && findings.size() != result.findings())
                 || (truncated && result.actual() != null)
-                || (result.error() != null && (result.actual() != null || result.findings() != 0 || findings != null))) {
+                || (result.error() != null && (result.actual() != null || result.findings() != 0 || findings != null))
+                || (result.error() == null && result.failureDiagnostics() != null)) {
             throw new IllegalArgumentException("Inconsistent regression result: " + result.id());
         }
     }
@@ -209,7 +215,8 @@ public record AnnouncementQualityReport(int reportVersion, @NonNull String creat
             @Nullable Boolean schemaAccepted, @Nullable Integer findings, @NonNull AnnouncementExtractionOutput expected,
             @Nullable AnnouncementExtractionOutput actual, @Nullable String error, long elapsedMillis,
             @Nullable ModelReplyDiagnostics diagnostics, @Nullable List<ResponseViolation> validationFindings,
-            @NonNull List<FieldComparison> fields) {
+            @NonNull List<FieldComparison> fields, @Nullable ModelFailureDiagnostics failureDiagnostics,
+            @Nullable CallTiming callTiming) {
         public CaseResult {
             tags = List.copyOf(tags);
             fields = List.copyOf(fields);
