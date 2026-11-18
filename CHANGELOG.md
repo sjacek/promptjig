@@ -7,6 +7,10 @@ Changes under **Unreleased** are not yet published.
 
 ### Added
 
+- Follow the standalone Spring AI example from contract validation and version
+  history through Java generation, rendering and response reading. Its guide
+  includes trusted CI baseline checks and explains how strict inputs and
+  explicitly repairable responses work together.
 - Check whether JSON data matches your schema before using it in your
   application, without calling a model or changing the data. For already
   parsed JSON, use `SchemaValidation.isValid(schema, value)` from the core

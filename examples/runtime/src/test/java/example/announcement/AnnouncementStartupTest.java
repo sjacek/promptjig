@@ -19,16 +19,25 @@ class AnnouncementStartupTest {
     @TempDir Path directory;
 
     @ParameterizedTest
-    @ValueSource(strings = {"version", "template"})
-    void rejectsPackagedResourcesThatDoNotMatchTheGeneratedVersionOrFingerprint(String changed) throws Exception {
+    @ValueSource(strings = {"version", "template", "schema", "reader-policy", "malformed-contract", "missing-template"})
+    void rejectsDriftedOrInvalidPackagedContractsBeforeModelAccess(String changed) throws Exception {
         String contractPath = AnnouncementExtractionPromptContract.RESOURCE;
         String prefix = contractPath.substring(0, contractPath.lastIndexOf('/') + 1);
         for (String path : new String[]{contractPath, prefix + "system.st", prefix + "user.st"}) {
+            if (changed.equals("missing-template") && path.equals(prefix + "user.st")) continue;
             Path destination = directory.resolve(path);
             Files.createDirectories(destination.getParent());
             String content = AnnouncementPilotTest.resource(path);
-            if (changed.equals("version") && path.equals(contractPath)) content = content.replace("version: 1", "version: 2");
+            if (changed.equals("version") && path.equals(contractPath)) {
+                int currentVersion = AnnouncementExtractionPromptContract.VERSION;
+                content = content.replace("version: " + currentVersion, "version: " + (currentVersion + 1));
+            }
             if (changed.equals("template") && path.equals(prefix + "system.st")) content += "!";
+            if (path.equals(contractPath)) {
+                if (changed.equals("schema")) content = content.replace("[IN_PERSON, ONLINE, HYBRID, null]", "[IN_PERSON, ONLINE, null]");
+                if (changed.equals("reader-policy")) content = content.replace("strict: false", "strict: true");
+                if (changed.equals("malformed-contract")) content = content.replace("promptContract: 1", "promptContract: 99");
+            }
             Files.writeString(destination, content, StandardCharsets.UTF_8);
         }
         var calls = new AtomicInteger();
@@ -42,16 +51,17 @@ class AnnouncementStartupTest {
         try (var resources = new URLClassLoader(new URL[]{directory.toUri().toURL()}, original) {
             @Override
             public @Nullable URL getResource(String name) {
-                if (name.startsWith(prefix)) {
-                    URL local = findResource(name);
-                    if (local != null) return local;
-                }
+                // Missing resources must stay missing instead of falling back to the untouched parent fixture.
+                if (name.startsWith(prefix)) return findResource(name);
                 return super.getResource(name);
             }
         }) {
             thread.setContextClassLoader(resources);
-            var failure = assertThrows(IllegalStateException.class, () -> AnnouncementPilot.builder().model(forbidden).build());
-            assertEquals("Generated announcement model does not match the packaged contract", failure.getMessage());
+            boolean invalid = changed.equals("malformed-contract") || changed.equals("missing-template");
+            Class<? extends RuntimeException> expectedType = invalid ? IllegalArgumentException.class : IllegalStateException.class;
+            var failure = assertThrows(expectedType,
+                    () -> AnnouncementPilot.builder().model(forbidden).build());
+            if (!invalid) assertEquals("Generated announcement model does not match the packaged contract", failure.getMessage());
         } finally {
             thread.setContextClassLoader(original);
         }

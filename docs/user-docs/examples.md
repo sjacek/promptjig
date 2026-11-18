@@ -15,13 +15,24 @@ The installation guides show the current 0.3.1 release for new applications.
 ## Public announcement: no model required
 
 ```shell
-./gradlew -p examples/runtime check run --configuration-cache --configuration-cache-problems=fail
+python -B scripts/ci_dependency_cache.py prepare
+./gradlew -p examples/runtime check run --dependency-verification=strict --configuration-cache --configuration-cache-problems=fail
 ```
+
+On a fresh checkout, use Python 3.12+ to prepare the examples' ignored verification
+files from the repository's reviewed checksum policy before invoking Gradle. Preparation does
+not download dependencies or approve new checksums. Repeat it when the reviewed
+policy changes; the strict flag alone does not create a checksum policy.
 
 The small independent application extracts five fields from a fictional public
 announcement: title, date, location, event format and free admission. It uses the
 real Spring AI `ChatClient` with a bundled synthetic model response. No inference
 backend, service application or database is required.
+
+Use the pilot to verify the contract workflow: build validation, generated types,
+packaged resources and Spring AI integration. The application owns model calls
+and options; Promptjig renders and validates the contract boundary. The existing
+corpus and reports help check that boundary with reviewed fictional data.
 
 Expected output includes:
 
@@ -39,6 +50,42 @@ Authored resources are under `src/main/resources/prompts/events/announcement`.
 Fictional announcements are under `src/main/resources/documents/*-testdata.txt`;
 reviewed response fixtures are under `src/main/resources/responses/*-testdata.json`.
 Its README describes the scenario options.
+
+## Contract workflow in the small pilot
+
+1. Author `announcement-extraction.prompt.yaml`, `system.st` and `user.st` under
+   the example's `src/main/resources/prompts/events/announcement` directory.
+   The schema requires a string `documentText`; the user template inserts it
+   as a named parameter.
+2. Run build validation and compile the generated Java types:
+
+   ```shell
+   ./gradlew -p examples/runtime promptContractsValidate compileJava --dependency-verification=strict
+   ```
+
+   `compileJava` runs generation automatically. Inspect the generated input,
+   output and contract constants under
+   `examples/runtime/build/generated/sources/prompt-contracts/java/main`.
+   Validation reports are under `examples/runtime/build/reports/prompt-contracts/validate`.
+3. Use the generated input with `PromptRuntime.prompt` and the generated output
+   with `PromptRuntime.read`. `AnnouncementPilot` demonstrates the intervening
+   Spring AI call and checks that packaged resources match the generated
+   version/fingerprint before model access.
+4. For a deliberate contract/template change, increment its version, explicitly
+   run `promptContractsLock`, then run `check`. Review the resource and lock diffs
+   together. Preserve historical entries and use a trusted target-branch lock
+   through `-Ppromptjig.baselineLockFile=...` to protect CI history.
+
+The input is always validated strictly, including when the output permits
+repairs. Missing/null input, wrong types and unexpected fields are rejected.
+The pilot explicitly selects `output.strict: false`; the strict default and
+both explicit policies are tested using isolated contract copies. Constructing
+a generated Java record alone does not validate every schema rule.
+
+Follow the [complete example workflow](https://github.com/sjacek/promptjig/blob/main/examples/runtime/README.md#follow-the-contract-workflow)
+and [version-history guide](versioning.md) for lock/baseline commands. Keep the
+published 0.3.1 pins until a later release is available and reviewed for adoption.
+Producer changes on `main` are separate from the libraries used by this example.
 
 ## Regression reports for 25 announcements
 
@@ -73,7 +120,7 @@ with `runtime-pilot-reports`. See the
 [corpus and report instructions](https://github.com/sjacek/promptjig/blob/main/examples/runtime/README.md#full-regression-corpus-and-saved-quality-reports)
 for oracle review rules, field comparisons and output paths.
 
-## Local-model experiments
+## Optional local-model checks
 
 The same example has explicit `runLocal`, `runLocalCase`, `runLocalSuite` and `runLocalRegression`
 tasks. They are separate from ordinary `check` and CI. Configure a supported local

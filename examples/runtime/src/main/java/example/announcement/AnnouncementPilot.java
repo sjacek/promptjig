@@ -21,6 +21,7 @@ import org.springframework.core.io.ClassPathResource;
 /**
  * The complete flow for a fictional public announcement: validate classpath resources, render,
  * call Spring AI and read a generated response. Construction checks the packaged contract eagerly.
+ * This example owns the ChatClient call; Promptjig only renders and validates the contract boundary.
  * The caller owns model selection and the model's transport lifecycle.
  */
 public final class AnnouncementPilot {
@@ -72,6 +73,8 @@ public final class AnnouncementPilot {
      */
     public PromptReadResult<AnnouncementExtractionOutput> extract(@NonNull String documentText,
             @NonNull Consumer<ModelReplyDiagnostics> diagnostics) {
+        // Input validation is always strict, even though this contract explicitly permits response repairs.
+        // Render before accessing the model so an invalid input cannot become a provider request.
         var messages = runtime.prompt(contract, new AnnouncementExtractionInput(documentText));
         // Spring AI adds the OpenAI envelope. The runtime supplies only the bare contract schema.
         var response = client.prompt(new Prompt(messages, responseOptions)).call().chatResponse();

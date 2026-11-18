@@ -8,17 +8,28 @@ input/output records and enum are generated from one Promptjig contract.
 
 The default model returns a bundled synthetic response. This exercises the real
 Spring AI `ChatClient`, classpath templates, generated types and runtime validator
-without calling an inference backend. It demonstrates orchestration, not model
-accuracy. All sample document and response content is fictional public test data.
+without calling an inference backend. It verifies the contract-to-application
+flow. All sample document and response content is fictional public test data.
 
 ## Pilot responsibilities and next steps
 
-This example is the place to experiment with models, prompts and request
-settings. Extend its fictional public announcements with reviewed expected
-answers, compare extraction of stated and missing facts, and record model
-digests, contract identities, finish reasons, token usage and response times.
-Keep schema acceptance and factual correctness as separate measurements.
-Prompt changes require a new contract version and a lock update.
+Use this example to learn and verify Promptjig's contract workflow: author a
+schema and `.st` templates, validate them in the build, preserve version history,
+generate Java types, then render messages and read a response. Extend tests when
+a concrete contract or integration boundary needs coverage.
+
+| Responsibility | Owner |
+| --- | --- |
+| Contract/template validation, version fingerprints, lock/baseline and Java generation | Promptjig core and Gradle plugin |
+| Resource loading, rendering and contract-based input/output validation | Thin Promptjig Spring AI runtime, using Spring resources/templates and Jackson |
+| Model configuration, `ChatClient` calls and transport lifecycle | This example and Spring AI |
+| Audit persistence, transaction rollback and fallback | The consuming application |
+
+Keep the existing corpus, synthetic replay and reports as verification aids.
+Optional local-model runs exercise the same contract with an explicitly selected
+backend. Schema acceptance and factual correctness remain separate observations;
+this example does not establish a general model-quality guarantee or a training
+workflow. Prompt changes require a new contract version and a lock update.
 
 The complementary `tichodroma-svc` pilot verifies application integration,
 dependency compatibility, encrypted E1 audit, transactions, deadlines,
@@ -29,16 +40,24 @@ tests. Its scope and adoption steps are recorded in the service repository's
 
 The regression corpus now has 25 reviewed cases and JSON/Markdown reports (see
 below). Keep inference explicit and required CI deterministic.
-Both pilots now consume the released core/runtime libraries from Maven Central;
-default service runtime adoption remains a separate reviewed change.
+Both pilots consume released core/runtime libraries from Maven Central. The
+small pilot stays on **0.3.1** until a later release is published and adopted;
+unreleased changes on the producer's `main` do not update this consumer.
 
 ## Run the small example
 
-From the **Promptjig repository root**:
+From the **Promptjig repository root**, with Python 3.12+ for policy preparation:
 
 ```powershell
-.\gradlew.bat -p examples/runtime check run --configuration-cache --configuration-cache-problems=fail
+python -B scripts/ci_dependency_cache.py prepare
+.\gradlew.bat -p examples/runtime check run --dependency-verification=strict --configuration-cache --configuration-cache-problems=fail
 ```
+
+The preparation command copies the repository's reviewed checksum policy into
+the standalone example builds. It does not download dependencies or generate
+new trusted checksums. This step is needed on a fresh checkout: the example's
+`gradle/verification-metadata.xml` is an ignored copy of the shared policy.
+Repeat preparation after a reviewed policy update; do not edit that copy.
 
 On Linux/macOS, use `./gradlew` with the same arguments. The wrapper requires a
 supported JDK 17+ and initially downloads Gradle/dependencies as needed. The
@@ -62,8 +81,9 @@ sources or network, and reused configuration cache on a second invocation.
 Actual plugin/core/runtime JAR hashes match the public release. The three added
 cases check the published reader's strict default, explicit `true` and explicit
 `false` using isolated contract copies; authored resources and their frozen lock
-stay intact. This is local acceptance; hosted CI must confirm the updated pins
-after push. The real-model results below remain historical.
+stay intact. These are historical local acceptance records; required CI reruns
+deterministic checks against the published pins. The real-model results below
+remain historical.
 
 Expected output includes:
 
@@ -75,6 +95,51 @@ The following JSON contains `Wieczór z Javą`, `2026-12-10`,
 `Przykładowy Dom Kultury`, `IN_PERSON` and `true`. The date binds to `LocalDate`
 and format to the generated enum. Files are UTF-8; use a UTF-8 terminal for Polish
 characters. Input braces such as `{example}` remain literal document data.
+
+## Follow the contract workflow
+
+All paths in the table are relative to `examples/runtime`:
+
+| Step | Authored input or generated result |
+| --- | --- |
+| Author the contract | `src/main/resources/prompts/events/announcement/announcement-extraction.prompt.yaml` defines input, output and template names |
+| Author instructions | `system.st` and `user.st` beside the contract; `documentText` is a named input parameter |
+| Validate and preserve history | `promptContractsValidate` checks the contract, templates and `prompt-contracts.lock.json`; ordinary builds never update the lock |
+| Generate and compile | `promptContractsGenerate` writes `AnnouncementExtractionInput`, `AnnouncementExtractionOutput` and `AnnouncementExtractionPromptContract` under `build/generated/sources/prompt-contracts/java/main`; `compileJava` runs generation automatically |
+| Render and read | `AnnouncementPilot` loads the generated `RESOURCE`, checks version/fingerprint, calls `PromptRuntime.prompt` with generated input and `PromptRuntime.read` with generated output |
+
+To inspect the build boundary without running the demo:
+
+```powershell
+.\gradlew.bat -p examples/runtime promptContractsValidate compileJava --dependency-verification=strict
+```
+
+Validation reports are under `build/reports/prompt-contracts/validate` in this
+example. Generated files are build outputs: edit the contract or `.st` resources,
+then regenerate. The constants describe the authored schema and resource identity;
+constructing a Java record alone does not validate all schema constraints.
+
+The runtime part can be used without a `ChatClient` or model call:
+
+```java
+var runtime = PromptRuntime.builder().binding(PromptJsonBinding.jackson3()).build();
+var contract = PromptContractRegistry.load(
+        new ClassPathResource(AnnouncementExtractionPromptContract.RESOURCE))
+        .get(AnnouncementExtractionPromptContract.ID);
+var messages = runtime.prompt(contract, new AnnouncementExtractionInput(documentText));
+var result = runtime.read(contract, responseJson, AnnouncementExtractionOutput.class);
+```
+
+Here `documentText` and `responseJson` are caller-supplied data. The generated
+classes are in `example.announcement.generated`; the runtime classes are in
+`io.github.sjacek.promptjig.springai`, and `ClassPathResource` is from Spring.
+`messages` can then be passed to Spring AI by the application, as the pilot does.
+The runtime itself neither invokes a model nor saves audit data.
+
+Input must match `input.schema` before rendering: a missing/null `documentText`,
+wrong type or unexpected property is rejected without repair or coercion.
+`output.strict` controls response reading only. An accepted response satisfies
+the reader's policy; use its findings and review the extracted facts separately.
 
 ## Change the contract deliberately
 
@@ -93,13 +158,39 @@ properties are removed. Malformed JSON and incompatible root structures reject
 the response. Backend strict schema mode and reader strictness are independent.
 An accepted response still needs application-level review.
 
-For a deliberate schema or `.st` change, increment the contract version, then:
+For a deliberate schema or `.st` change, increment the contract version from 1
+to 2 (or to the next unused version), then explicitly append it to the lock:
 
 ```powershell
-.\gradlew.bat -p examples/runtime promptContractsLock check
+.\gradlew.bat -p examples/runtime promptContractsLock --dependency-verification=strict
+.\gradlew.bat -p examples/runtime check run --dependency-verification=strict
 ```
 
-Do not rewrite an existing lock entry or edit generated sources under `build/`.
+Review the contract/template and lock diffs together. Historical versions and
+fingerprints must remain unchanged; the new version adds an entry.
+Running `check` before updating the lock deliberately fails for an unrecorded
+version. Changing frozen version 1 without increasing its version also fails;
+the lock task does not overwrite the old fingerprint. Update reviewed response
+fixtures if the intended schema or meaning has changed.
+
+Protect history against a **trusted target-branch lock**, not a copy of an
+already edited working-tree lock. For a local review, use an up-to-date
+`origin/main` ref and save its lock outside the example:
+
+```powershell
+$baseline = Join-Path $env:TEMP 'promptjig-runtime-baseline.json'
+git show origin/main:examples/runtime/prompt-contracts.lock.json |
+    Set-Content -LiteralPath $baseline -Encoding utf8
+.\gradlew.bat -p examples/runtime check "-Ppromptjig.baselineLockFile=$baseline" --dependency-verification=strict
+```
+
+The configured baseline must exist. Deleting or changing any historical entry
+fails validation even if today's contract still matches its current lock entry.
+CI supplies a baseline from the PR target or preceding push commit and also
+checks packaged execution. Neither the baseline nor a normal build creates
+trusted dependency checksums. Dependencies remain subject to the repository's
+strict verification metadata. Run offline only after reviewed dependencies are
+available; do not regenerate checksums to make a failed download pass.
 
 ## Optional real local model
 
@@ -281,7 +372,10 @@ Only known fixture IDs are accepted. Set the budget back to 4096 before running
 
 `check` validates the lock/templates and runs deterministic tests of generation,
 rendering, valid output, nullable repairs, malformed responses and empty output.
-Loopback HTTP tests exercise the actual Spring AI/OpenAI SDK, schema envelope,
+Input-policy tests check required/non-null input, wrong types, extra properties
+and reserved-metadata injection for the strict default and both explicit output
+policies. Startup tests also reject changed schemas/reader policies and missing
+or malformed resources before model access. Loopback HTTP tests exercise the actual Spring AI/OpenAI SDK, schema envelope,
 model digest, request timeout and zero retries after HTTP 401/429/503. They
 distinguish provider-protocol failures from invalid assistant JSON returned with
 HTTP 200. Startup checks reject resource/version drift before calling a model;

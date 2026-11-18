@@ -1,5 +1,6 @@
 package example.announcement;
 
+import example.announcement.generated.AnnouncementExtractionPromptContract;
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
 import java.nio.charset.StandardCharsets;
@@ -27,7 +28,8 @@ class PilotApplicationTest {
         }
         var lines = bytes.toString(StandardCharsets.UTF_8).lines().toList();
         assertEquals(3, lines.size());
-        assertEquals("mode=synthetic; contract=events.announcement-extraction-v1; accepted=true; findings=0", lines.get(0));
+        assertEquals("mode=synthetic; contract=" + AnnouncementExtractionPromptContract.VERSION_REF
+                + "; accepted=true; findings=0", lines.get(0));
         var json = JsonMapper.builder().build().readTree(lines.get(1));
         if (json == null) throw new AssertionError("Missing CLI output JSON");
         assertEquals("Wieczór z Javą", json.path("title").asString());
