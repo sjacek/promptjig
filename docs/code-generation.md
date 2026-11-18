@@ -67,11 +67,18 @@ component names need escaping. For example, `class` becomes `class_`, and
 `hyphen-name` becomes `hyphenName`. Numeric enum values preserve numeric JSON
 representation; numbers are not converted to strings.
 
-**Unreleased fix:** `java` becomes `java_` to protect list constructors'
-qualified package references. After adopting this fix, regenerate older models
-and change direct `java()` calls to `java_()`; the JSON property stays `java`.
-Published 0.3.1 does not include this fix; avoid that property name with arrays
-until upgrading to a release containing it.
+**0.4.0 candidate:** `java` becomes `java_` to protect list constructors'
+qualified package references, including in records that currently have no lists.
+JSON keeps the original `java` key. After upgrading either build plugin,
+regenerate models and rebuild their callers, replacing direct `java()` calls
+with `java_()`. A contract containing both `java` and `java_` is rejected before
+generation because the component names collide.
+
+The [migration checklist](user-docs/java-generation.md#upgrade-generated-models)
+covers regeneration, callers, collisions and lock history. Regeneration itself
+does not change the authored contract or require a version/lock update.
+Published 0.3.1 does not include this fix; 0.4.0 remains unpublished while its
+candidate is being verified.
 
 Jackson 2 and 3 share the `com.fasterxml.jackson.annotation` API;
 [Jackson's annotations documentation](https://github.com/FasterXML/jackson-annotations)

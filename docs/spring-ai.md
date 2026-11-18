@@ -33,7 +33,7 @@ deriving a replacement schema from Java types does not establish equivalent K5
 repair behavior or safe findings. Local resource restrictions, strict UTF-8,
 immutable snapshots and privacy-safe failures also remain explicit boundaries.
 
-The unreleased input-path simplification uses the core's small
+The unpublished **0.4.0 candidate** adds the core's small
 `SchemaValidation.isValid(schema, value)` boundary, so the adapter does not
 need Networknt types or a new validator dependency. It avoids passing already parsed input through the
 response-repair pipeline and an extra adapter encode/parse cycle. Optional nulls,

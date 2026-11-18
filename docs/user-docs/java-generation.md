@@ -67,11 +67,44 @@ null arrays are normalized to empty lists and lists are defensively copied.
 Nullable enum values map to null rather than an extra enum constant. Java-safe
 component names retain their original JSON property name through `@JsonProperty`.
 
-**Unreleased fix:** the JSON property `java` uses the Java component/accessor
-`java_` so records with lists compile correctly. After upgrading and regenerating
-an older model, update direct `java()` calls to `java_()`; JSON keeps the `java`
-key. Published 0.3.1 does not include this fix; avoid that property name with
-arrays until upgrading to a release containing it.
+The **0.4.0 candidate** maps the JSON property `java` to the Java component
+`java_`, including in records without lists. JSON keeps the original key.
+This avoids compilation errors when records also contain lists.
+
+## Upgrade generated models
+
+**Availability:** these steps describe migration from 0.3.x to the 0.4.0
+candidate. Version 0.4.0 is not yet published. Installation examples and the
+small pilot retain published 0.3.1 until the release is available and adopted.
+
+1. Upgrade the generator used by your build: the Gradle plugin or Maven plugin.
+   Upgrade core/runtime libraries to the matching release when your application
+   uses them; changing a runtime dependency alone does not regenerate models.
+2. Regenerate from your authored contracts and rebuild all callers. With the
+   upgraded plugin, `./gradlew clean check` or `mvn clean verify` removes stale
+   build output, generates sources and compiles the application. Preserve
+   existing generation settings and the contract lock.
+3. For each JSON property named `java`, replace direct Java calls such as
+   `output.java()` with `output.java_()`. This applies to input, output and nested
+   records, including records without lists. Update any reflection-based code
+   that looks up the old accessor. Rebuild downstream code that uses regenerated
+   models so it no longer expects the previous method.
+4. Keep the JSON key `java`. Regenerated records still read and write that key
+   through `@JsonProperty`; the Java rename does not rename the wire field.
+
+If one object contains **both `java` and `java_`**, generation fails before
+writing files because both would become `java_`. Choose a distinct authored
+property name for one of them, update affected templates and callers, increment
+the contract version and explicitly append its new lock entry. Review that
+wire-format change with your consumers; do not edit generated code to work
+around the collision.
+
+Upgrading the generator and regenerating unchanged contracts does **not**
+require a contract-version increment or lock rewrite: their fingerprint is
+based on the authored contract and templates. Only a deliberate contract/template
+change, such as resolving a property collision, requires a new version and lock
+entry. Response reading remains strict by default; existing explicit
+`output.strict: false` continues to opt into repairs.
 
 ## Output ownership
 

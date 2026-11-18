@@ -7,8 +7,8 @@ need a new build version, reviewed commit and release tag.
 Verification and local staging do not upload artifacts.
 The core and Spring AI runtime libraries and Maven adapter **0.3.1** were published
 to Maven Central on 2026-11-14. Strict response reading has been the default since
-0.2.0. Set the shared
-publication/runtime version in `gradle/libs.versions.toml` (`versions.promptjig`);
+0.2.0. Set the producer
+publication version in `gradle/libs.versions.toml` (`versions.promptjig`);
 the root build reads it for
 all project publications. Gradle Plugin Portal publication remains independent.
 Both [Central](https://github.com/sjacek/promptjig/actions/runs/43587972410)
@@ -21,6 +21,28 @@ Commits, tags and pushes are performed by the owner; Codex does not commit or pu
 Historical plugin-release checks: [publication readiness](publication-readiness.md).
 Current local checks of the public libraries:
 [published runtime consumer](evidence/published-runtime-consumer-2026-11-13.json).
+
+## Current candidate: 0.4.0
+
+The producer version is **0.4.0** for core, Spring AI runtime, Maven plugin and
+Gradle plugin publications. It is an unpublished candidate. Its scope includes
+`SchemaValidation.isValid(schema, value)`, the generator's `java()` → `java_()`
+migration, the thin input-validation path and the contract-workflow example.
+The [changelog](../CHANGELOG.md) remains explicitly marked **Unreleased**;
+record an actual release date only after publication is confirmed.
+
+The independent `promptjigRuntime` and `promptjigPlugin` consumer pins remain
+**0.3.1**. Both pilots keep their published dependencies until 0.4.0 exists in
+the registries. `docs/user-docs/_config.yml` and installation snippets continue
+to describe available releases. Candidate tests and private staging use the
+producer version without changing those public consumer pins.
+
+Review the [generator migration checklist](user-docs/java-generation.md#upgrade-generated-models)
+and user-visible compatibility notes. Unchanged contract fingerprints and locks
+remain valid; a property-name collision requires a deliberate contract change.
+After the version change, obtain a new complete Compatibility result on the
+candidate commit before creating `v0.4.0`. Earlier green CI for `3e48081` does
+not verify the future tagged candidate. Verification and staging do not publish.
 
 ## Verify the candidate
 
@@ -143,8 +165,8 @@ their own build rerun does not replace the full acceptance requirement.
 The `tichodroma-svc` runtime pilot uses the explicit `-PpromptjigPilot=true`
 opt-in and its mandatory `test:promptjig-pilot` CI job. Both that pilot and the
 [standalone public-announcement example](../examples/runtime/README.md) use public
-releases independently. The service pilot retains core/runtime 0.2.0 and Portal
-plugin 0.1.0; the small example uses core/runtime and Portal plugin **0.3.1**.
+releases independently. Both the service pilot and the small example retain
+core/runtime and Portal plugin **0.3.1** while 0.4.0 is being prepared.
 
 No source checkout is required in either normal pilot or pilot CI.
 `promptjigBuildDir` remains an explicit development override, substituting plugin,

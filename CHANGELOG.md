@@ -3,19 +3,22 @@
 Changes to Promptjig's features, compatibility and availability.
 Changes under **Unreleased** are not yet published.
 
-## Unreleased
+## 0.4.0 — Unreleased
+
+This version is being prepared for publication. The current published release
+remains 0.3.1; the examples keep their reviewed published dependency pins.
 
 ### Added
 
-- Follow the standalone Spring AI example from contract validation and version
-  history through Java generation, rendering and response reading. Its guide
-  includes trusted CI baseline checks and explains how strict inputs and
-  explicitly repairable responses work together.
 - Check whether JSON data matches your schema before using it in your
   application, without calling a model or changing the data. For already
   parsed JSON, use `SchemaValidation.isValid(schema, value)` from the core
   library. Schema references are resolved locally; when reading JSON text,
   use a strict parser to reject duplicate keys and extra content after the value.
+- Follow the standalone Spring AI example from contract validation and version
+  history through Java generation, rendering and response reading. Its guide
+  includes trusted CI baseline checks and explains how strict inputs and
+  explicitly repairable responses work together.
 - Evaluate announcement extraction against 25 reviewed fictional documents,
   including conflicting dates or venues, hybrid events, mixed admission prices
   and missing facts. Keep the original five-case suite for shorter experiments.
@@ -40,10 +43,16 @@ Changes under **Unreleased** are not yet published.
 - Use a JSON field named `java` alongside lists without compilation errors in
   generated Java models. JSON still uses `java`. After regenerating models,
   replace direct calls to `java()` with `java_()`, including in models that
-  have no lists.
+  have no lists. Follow the [generator migration guide](docs/user-docs/java-generation.md#upgrade-generated-models).
 
 ### Compatibility
 
+- After upgrading the Gradle or Maven generator, regenerate models and rebuild
+  their callers. Contracts containing both `java` and `java_` are rejected
+  because those properties would produce the same Java component name.
+  Resolving that collision by changing a contract requires a new contract
+  version and lock entry. Regeneration alone leaves the contract fingerprint
+  and existing lock entries unchanged.
 - If your tools read the pilot's JSON quality reports, support report format 2
   and its `failureDiagnostics` and `callTiming` fields. Historical format 1
   reports remain valid.

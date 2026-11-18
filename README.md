@@ -35,6 +35,11 @@ Read the [user guide](docs/user-docs/index.md) for setup, contracts, Java genera
 Spring AI integration and troubleshooting. Its GitHub Pages source is in `docs/user-docs`.
 
 See the [changelog](CHANGELOG.md) for user-visible changes and compatibility notes.
+The next release candidate is **0.4.0**, with parsed-JSON schema validation and
+the generator's `java()` → `java_()` migration. It is not yet published; see the
+[migration guide](docs/user-docs/java-generation.md#upgrade-generated-models).
+The installation examples below continue to use published versions.
+
 The published [Maven adapter](docs/maven-plugin.md) provides validation,
 append-only locks and Java generation. The [Maven example](examples/maven/README.md)
 uses its reviewed published 0.3.0 pin and runs independently with `mvn verify`.
@@ -80,7 +85,8 @@ Portal plugin 0.3.1 and Central core/runtime 0.3.1. Its default
 run uses synthetic responses; an explicit task can call a pinned local model.
 
 ```powershell
-.\gradlew.bat -p examples/runtime check run --configuration-cache --configuration-cache-problems=fail
+python -B scripts/ci_dependency_cache.py prepare
+.\gradlew.bat -p examples/runtime check run --dependency-verification=strict --configuration-cache --configuration-cache-problems=fail
 ```
 
 ## Development probes
