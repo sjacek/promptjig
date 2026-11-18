@@ -152,6 +152,10 @@ public final class JavaSourceGenerator {
             Set<String> fields = new HashSet<>();
             for (var entry : sorted(schema.path("properties")).entrySet()) {
                 String field = identifier(entry.getKey(), false);
+                // Compact-constructor parameters are expression names: "java" would shadow
+                // java.util in list normalization. Keep the JSON name in @JsonProperty.
+                // Apply this consistently even without lists, so adding one does not rename accessors.
+                if (field.equals("java")) field = "java_";
                 if (!fields.add(field)) throw new IllegalArgumentException("Java component name collision at " + pointer + ": " + field);
                 JsonNode property = dereference(entry.getValue());
                 String type = type(pointer + "/properties/" + SourceDocument.escape(entry.getKey()), entry.getValue(), identifier(entry.getKey(), true));

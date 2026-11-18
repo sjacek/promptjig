@@ -35,6 +35,21 @@ public final class SchemaValidation {
     }
 
     /**
+     * Checks a parsed value without exposing validator-specific schema or error types to an adapter.
+     * Uses the same offline dialect and format assertions as {@link #compile(JsonNode)}. Neither tree
+     * is mutated, no repairs are applied, and native errors containing values stay inside this call.
+     * Callers must reject duplicate keys and trailing content when decoding JSON text before this check.
+     * A constraint violation returns false; schema compilation or reference-resolution failures propagate.
+     * Adapters accepting untrusted data must translate those failures without exposing native diagnostics.
+     * @param schema locally resolvable schema tree
+     * @param value parsed JSON value, including JSON null; not a missing-node sentinel
+     * @return whether the value satisfies every schema constraint
+     */
+    public static boolean isValid(@NonNull JsonNode schema, @NonNull JsonNode value) {
+        return validate(compile(schema), value).isEmpty();
+    }
+
+    /**
      * Validates through Networknt's JSON-text boundary without linking to its Jackson 2/3 node overloads.
      * Callers parse JSON strictly before reaching this boundary; serialization preserves its JSON values.
      * This operation does not repair values or coerce strings into numbers or booleans.

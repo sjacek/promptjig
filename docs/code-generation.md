@@ -67,6 +67,12 @@ component names need escaping. For example, `class` becomes `class_`, and
 `hyphen-name` becomes `hyphenName`. Numeric enum values preserve numeric JSON
 representation; numbers are not converted to strings.
 
+**Unreleased fix:** `java` becomes `java_` to protect list constructors'
+qualified package references. After adopting this fix, regenerate older models
+and change direct `java()` calls to `java_()`; the JSON property stays `java`.
+Published 0.3.1 does not include this fix; avoid that property name with arrays
+until upgrading to a release containing it.
+
 Jackson 2 and 3 share the `com.fasterxml.jackson.annotation` API;
 [Jackson's annotations documentation](https://github.com/FasterXML/jackson-annotations)
 explains this compatibility. The selected family is tracked in generation

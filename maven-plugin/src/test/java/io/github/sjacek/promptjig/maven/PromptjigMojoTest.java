@@ -2,6 +2,7 @@ package io.github.sjacek.promptjig.maven;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.github.sjacek.promptjig.core.ContractEngine;
+import io.github.sjacek.promptjig.core.PromptContract;
 import io.github.sjacek.promptjig.core.ValidationRequest;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -181,6 +182,35 @@ class PromptjigMojoTest {
         assertTrue(Files.readString(directory.resolve("target/reports/generate/validation.txt")).contains("[lock]"));
     }
 
+    @ParameterizedTest @ValueSource(strings = {"v2", "v3"})
+    void generatedJavaNamedPropertyAndListsCompileAfterTheMavenGoal(@NonNull String jackson) throws Exception {
+        var document = (com.fasterxml.jackson.databind.node.ObjectNode) PromptContract.load(fixture.contract()).document();
+        document.put("version", 2);
+        var schema = (com.fasterxml.jackson.databind.node.ObjectNode) document.path("output").path("schema");
+        schema.remove("required");
+        var properties = schema.putObject("properties");
+        properties.putObject("java").put("type", "string");
+        properties.putObject("tags").put("type", "array").putObject("items").put("type", "string");
+        new ObjectMapper().writeValue(fixture.contract().toFile(), document);
+        fixture.configure(new LockMojo()).execute();
+        var mojo = fixture.configure(new GenerateMojo());
+        mojo.jackson = jackson;
+        mojo.execute();
+        Path generated = directory.resolve("target/generated");
+        assertEquals(List.of(generated.toString()), mojo.project.getCompileSourceRoots());
+        var compiler = javax.tools.ToolProvider.getSystemJavaCompiler();
+        assertNotNull(compiler);
+        try (var manager = compiler.getStandardFileManager(null, null, java.nio.charset.StandardCharsets.UTF_8);
+             var files = Files.walk(generated)) {
+            var sources = manager.getJavaFileObjectsFromFiles(files.filter(path -> path.toString().endsWith(".java"))
+                    .map(Path::toFile).toList());
+            Path annotations = Path.of(com.fasterxml.jackson.annotation.JsonProperty.class.getProtectionDomain().getCodeSource().getLocation().toURI());
+            var log = new java.io.StringWriter();
+            assertTrue(compiler.getTask(log, manager, null, List.of("--release", "17", "-classpath", annotations.toString(),
+                    "-d", directory.resolve("classes").toString()), null, sources).call(), log.toString());
+        }
+    }
+
     @Test void generationAlsoEnforcesTheTrustedBaselineBeforePublishingSources() throws Exception {
         Path baseline = directory.resolve("baseline.json");
         Files.copy(fixture.lock(), baseline);
@@ -217,6 +247,22 @@ class PromptjigMojoTest {
         var failure = assertThrows(MojoExecutionException.class, mojo::execute);
         assertInstanceOf(IOException.class, failure.getCause());
         assertTrue(mojo.project.getCompileSourceRoots().isEmpty());
+    }
+
+    @ParameterizedTest @ValueSource(strings = {"", " \n\t", "null"})
+    void malformedGenerationManifestIsAnExecutionFailureWithoutRegisteringSources(@NonNull String contents) throws Exception {
+        fixture.configure(new GenerateMojo()).execute();
+        Path output = directory.resolve("target/generated");
+        Path generated = output.resolve("example/generated/AnnouncementExtractionOutput.java");
+        byte[] previous = Files.readAllBytes(generated), history = Files.readAllBytes(fixture.lock());
+        Files.writeString(output.resolve(".promptjig-generated.json"), contents);
+        var mojo = fixture.configure(new GenerateMojo());
+        var failure = assertThrows(MojoExecutionException.class, mojo::execute);
+        assertInstanceOf(IOException.class, failure.getCause());
+        assertTrue(mojo.project.getCompileSourceRoots().isEmpty());
+        assertArrayEquals(previous, Files.readAllBytes(generated));
+        assertArrayEquals(history, Files.readAllBytes(fixture.lock()));
+        assertEquals(contents, Files.readString(output.resolve(".promptjig-generated.json")));
     }
 
     @Test void separateGoalsKeepTheirOwnReportsWhenExecutedInTheSameModule() throws Exception {

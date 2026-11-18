@@ -11,6 +11,37 @@ Declare the library through the consumer's `libs.versions.toml`. Apply the
 Gradle plugin separately when generating models. The runtime dependency does
 not generate sources or check the version lock.
 
+## Runtime boundaries
+
+The runtime is a thin adapter for contracts packaged with an application.
+The following split keeps framework behavior delegated and contract policy explicit:
+
+| Operation | Delegated implementation | Promptjig responsibility |
+| --- | --- | --- |
+| Resource discovery and relative loading | Spring `ResourcePatternResolver` and `Resource` | Validate local UTF-8 resources, prevent remote/escaping locations, reject duplicate IDs and retain immutable snapshots |
+| Template rendering | Spring AI `PromptTemplate`, `SystemPromptTemplate` and `StTemplateRenderer` | Preserve message order, contract-derived attributes and optional null inputs after core AST checks |
+| Input validation | Core `SchemaValidation`, using its existing Jackson-family-compatible validator boundary | Parse input strictly once in the adapter, reject schema violations without repairs and render the original parsed values |
+| Response policy | Core `ContractResponseValidator` | Select the contract's K5 policy: strict by default, repair only with explicit `output.strict: false` |
+| Model binding | Strict Jackson 2/3 mappers behind `PromptJsonBinding` | Reject failed/null/incompatible binding without exposing exception details; preserve earlier repair findings |
+| Version history | Core and Gradle/Maven build plugins | Expose runtime identity; lock and baseline enforcement stay in the build |
+| Model calls, audit, transactions and fallback | Owning application and its client/framework | Return messages, schema metadata and safe findings for application use |
+
+Spring AI already provides [prompt rendering](https://docs.spring.io/spring-ai/reference/api/prompt.html)
+and [typed output converters](https://docs.spring.io/spring-ai/reference/api/structured-output/converters.html).
+The authored contract remains authoritative for schemas and version identity;
+deriving a replacement schema from Java types does not establish equivalent K5
+repair behavior or safe findings. Local resource restrictions, strict UTF-8,
+immutable snapshots and privacy-safe failures also remain explicit boundaries.
+
+The unreleased input-path simplification uses the core's small
+`SchemaValidation.isValid(schema, value)` boundary, so the adapter does not
+need Networknt types or a new validator dependency. It avoids passing already parsed input through the
+response-repair pipeline and an extra adapter encode/parse cycle. Optional nulls,
+numeric precision and rendering representation remain unchanged. Networknt's
+JSON-text bridge remains necessary for Jackson 2/3 compatibility; it is not a
+new transport or model client. Response reading continues to parse raw text
+strictly before applying K5 and binding.
+
 ```toml
 [versions]
 promptjig = "0.3.1"
@@ -199,11 +230,11 @@ compile-time `VERSION_REF` constant.
 
 ## Complementary pilots
 
-The [small standalone pilot](../examples/runtime/README.md) is used for experiments
-with models, prompts and request settings on fictional public announcements.
-Explicit local-model runs compare extracted facts with reviewed answers and
-record finish reasons, token usage and latency. Its default demo and required
-CI use deterministic responses.
+The [small standalone pilot](../examples/runtime/README.md) verifies authored
+contracts, generated models, the Spring AI adapter and packaging using fictional
+public announcements. Its default demo and required CI use deterministic responses.
+Explicit local-model runs can answer a concrete integration question and retain
+finish reasons, token usage and latency; they do not define a model-evaluation platform.
 
 The resumed `tichodroma-svc` pilot verifies application integration, dependency
 compatibility, encrypted E1 audit, transactions, deadlines, circuit breakers and
@@ -214,4 +245,4 @@ E1 integration tests cover PostgreSQL boundaries. The service repository's
 Maintain these separate acceptance criteria as the library develops. After
 core/runtime publication, verify both pilots against released dependencies.
 The service pilot remains opt-in until a separate reviewed adoption change;
-model-quality experiments continue in the standalone example.
+model-specific results remain separate from acceptance of the contract tooling.

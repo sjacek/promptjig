@@ -9,6 +9,11 @@ published in Maven Central. It targets Java 17+ and Spring AI 2.0.x, tested with
 reading. Your application supplies the model client, model options and any
 required audit persistence. There is no Spring Boot auto-configuration.
 
+The runtime is a thin adapter: Spring AI renders templates, Jackson binds models,
+and Promptjig applies the authored contract's schemas and read policy. Input
+validation always rejects violations, including when output repairs are enabled.
+Model calls, retries, audit, transactions and fallback remain application concerns.
+
 ## Add the library
 
 In `gradle/libs.versions.toml`:

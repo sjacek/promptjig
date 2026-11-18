@@ -6,6 +6,7 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.jspecify.annotations.Nullable;
 import javax.tools.ToolProvider;
@@ -223,7 +224,7 @@ class JavaSourceGeneratorTest {
     }
 
     @ParameterizedTest
-    @ValueSource(strings = {"not json", "{}", "[42]", "[\"/outside.java\"]", "[\"../outside.java\"]"})
+    @ValueSource(strings = {"", " \n\t", "null", "not json", "{}", "[42]", "[\"/outside.java\"]", "[\"../outside.java\"]"})
     void malformedOwnershipManifestCannotTriggerWritesOrCleanup(String contents) throws Exception {
         fixture(); lock();
         assertTrue(generator.generate(request(), options, output()).valid());
@@ -231,6 +232,44 @@ class JavaSourceGeneratorTest {
         var before = sources();
         assertThrows(java.io.IOException.class, () -> generator.generate(request(), options, output()));
         assertEquals(before, sources());
+    }
+
+    @ParameterizedTest
+    @CsvSource({"v2, false", "v2, true", "v3, false", "v3, true"})
+    void javaNamedPropertiesRetainStableAccessorsAndWireNamesWithOrWithoutLists(String jackson, boolean lists) throws Exception {
+        Path file = fixture();
+        var document = (ObjectNode) PromptContract.load(file).document();
+        var schema = (ObjectNode) document.path("output").path("schema");
+        schema.remove("required");
+        var properties = schema.putObject("properties");
+        properties.putObject("java").put("type", "string");
+        if (lists) {
+            properties.putObject("tags").put("type", "array").putObject("items").put("type", "string");
+            properties.putObject("nullableTags").put("type", "array").putObject("items")
+                    .putArray("type").add("string").add("null");
+        }
+        write(file, document); lock();
+        assertTrue(generator.generate(request(), new GenerationOptions(options.packageName(), jackson), output()).valid());
+        try (var loader = compile()) {
+            var type = loader.loadClass("example.generated.CertificateExtractionOutput");
+            // Escaping must not depend on whether a later contract revision adds a list constructor.
+            String json = lists ? "{\"java\":\"wire-value\",\"tags\":[\"one\"],\"nullableTags\":[null,\"two\"]}"
+                    : "{\"java\":\"wire-value\"}";
+            Object value = read(jackson, json, type);
+            assertEquals("wire-value", type.getMethod("java_").invoke(value));
+            String serialized = jackson.equals("v2") ? mapper2().writeValueAsString(value) : mapper3().writeValueAsString(value);
+            assertEquals(PromptContract.JSON.readTree(json), PromptContract.JSON.readTree(serialized),
+                    "The escaped Java accessor must never become an extra or renamed JSON property");
+            if (lists) {
+                assertEquals(List.of("one"), type.getMethod("tags").invoke(value));
+                var nullable = (List<?>) type.getMethod("nullableTags").invoke(value);
+                assertEquals(java.util.Arrays.asList(null, "two"), nullable);
+                assertThrows(UnsupportedOperationException.class, nullable::clear);
+                Object empty = read(jackson, "{\"java\":\"wire-value\"}", type);
+                assertEquals(List.of(), type.getMethod("tags").invoke(empty));
+                assertEquals(List.of(), type.getMethod("nullableTags").invoke(empty));
+            }
+        }
     }
 
     @ParameterizedTest
@@ -350,7 +389,7 @@ class JavaSourceGeneratorTest {
     }
 
     @ParameterizedTest
-    @ValueSource(strings = {"components", "enum", "top-level", "recursive-array"})
+    @ValueSource(strings = {"components", "escaped-java", "enum", "top-level", "recursive-array"})
     void reportsUnrepresentableNamesAndTypesWithoutPartialGeneration(String kind) throws Exception {
         Path file = fixture();
         var node = (ObjectNode) PromptContract.load(file).document();
@@ -358,6 +397,8 @@ class JavaSourceGeneratorTest {
         var properties = (ObjectNode) schema.path("properties");
         switch (kind) {
             case "components" -> { properties.putObject("a-b").put("type", "string"); properties.putObject("a_b").put("type", "string"); }
+            // Both wire names would map to java_: reject ambiguity before any files are created.
+            case "escaped-java" -> { properties.putObject("java").put("type", "string"); properties.putObject("java_").put("type", "string"); }
             case "enum" -> properties.putObject("collision").put("type", "string").putArray("enum").add("a-b").add("a_b");
             case "top-level" -> { var other = node.deepCopy(); other.put("id", "another.certificate-extraction"); write(file.resolveSibling("other.prompt.yaml"), other); }
             case "recursive-array" -> {

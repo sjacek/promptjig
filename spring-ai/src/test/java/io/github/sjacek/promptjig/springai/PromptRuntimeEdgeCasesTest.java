@@ -38,6 +38,106 @@ class PromptRuntimeEdgeCasesTest {
 
     private PromptRuntime runtime() { return PromptRuntime.builder().binding(PromptJsonBinding.jackson3()).build(); }
 
+    @ParameterizedTest @ValueSource(strings = {"v2", "v3"})
+    void numericInputKeepsRenderingPrecisionOptionalNullsAndLiteralValues(@NonNull String jackson) {
+        var contract = PromptContractRegistry.load(new ClassPathResource(ROOT + "numeric-input.prompt.yaml"))
+                .get("runtime.numeric-input");
+        var delegate = jackson.equals("v2") ? PromptJsonBinding.jackson2() : PromptJsonBinding.jackson3();
+        var writes = new AtomicInteger();
+        var binding = TestBinding.builder().writer(input -> {
+            writes.incrementAndGet(); return delegate.write(input);
+        }).reader((json, type) -> fail("Rendering must not bind a response")).build();
+        var runtime = PromptRuntime.builder().binding(binding).build();
+        var fingerprint = contract.fingerprint();
+        Map<String, @Nullable Object> input = new LinkedHashMap<>();
+        input.put("count", new java.math.BigInteger("9007199254740993"));
+        input.put("amount", new java.math.BigDecimal("12345678901234567890.12345678901234567890"));
+        input.put("entries", List.of("{literal}", "one"));
+        String expected = "count=9007199254740993; amount=12345678901234567890.1234567890123456789; optional=absent; entries={literal}, one";
+        assertEquals(expected, text(runtime.prompt(contract, input).get(0)).strip());
+        input.put("optional", null);
+        assertEquals(expected, text(runtime.prompt(contract, input).get(0)).strip());
+        // Integral decimals satisfy integer schemas, but input rendering retains the original node representation.
+        input.put("count", new java.math.BigDecimal("1.00"));
+        input.put("amount", new java.math.BigDecimal("1.2300"));
+        assertEquals("count=1; amount=1.23; optional=absent; entries={literal}, one",
+                text(runtime.prompt(contract, input).get(0)).strip());
+        assertEquals(3, writes.get(), "Each render serializes its caller input exactly once");
+        assertEquals(new java.math.BigDecimal("1.2300"), input.get("amount"));
+        assertEquals(fingerprint, contract.fingerprint());
+    }
+
+    @ParameterizedTest @ValueSource(strings = {"v2", "v3"})
+    void numericEnumInputsCannotPassByRoundingToTheSameDouble(@NonNull String jackson) {
+        var copy = PromptContractRegistry.load(new ClassPathResource(ROOT + "numeric-input.prompt.yaml"))
+                .get("runtime.numeric-input").contract();
+        var properties = (ObjectNode) copy.document().path("input").path("schema").path("properties");
+        var count = new java.math.BigInteger("9007199254740993");
+        var amount = new java.math.BigDecimal("0.12345678901234567890123456789");
+        ((ObjectNode) properties.path("count")).putArray("enum").add(count);
+        ((ObjectNode) properties.path("amount")).putArray("enum").add(amount);
+        var constrained = RuntimePromptContract.builder().contract(copy).build();
+        var runtime = PromptRuntime.builder().binding(jackson.equals("v2") ? PromptJsonBinding.jackson2() : PromptJsonBinding.jackson3()).build();
+        var input = new LinkedHashMap<String, Object>();
+        input.put("count", count); input.put("amount", amount); input.put("entries", List.of());
+        String rendered = text(runtime.prompt(constrained, input).get(0));
+
+        // These alternatives are different schema enum values even though a double cannot distinguish them.
+        var differentCount = count.subtract(java.math.BigInteger.ONE);
+        var differentAmount = amount.add(new java.math.BigDecimal("0.00000000000000000000000000001"));
+        assertEquals(count.doubleValue(), differentCount.doubleValue());
+        assertEquals(amount.doubleValue(), differentAmount.doubleValue());
+        for (var invalid : List.of(Map.of("count", differentCount, "amount", amount, "entries", List.of()),
+                Map.of("count", count, "amount", differentAmount, "entries", List.of()))) {
+            var failure = assertThrows(IllegalArgumentException.class, () -> runtime.prompt(constrained, invalid));
+            assertEquals("Prompt input or rendering is invalid", failure.getMessage());
+            assertNull(failure.getCause());
+            assertEquals(0, failure.getSuppressed().length);
+        }
+        assertEquals(rendered, text(runtime.prompt(constrained, input).get(0)));
+        assertEquals(count, input.get("count"));
+        assertEquals(amount, input.get("amount"));
+    }
+
+    @ParameterizedTest @ValueSource(strings = {"v2", "v3"})
+    void inputRemainsStrictEvenWhenTheOutputContractPermitsRepairs(@NonNull String jackson) {
+        var copy = contract().contract();
+        ((ObjectNode) copy.document().path("output")).put("strict", false);
+        var repairing = RuntimePromptContract.builder().contract(copy).build();
+        var binding = jackson.equals("v2") ? PromptJsonBinding.jackson2() : PromptJsonBinding.jackson3();
+        var runtime = PromptRuntime.builder().binding(binding).build();
+        for (Object invalid : List.of(
+                Map.of("suffix", "unused"),
+                Map.of("values", "secret-value-testdata", "suffix", "unused"),
+                Map.of("values", List.of(Map.of()), "suffix", "unused"),
+                Map.of("values", List.of(Map.of("name", 42)), "suffix", "unused"),
+                Map.of("values", List.of(), "suffix", "unused", "title", 42),
+                Map.of("values", List.of(), "suffix", "unused", "secret-key-testdata", "secret-value-testdata"))) {
+            var failure = assertThrows(IllegalArgumentException.class, () -> runtime.prompt(repairing, invalid));
+            assertEquals("Prompt input or rendering is invalid", failure.getMessage());
+            assertNull(failure.getCause());
+            assertEquals(0, failure.getSuppressed().length);
+        }
+        assertEquals("empty", text(runtime.prompt(repairing, Map.of("values", List.of(), "suffix", "unused")).get(1)).strip());
+    }
+
+    @ParameterizedTest @ValueSource(strings = {"v2", "v3"})
+    void numericInputRejectsCoercionFractionalIntegersAndInvalidArrayItems(@NonNull String jackson) {
+        var contract = PromptContractRegistry.load(new ClassPathResource(ROOT + "numeric-input.prompt.yaml"))
+                .get("runtime.numeric-input");
+        var runtime = PromptRuntime.builder().binding(jackson.equals("v2") ? PromptJsonBinding.jackson2() : PromptJsonBinding.jackson3()).build();
+        List<Map<String, Object>> invalid = List.of(
+                Map.of("count", "42", "amount", 1, "entries", List.of()),
+                Map.of("count", new java.math.BigDecimal("1.5"), "amount", 1, "entries", List.of()),
+                Map.of("count", 1, "amount", "1.5", "entries", List.of()),
+                Map.of("count", 1, "amount", 1, "entries", List.of(42)));
+        for (var input : invalid) {
+            var failure = assertThrows(IllegalArgumentException.class, () -> runtime.prompt(contract, input));
+            assertEquals("Prompt input or rendering is invalid", failure.getMessage());
+            assertNull(failure.getCause());
+        }
+    }
+
     @Test void rendersNullableArrayEnumsReferenceAliasesAndAnonymousVariables() {
         var messages = runtime().prompt(contract(), Map.of("values", List.of(Map.of("name", "one"), Map.of("name", "two")),
                 "suffix", "{literal}", "title", "Heading"));

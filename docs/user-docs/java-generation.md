@@ -67,6 +67,12 @@ null arrays are normalized to empty lists and lists are defensively copied.
 Nullable enum values map to null rather than an extra enum constant. Java-safe
 component names retain their original JSON property name through `@JsonProperty`.
 
+**Unreleased fix:** the JSON property `java` uses the Java component/accessor
+`java_` so records with lists compile correctly. After upgrading and regenerating
+an older model, update direct `java()` calls to `java_()`; JSON keeps the `java`
+key. Published 0.3.1 does not include this fix; avoid that property name with
+arrays until upgrading to a release containing it.
+
 ## Output ownership
 
 Keep generated files under build output, apart from authored Java and resources.

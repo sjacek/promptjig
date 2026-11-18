@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import io.github.sjacek.promptjig.core.ContractResponseValidator;
 import io.github.sjacek.promptjig.core.PromptContract;
 import io.github.sjacek.promptjig.core.ResponseViolation;
+import io.github.sjacek.promptjig.core.SchemaValidation;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
@@ -32,6 +33,8 @@ public record PromptRuntime(@NonNull PromptJsonBinding binding) {
      * Renders validated templates with named input and reserved contract metadata.
      * Input is checked without repairs. Omitted optional attributes are supplied as null to ST4;
      * extra input keys cannot replace the reserved contract attributes. Each call has its own renderer.
+     * The output contract's strictness flag never changes this input policy. Application code owns
+     * model invocation; successful rendering does not send these messages or authorize their use.
      * @param contract registered contract snapshot
      * @param input generated input model or equivalent schema-valid object
      * @return ordered system/user messages; caller owns model options and audit
@@ -40,13 +43,16 @@ public record PromptRuntime(@NonNull PromptJsonBinding binding) {
     public List<Message> prompt(@NonNull RuntimePromptContract contract, @NonNull Object input) {
         var source = contract.contract();
         try {
+            // Keep strict lexical checks before schema validation; a tree no longer contains duplicate keys or trailing text.
             JsonNode node = PromptContract.JSON.readTree(binding.write(input));
-            var validation = ContractResponseValidator.builder().schema(source.document().path("input").path("schema"))
-                    .build().read(node.toString(), true);
-            if (!validation.accepted()) throw new IllegalArgumentException();
+            // Input never permits repairs and does not use a normalized response tree. Reuse core's
+            // existing schema API rather than running the response-repair pipeline and reparsing input.
+            if (!SchemaValidation.isValid(source.document().path("input").path("schema"), node))
+                throw new IllegalArgumentException();
             Map<String, @Nullable Object> parameters = new LinkedHashMap<>();
             source.document().path("input").path("schema").path("properties").fieldNames()
                     .forEachRemaining(name -> parameters.put(name, null));
+            // Render the original parsed values, preserving existing numeric representation and optional nulls.
             parameters.putAll(PromptContract.JSON.convertValue(node, new com.fasterxml.jackson.core.type.TypeReference<Map<String, @Nullable Object>>() {}));
             parameters.put("contract", metadata(source));
             // Core has already checked the ST4 AST. Spring's lexical check misidentifies separators and local variables.

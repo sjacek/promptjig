@@ -7,6 +7,11 @@ Changes under **Unreleased** are not yet published.
 
 ### Added
 
+- Check whether JSON data matches your schema before using it in your
+  application, without calling a model or changing the data. For already
+  parsed JSON, use `SchemaValidation.isValid(schema, value)` from the core
+  library. Schema references are resolved locally; when reading JSON text,
+  use a strict parser to reject duplicate keys and extra content after the value.
 - Evaluate announcement extraction against 25 reviewed fictional documents,
   including conflicting dates or venues, hybrid events, mixed admission prices
   and missing facts. Keep the original five-case suite for shorter experiments.
@@ -14,11 +19,9 @@ Changes under **Unreleased** are not yet published.
   preserved unknowns, repairs, rejections, truncation and provider failures.
   Reports retain model settings, contract and dataset identities, finish reasons,
   reported token usage and extraction time, even when a case fails.
-- Investigate failed local-model calls using cause-based failure categories,
-  exception class names, HTTP status and UTC call intervals. Reports distinguish
-  confirmed timeout causes from interrupted I/O and unknown failures without
-  retaining error messages or provider bodies. JSON report format 2 adds
-  `failureDiagnostics` and `callTiming`; historical format 1 reports stay valid.
+- Find out whether a local-model call timed out, was interrupted or failed for
+  another reason. Reports include HTTP status when available and UTC start/end
+  times, without copying provider error messages or response bodies.
 - Try the full regression report without a model using an explicitly labelled
   synthetic replay, then run the same corpus on a local model with
   `runLocalRegression`. Real inference remains opt-in.
@@ -27,6 +30,19 @@ Changes under **Unreleased** are not yet published.
 
 - Run the small public-announcement pilot with the published Gradle plugin and
   core/Spring AI libraries 0.3.1, without a local Promptjig source build.
+
+### Fixed
+
+- Use a JSON field named `java` alongside lists without compilation errors in
+  generated Java models. JSON still uses `java`. After regenerating models,
+  replace direct calls to `java()` with `java_()`, including in models that
+  have no lists.
+
+### Compatibility
+
+- If your tools read the pilot's JSON quality reports, support report format 2
+  and its `failureDiagnostics` and `callTiming` fields. Historical format 1
+  reports remain valid.
 
 ## 0.3.1 — 2026-11-14
 

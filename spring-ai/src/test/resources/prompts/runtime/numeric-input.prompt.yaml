@@ -1,0 +1,24 @@
+promptContract: 1
+id: runtime.numeric-input
+version: 1
+messages:
+  - role: user
+    template: numeric-input.user.st
+input:
+  schema:
+    type: object
+    additionalProperties: false
+    required: [count, amount, entries]
+    properties:
+      count: {type: integer}
+      amount: {type: number}
+      optional: {type: [string, 'null']}
+      entries:
+        type: array
+        items: {type: string}
+output:
+  format: json
+  schema:
+    type: object
+    additionalProperties: false
+    properties: {}

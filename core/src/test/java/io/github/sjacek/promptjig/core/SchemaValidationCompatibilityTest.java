@@ -36,8 +36,10 @@ class SchemaValidationCompatibilityTest {
         var compiled = SchemaValidation.compile(schema);
 
         assertTrue(SchemaValidation.validate(compiled, value).isEmpty());
+        assertTrue(SchemaValidation.isValid(schema, value));
         assertEquals(original, value);
         assertFalse(SchemaValidation.validate(compiled, PromptContract.JSON.createObjectNode().put("different", true)).isEmpty());
+        assertFalse(SchemaValidation.isValid(schema, PromptContract.JSON.createObjectNode().put("different", true)));
     }
 
     @ParameterizedTest
@@ -50,6 +52,9 @@ class SchemaValidationCompatibilityTest {
         assertEquals(exact.doubleValue(), different.doubleValue(), "The fixture must expose a double-rounding error");
         assertTrue(SchemaValidation.validate(compiled, exact).isEmpty());
         assertEquals(List.of("enum"), SchemaValidation.validate(compiled, different).stream().map(Error::getKeyword).toList());
+        // The adapter-facing boolean API must retain the same exact-number semantics as compiled validation.
+        assertTrue(SchemaValidation.isValid(schema, exact));
+        assertFalse(SchemaValidation.isValid(schema, different));
     }
 
     private static Stream<Arguments> preciseNumbers() {
@@ -111,9 +116,20 @@ class SchemaValidationCompatibilityTest {
         });
         server.start();
         try {
-            var schema = PromptContract.JSON.createObjectNode()
-                    .put("$ref", "http://127.0.0.1:" + server.getAddress().getPort() + "/schema");
+            var location = new java.net.URI("http://127.0.0.1:" + server.getAddress().getPort() + "/schema").toURL();
+            // Prove the endpoint is reachable so zero requests cannot be explained by a broken test server.
+            var connection = location.openConnection();
+            connection.setConnectTimeout(2000);
+            connection.setReadTimeout(2000);
+            try (var body = connection.getInputStream()) {
+                assertEquals("{\"type\":\"string\"}", new String(body.readAllBytes(), StandardCharsets.UTF_8));
+            }
+            assertEquals(1, requests.get());
+            requests.set(0);
+            var schema = PromptContract.JSON.createObjectNode().put("$ref", location.toString());
             assertThrows(RuntimeException.class, () -> SchemaValidation.validate(SchemaValidation.compile(schema),
+                    PromptContract.JSON.getNodeFactory().textNode("synthetic-testdata")));
+            assertThrows(RuntimeException.class, () -> SchemaValidation.isValid(schema,
                     PromptContract.JSON.getNodeFactory().textNode("synthetic-testdata")));
             assertEquals(0, requests.get(), "Schema validation must stay offline");
         } finally {

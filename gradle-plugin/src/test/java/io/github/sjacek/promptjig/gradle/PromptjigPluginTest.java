@@ -81,6 +81,33 @@ class PromptjigPluginTest {
 
     private Path generated(Path project) { return project.resolve("build/generated/sources/prompt-contracts/java/main"); }
 
+    @ParameterizedTest
+    @ValueSource(strings = {"v2", "v3"})
+    void javaNamedPropertyAndListsCompileThroughTheIsolatedGenerator(String jackson) throws Exception {
+        Path project = fixture("java-property-" + jackson + "-testdata"); generation(project, jackson);
+        String document = Files.readString(contract(project)).replace("\r\n", "\n").replace("version: 1", "version: 2");
+        int output = document.indexOf("\noutput:");
+        assertTrue(output > 0);
+        Files.writeString(contract(project), document.substring(0, output) + "\n" + """
+                output:
+                  format: json
+                  schema:
+                    type: object
+                    additionalProperties: false
+                    properties:
+                      java: {type: string}
+                      tags:
+                        type: array
+                        items: {type: string}
+                """);
+        var result = runner(project, "promptContractsLock", "compileJava", "--offline").build();
+        assertEquals(TaskOutcome.SUCCESS, outcome(result, ":promptContractsGenerate"));
+        assertEquals(TaskOutcome.SUCCESS, outcome(result, ":compileJava"));
+        String source = Files.readString(generated(project).resolve("example/generated/CertificateExtractionOutput.java"));
+        assertTrue(source.contains("JsonProperty(\"java\") java.lang.String java_"));
+        assertEquals(TaskOutcome.UP_TO_DATE, outcome(runner(project, "compileJava", "--offline").build(), ":promptContractsGenerate"));
+    }
+
     @Test
     void customOutputAndResourcePrefixAreTrackedByCompilationAndConfigurationCache() throws Exception {
         Path project = fixture("custom-generation"); generation(project, "v3");
@@ -419,5 +446,27 @@ class PromptjigPluginTest {
         Files.delete(source);
         Files.deleteIfExists(project.resolve("prompt-contracts.lock.json"));
         assertEquals(TaskOutcome.SUCCESS, outcome(runner(project, "check").build(), ":promptContractsValidate"));
+    }
+
+    @Test
+    void replacingAnEmptySourceDirectoryWithAFileCannotReuseSuccessfulValidation() throws Exception {
+        Path project = fixture("source-kind-testdata");
+        Files.writeString(project.resolve("build.gradle"), """
+                plugins { id 'io.github.sjacek.promptjig' }
+                promptContracts {
+                    source = layout.projectDirectory.dir('empty-prompts')
+                    lockFile = layout.projectDirectory.file('empty-lock.json')
+                }
+                """);
+        Path source = project.resolve("empty-prompts");
+        Files.createDirectories(source);
+        assertEquals(TaskOutcome.SUCCESS, outcome(runner(project, "check", "--offline").build(), ":promptContractsValidate"));
+        assertEquals(TaskOutcome.UP_TO_DATE, outcome(runner(project, "check", "--offline").build(), ":promptContractsValidate"));
+        Files.delete(source);
+        Files.writeString(source, "source-is-a-file-testdata");
+        var failed = runner(project, "check", "--offline").buildAndFail();
+        assertEquals(TaskOutcome.FAILED, outcome(failed, ":promptContractsValidate"));
+        assertTrue(failed.getOutput().contains("Prompt source must be a directory"));
+        assertFalse(Files.exists(project.resolve("empty-lock.json")));
     }
 }
