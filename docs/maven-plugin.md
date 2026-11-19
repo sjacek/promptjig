@@ -1,8 +1,8 @@
 # Maven plugin
 
-The Maven adapter **0.3.1** is published in Maven Central. The Gradle Portal
+The Maven adapter **0.4.0** is published in Maven Central. The Gradle Portal
 plugin and Central runtime libraries are separate publications, also available
-as 0.3.1. Maven projects need Java 17+ and Maven 3.9+.
+as 0.4.0. Maven projects need Java 17+ and Maven 3.9+.
 Maven 4 compatibility is checked against the pinned preview 4.0.0-rc-7;
 this does not promise compatibility with every future Maven 4 preview.
 
@@ -15,7 +15,7 @@ Store UTF-8 `.prompt.yaml` contracts and referenced `.st` templates in
 <plugin>
   <groupId>io.github.sjacek.promptjig</groupId>
   <artifactId>promptjig-maven-plugin</artifactId>
-  <version>0.3.1</version>
+  <version>0.4.0</version>
   <configuration>
     <packageName>example.generated</packageName>
     <jackson>v3</jackson>
@@ -45,7 +45,7 @@ not add Spring AI or a model client to your application's dependencies.
 For a new contract version, explicitly run:
 
 ```shell
-mvn io.github.sjacek.promptjig:promptjig-maven-plugin:0.3.1:lock
+mvn io.github.sjacek.promptjig:promptjig-maven-plugin:0.4.0:lock
 mvn verify
 ```
 
@@ -92,7 +92,7 @@ contracts. Read the individual rule IDs in these reports; the adapter reports
 all findings from the core pass before failing Maven. Filesystem/report-writing
 errors are execution errors rather than contract validation failures.
 
-## Build and test the unpublished adapter
+## Build and test the current producer
 
 The producer is Gradle: it generates the Maven descriptor and stages the
 adapter with its current core version. No second Maven producer build or

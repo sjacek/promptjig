@@ -10,7 +10,7 @@ The examples retain their reviewed, published version pins. The small Spring AI
 pilot uses Portal plugin **0.3.1** and Central core/runtime **0.3.1**; the
 validation-only Gradle consumer uses Portal **0.1.0**, and the standalone Maven
 example uses **0.3.0**. The small pilot's upgrade is independent of those examples.
-The installation guides show the current 0.3.1 release for new applications.
+The installation guides show the current 0.4.0 release for new applications.
 
 ## Public announcement: no model required
 
@@ -84,7 +84,9 @@ a generated Java record alone does not validate every schema rule.
 
 Follow the [complete example workflow](https://github.com/sjacek/promptjig/blob/main/examples/runtime/README.md#follow-the-contract-workflow)
 and [version-history guide](versioning.md) for lock/baseline commands. Keep the
-published 0.3.1 pins until a later release is available and reviewed for adoption.
+published 0.3.1 pins for this example until its separate consumer upgrade.
+Release 0.4.0 is available in both registries; publication alone does not update
+the example's dependency pins.
 Producer changes on `main` are separate from the libraries used by this example.
 
 ## Regression reports for 25 announcements
@@ -166,4 +168,4 @@ mvn verify
 No private staging repository or local Promptjig installation is needed.
 The source acceptance harness separately tests the current candidate in a private
 copy; it does not rewrite the example's published version pin. See
-[Maven availability and setup](maven.md) to use 0.3.1 in your own project.
+[Maven availability and setup](maven.md) to use 0.4.0 in your own project.

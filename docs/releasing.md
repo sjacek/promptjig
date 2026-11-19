@@ -1,48 +1,50 @@
 # Release procedure
 
-Published Gradle plugin: **0.3.1** in the
-[Plugin Portal](https://plugins.gradle.org/plugin/io.github.sjacek.promptjig/0.3.1),
-availability confirmed on 2026-11-14. That version is immutable; further releases
+Published Gradle plugin: **0.4.0** in the
+[Plugin Portal](https://plugins.gradle.org/plugin/io.github.sjacek.promptjig/0.4.0),
+availability confirmed on 2026-11-18. That version is immutable; further releases
 need a new build version, reviewed commit and release tag.
 Verification and local staging do not upload artifacts.
-The core and Spring AI runtime libraries and Maven adapter **0.3.1** were published
-to Maven Central on 2026-11-14. Strict response reading has been the default since
+The core and Spring AI runtime libraries and Maven adapter **0.4.0** were published
+to Maven Central on 2026-11-18. Strict response reading has been the default since
 0.2.0. Set the producer
 publication version in `gradle/libs.versions.toml` (`versions.promptjig`);
 the root build reads it for
 all project publications. Gradle Plugin Portal publication remains independent.
-Both [Central](https://github.com/sjacek/promptjig/actions/runs/43587972410)
-and [Portal](https://github.com/sjacek/promptjig/actions/runs/43587989664) release
-workflows succeeded for `v0.3.1` at `605c8b26e2ca0978bce213802aaada03deef7b31`.
+Both [Central](https://github.com/sjacek/promptjig/actions/runs/44401311928)
+and [Portal](https://github.com/sjacek/promptjig/actions/runs/44401320037) release
+workflows succeeded for `v0.4.0` at `a5c7daefe3b5cf15deb170f579297076000bf391`.
 Public JARs, Central signatures and both registries' SBOMs were checked against
-the accepted CI; [release evidence](evidence/publication-0.3.1.json) records the result.
+the accepted CI; [release evidence](evidence/publication-0.4.0.json) records the result.
 Commits, tags and pushes are performed by the owner; Codex does not commit or push.
 
 Historical plugin-release checks: [publication readiness](publication-readiness.md).
-Current local checks of the public libraries:
+Historical local checks of the public 0.2.0 libraries:
 [published runtime consumer](evidence/published-runtime-consumer-2026-11-13.json).
 
-## Current candidate: 0.4.0
+## Published 0.4.0 and consumer adoption
 
 The producer version is **0.4.0** for core, Spring AI runtime, Maven plugin and
-Gradle plugin publications. It is an unpublished candidate. Its scope includes
+Gradle plugin publications. It was published on 2026-11-18. Its scope includes
 `SchemaValidation.isValid(schema, value)`, the generator's `java()` → `java_()`
 migration, the thin input-validation path and the contract-workflow example.
-The [changelog](../CHANGELOG.md) remains explicitly marked **Unreleased**;
-record an actual release date only after publication is confirmed.
+The [changelog](../CHANGELOG.md) records that publication date and the
+user-visible migration requirements.
 
 The independent `promptjigRuntime` and `promptjigPlugin` consumer pins remain
-**0.3.1**. Both pilots keep their published dependencies until 0.4.0 exists in
-the registries. `docs/user-docs/_config.yml` and installation snippets continue
-to describe available releases. Candidate tests and private staging use the
-producer version without changing those public consumer pins.
+**0.3.1**. Both pilots await separate consumer upgrades despite 0.4.0 being
+available. `docs/user-docs/_config.yml` and installation snippets describe
+published 0.4.0. First verify a full isolated public consumer build, then review
+new binary, metadata and IDE-source checksums before adopting it in the pilots.
+Private producer staging does not change public consumer pins.
 
 Review the [generator migration checklist](user-docs/java-generation.md#upgrade-generated-models)
 and user-visible compatibility notes. Unchanged contract fingerprints and locks
 remain valid; a property-name collision requires a deliberate contract change.
-After the version change, obtain a new complete Compatibility result on the
-candidate commit before creating `v0.4.0`. Earlier green CI for `3e48081` does
-not verify the future tagged candidate. Verification and staging do not publish.
+Tag [Compatibility](https://github.com/sjacek/promptjig/actions/runs/44399486513)
+passed all 20 jobs for the released commit. Future releases require a new
+version, reviewed commit, complete CI result and immutable tag. Verification
+and staging alone do not publish.
 
 ## Verify the candidate
 
@@ -129,10 +131,10 @@ The separate manual **Publish Maven Central artifacts** workflow prepares signed
 packages and uploads them through the Central Publisher API. It is described in
 [Maven Central releases](maven-central.md), including required environment secrets,
 local verification, release guards and status-only recovery. Both libraries are
-publicly available as 0.3.1, alongside the Maven adapter. Plugin Portal publishes the build plugin separately;
+publicly available as 0.4.0, alongside the Maven adapter. Plugin Portal publishes the build plugin separately;
 it does not make the runtime coordinates available.
 
-The 0.3.1 release paths require [audited SBOM attachments](sbom-publication.md)
+Current release paths require [audited SBOM attachments](sbom-publication.md)
 and a clean Portal publication regression before staging. The published 0.3.0
 Portal plugin omitted its SBOM JAR; the public 0.3.1 classifier is present and
 contains the four exact audited documents. Central 0.3.0 attachments remain available.
@@ -145,7 +147,7 @@ before inventories exist, but does not authorize a release without SBOMs.
 ## Publish the reviewed tag
 
 For a new release, update the build version and have the owner create and push
-an immutable `v<version>` tag for the reviewed commit. Do not republish `0.1.0`.
+an immutable `v<version>` tag for the reviewed commit. Do not republish existing versions, including `0.4.0`.
 Configure the GitHub environment `plugin-portal` with protected deployment
 approval as appropriate and secrets `GRADLE_PUBLISH_KEY` / `GRADLE_PUBLISH_SECRET`.
 Never pass their values in command-line arguments, logs or repository files.
@@ -166,7 +168,7 @@ The `tichodroma-svc` runtime pilot uses the explicit `-PpromptjigPilot=true`
 opt-in and its mandatory `test:promptjig-pilot` CI job. Both that pilot and the
 [standalone public-announcement example](../examples/runtime/README.md) use public
 releases independently. Both the service pilot and the small example retain
-core/runtime and Portal plugin **0.3.1** while 0.4.0 is being prepared.
+core/runtime and Portal plugin **0.3.1** pending a separate adoption of published 0.4.0.
 
 No source checkout is required in either normal pilot or pilot CI.
 `promptjigBuildDir` remains an explicit development override, substituting plugin,

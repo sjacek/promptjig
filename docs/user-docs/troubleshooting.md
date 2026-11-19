@@ -66,7 +66,7 @@ change tokens, model selection, deadlines or fallback automatically.
 The published versions are Portal plugin **{{ site.releases.gradle_plugin }}**
 and core/Spring AI libraries **{{ site.releases.runtime }}** from Maven Central.
 The Maven plugin **{{ site.releases.maven_plugin }}** is also available in Central.
-All current components are 0.3.1, but are published separately; check the exact
+All current components are 0.4.0, but are published separately; check the exact
 group, artifact, version and repository when resolving a dependency. The bundled
 examples deliberately keep the older published pins listed in [examples](examples.md).
 

@@ -6,7 +6,7 @@ in `docs/`. This file is excluded from the published site.
 
 The site uses the existing Promptjig icon and a small responsive layout with no
 remote fonts, JavaScript framework, tracking or external theme. Release numbers
-and navigation live in `_config.yml`. All four current publications are 0.3.1.
+and navigation live in `_config.yml`. All four current publications are 0.4.0.
 Update release numbers only after verifying actual registry availability;
 changing the producer's version alone is not publication. Keep the examples'
 reviewed older pins explicit instead of describing them with the latest versions.

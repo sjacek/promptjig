@@ -1,6 +1,6 @@
 # Spring AI runtime
 
-`io.github.sjacek.promptjig:promptjig-spring-ai:0.3.1` is available in Maven Central
+`io.github.sjacek.promptjig:promptjig-spring-ai:0.4.0` is available in Maven Central
 and targets Java 17+ and Spring AI 2.0.x (tested with 2.0.2). It is a library,
 without a model client, Boot auto-configuration, transport, logging or audit
 persistence. A local Promptjig checkout is not required. The
@@ -33,7 +33,7 @@ deriving a replacement schema from Java types does not establish equivalent K5
 repair behavior or safe findings. Local resource restrictions, strict UTF-8,
 immutable snapshots and privacy-safe failures also remain explicit boundaries.
 
-The unpublished **0.4.0 candidate** adds the core's small
+Release **0.4.0** adds the core's small
 `SchemaValidation.isValid(schema, value)` boundary, so the adapter does not
 need Networknt types or a new validator dependency. It avoids passing already parsed input through the
 response-repair pipeline and an extra adapter encode/parse cycle. Optional nulls,
@@ -44,7 +44,7 @@ strictly before applying K5 and binding.
 
 ```toml
 [versions]
-promptjig = "0.3.1"
+promptjig = "0.4.0"
 [libraries]
 promptjig-runtime = { module = "io.github.sjacek.promptjig:promptjig-spring-ai", version.ref = "promptjig" }
 ```
@@ -186,7 +186,7 @@ input, or the backend's `response_format.json_schema.strict` option.
 
 Previously, an omitted `output.strict` selected repairing mode. Review those
 contracts before upgrading from the 0.1 development runtime to 0.2.0 or newer,
-including 0.3.1: leave the field absent to require valid responses,
+including 0.4.0: leave the field absent to require valid responses,
 or explicitly set it to `false` to retain repairs. Explicit `true` and `false`
 keep their behavior. Direct core callers still pass the policy explicitly to
 `ContractResponseValidator.read(rawJson, strict)`.

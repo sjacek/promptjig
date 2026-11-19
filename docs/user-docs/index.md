@@ -32,13 +32,24 @@ or run the [small public-announcement example](examples.md).
 | [Spring AI library](spring-ai.md) | {{ site.releases.runtime }}, Maven Central | Validated rendering and reading typed responses |
 | [Maven plugin](maven.md) | {{ site.releases.maven_plugin }}, Maven Central | Build-time validation, history protection and Java generation |
 
-These components are published separately; the current release is 0.3.1 for all
+These components are published separately; the current release is 0.4.0 for all
 four. Applying the build plugin
 does not add the runtime to your application. Adding the runtime does not
 generate Java sources or check the version lock during the build.
 
-Release 0.3.1 includes signed SBOM JSON attachments in Maven Central and a
+Release 0.4.0 includes signed SBOM JSON attachments in Maven Central and a
 separate SBOM JAR in Plugin Portal. See [how to download and read them](sbom.md).
+
+## Upgrade to 0.4.0
+
+Validate already parsed JSON with the core's
+`SchemaValidation.isValid(schema, value)` without calling a model or changing
+the data. The generator also supports a JSON property named `java` alongside
+lists. After regenerating models, replace Java calls to `java()` with `java_()`;
+the JSON key stays `java`. Follow the [migration checklist](java-generation.md#upgrade-generated-models).
+
+The bundled pilots retain 0.3.1 until a separate consumer upgrade; see
+[the examples and their version pins](examples.md).
 
 ## The workflow
 

@@ -1,14 +1,14 @@
 # Gradle plugin
 
-Version 0.3.1 is available in the
-[Gradle Plugin Portal](https://plugins.gradle.org/plugin/io.github.sjacek.promptjig/0.3.1).
+Version 0.4.0 is available in the
+[Gradle Plugin Portal](https://plugins.gradle.org/plugin/io.github.sjacek.promptjig/0.4.0).
 The declaration below resolves the published plugin without a Promptjig checkout.
 
 ## Setup
 
 ```groovy
 plugins {
-    id 'io.github.sjacek.promptjig' version '0.3.1'
+    id 'io.github.sjacek.promptjig' version '0.4.0'
 }
 
 promptContracts {

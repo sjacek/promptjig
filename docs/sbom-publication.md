@@ -1,10 +1,10 @@
 # SBOM release attachments
 
-Promptjig **0.3.1** is published with audited CycloneDX 1.6 attachments in both
+Promptjig **0.4.0** is published with audited CycloneDX 1.6 attachments in both
 registries. The Central libraries and Maven plugin carry twelve signed JSON
 documents; the Portal classifier JAR carries four exact audited documents.
 Their public bytes were checked against the accepted CI, along with all 27
-Central signatures; see [release evidence](evidence/publication-0.3.1.json).
+Central signatures; see [release evidence](evidence/publication-0.4.0.json).
 
 Portal **0.3.0** is usable but has no separate SBOM JAR: its publisher selected
 only existing files and did not schedule the classifier producer. Release 0.3.1

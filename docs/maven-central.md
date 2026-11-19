@@ -1,12 +1,15 @@
 # Maven Central releases
 
-The latest published Central release is **0.3.1**, including `promptjig-core`,
+The latest published Central release is **0.4.0**, including `promptjig-core`,
 `promptjig-spring-ai` and `promptjig-maven-plugin`. Publication completed on
-2026-11-14 in [this workflow](https://github.com/sjacek/promptjig/actions/runs/43587972410).
-Deployment `8f163730-b1f8-43bd-8dc7-218e05d1ca32` reached `PUBLISHED`.
+2026-11-18 in [this workflow](https://github.com/sjacek/promptjig/actions/runs/44401311928).
+Deployment `873a42a3-8f06-4dd6-a596-6af0794f2a91` reached `PUBLISHED`.
 All 27 public payloads and detached signatures were verified. The three main
 JAR hashes and twelve SBOM JSON attachments match the accepted tag CI exactly.
-See the [release evidence](evidence/publication-0.3.1.json).
+See the [release evidence](evidence/publication-0.4.0.json).
+These public-file checks do not replace a full isolated consumer build for 0.4.0;
+that acceptance and pilot adoption are the next steps. The completed 0.3.1
+consumer acceptance below remains a historical result.
 
 The previous runtime library release **0.2.0** has these two coordinates:
 
@@ -109,7 +112,7 @@ snapshots. The workflow artifact retains only `state.json` for recovery.
    to pass for that exact commit. The new workflow must also be present on the
    repository's default branch before GitHub accepts manual dispatches.
    Codex does not commit or push.
-2. Have the owner create/push the immutable matching tag, for example `v0.3.1`.
+2. Have the owner create/push the immutable matching tag, for example `v<version>`.
 3. Dispatch **Publish Maven Central artifacts** with that tag and an empty
    `deployment_id`. A tag/push alone never uploads.
 

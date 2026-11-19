@@ -67,15 +67,16 @@ null arrays are normalized to empty lists and lists are defensively copied.
 Nullable enum values map to null rather than an extra enum constant. Java-safe
 component names retain their original JSON property name through `@JsonProperty`.
 
-The **0.4.0 candidate** maps the JSON property `java` to the Java component
+Since **0.4.0**, the generator maps the JSON property `java` to the Java component
 `java_`, including in records without lists. JSON keeps the original key.
 This avoids compilation errors when records also contain lists.
 
 ## Upgrade generated models
 
-**Availability:** these steps describe migration from 0.3.x to the 0.4.0
-candidate. Version 0.4.0 is not yet published. Installation examples and the
-small pilot retain published 0.3.1 until the release is available and adopted.
+**Availability:** version 0.4.0 was published on 2026-11-18 in Maven Central
+and Gradle Plugin Portal. These steps describe migration from 0.3.x. Installation
+guides use 0.4.0; the bundled small pilot retains 0.3.1 pending a separate
+consumer upgrade.
 
 1. Upgrade the generator used by your build: the Gradle plugin or Maven plugin.
    Upgrade core/runtime libraries to the matching release when your application

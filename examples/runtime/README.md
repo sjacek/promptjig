@@ -41,8 +41,9 @@ tests. Its scope and adoption steps are recorded in the service repository's
 The regression corpus now has 25 reviewed cases and JSON/Markdown reports (see
 below). Keep inference explicit and required CI deterministic.
 Both pilots consume released core/runtime libraries from Maven Central. The
-small pilot stays on **0.3.1** until a later release is published and adopted;
-unreleased changes on the producer's `main` do not update this consumer.
+small pilot stays on **0.3.1** pending a separate consumer upgrade. Release
+**0.4.0** is now available in both registries; producer releases and changes
+on `main` do not automatically update this consumer.
 
 ## Run the small example
 

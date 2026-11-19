@@ -14,6 +14,19 @@ and Promptjig applies the authored contract's schemas and read policy. Input
 validation always rejects violations, including when output repairs are enabled.
 Model calls, retries, audit, transactions and fallback remain application concerns.
 
+## Validate parsed JSON without Spring
+
+Since 0.4.0, core consumers can call `SchemaValidation.isValid(schema, value)`
+with `com.fasterxml.jackson.databind.JsonNode` values (Jackson 2 trees). The
+method applies offline schema validation and format checks without repairing or
+mutating the data. A schema mismatch returns `false`; an invalid schema or
+unresolvable reference remains an error. Reject duplicate keys and trailing
+content when parsing JSON text, before calling this API.
+
+The Spring AI adapter delegates its input checks to this core boundary; input
+validation stays strict regardless of the output repair policy. The API does
+not expose native validator types or add model orchestration.
+
 ## Add the library
 
 In `gradle/libs.versions.toml`:

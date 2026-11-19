@@ -88,4 +88,4 @@ against the previous protected revision rather than the newly pushed lock itself
 The contract's integer version identifies instructions and schema. The Promptjig
 library/plugin version identifies software behavior. Record both when comparing
 model runs. For example, runtime 0.2.0 changed the default read policy without
-inserting `strict` into unchanged authored contracts; 0.3.1 retains that strict default.
+inserting `strict` into unchanged authored contracts; 0.4.0 retains that strict default.

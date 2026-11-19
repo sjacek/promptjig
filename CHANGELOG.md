@@ -3,10 +3,11 @@
 Changes to Promptjig's features, compatibility and availability.
 Changes under **Unreleased** are not yet published.
 
-## 0.4.0 — Unreleased
+## 0.4.0 — 2026-11-18
 
-This version is being prepared for publication. The current published release
-remains 0.3.1; the examples keep their reviewed published dependency pins.
+The Gradle plugin is available in Plugin Portal. The core, Spring AI runtime and
+Maven plugin are available in Maven Central. The examples keep their independently
+reviewed published dependency pins.
 
 ### Added
 

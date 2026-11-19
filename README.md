@@ -17,9 +17,9 @@
         generated types with safe validation findings.
       </p>
       <p>
-        Gradle plugin <strong>0.3.1</strong> is available in the
-        <a href="https://plugins.gradle.org/plugin/io.github.sjacek.promptjig/0.3.1">Gradle Plugin Portal</a>.
-        The core, Spring AI runtime and Maven plugin <strong>0.3.1</strong> are available in Maven Central,
+        Gradle plugin <strong>0.4.0</strong> is available in the
+        <a href="https://plugins.gradle.org/plugin/io.github.sjacek.promptjig/0.4.0">Gradle Plugin Portal</a>.
+        The core, Spring AI runtime and Maven plugin <strong>0.4.0</strong> are available in Maven Central,
         independently of the build plugin release. The runtime rejects schema
         violations by default; repairing responses requires <code>output.strict: false</code>.
         The core targets Java 17; the plugin supports Gradle 9.0+ on a supported JDK 17+.
@@ -35,15 +35,15 @@ Read the [user guide](docs/user-docs/index.md) for setup, contracts, Java genera
 Spring AI integration and troubleshooting. Its GitHub Pages source is in `docs/user-docs`.
 
 See the [changelog](CHANGELOG.md) for user-visible changes and compatibility notes.
-The next release candidate is **0.4.0**, with parsed-JSON schema validation and
-the generator's `java()` → `java_()` migration. It is not yet published; see the
+Release **0.4.0** is available in both registries, with parsed-JSON schema
+validation and the generator's `java()` → `java_()` migration. See the
 [migration guide](docs/user-docs/java-generation.md#upgrade-generated-models).
-The installation examples below continue to use published versions.
+Installation snippets use 0.4.0; checked-in examples retain their independent pins.
 
 The published [Maven adapter](docs/maven-plugin.md) provides validation,
 append-only locks and Java generation. The [Maven example](examples/maven/README.md)
 uses its reviewed published 0.3.0 pin and runs independently with `mvn verify`.
-Release 0.3.1 includes [signed SBOM JSONs in Central and a separate Portal SBOM JAR](docs/user-docs/sbom.md).
+Release 0.4.0 includes [signed SBOM JSONs in Central and a separate Portal SBOM JAR](docs/user-docs/sbom.md).
 Maintainers can prepare a [signed Maven Central release](docs/maven-central.md)
 independently of the Gradle Plugin Portal publication.
 
@@ -53,7 +53,7 @@ Apply the published plugin:
 
 ```groovy
 plugins {
-    id 'io.github.sjacek.promptjig' version '0.3.1'
+    id 'io.github.sjacek.promptjig' version '0.4.0'
 }
 ```
 

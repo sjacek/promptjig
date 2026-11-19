@@ -5,7 +5,7 @@ permalink: /sbom/
 
 # Software bill of materials
 
-**Promptjig 0.3.1 includes SBOM attachments in both registries.** Maven Central
+**Promptjig 0.4.0 includes SBOM attachments in both registries.** Maven Central
 provides signed JSON documents for the libraries and Maven plugin; Gradle Plugin
 Portal provides a separate SBOM JAR. Portal 0.3.0 omitted that JAR; Central 0.3.0
 already has its JSON attachments. Portal 0.1.0 and Central 0.2.0 have no SBOMs.
@@ -37,10 +37,10 @@ the JSON with the same artifact version as your JAR:
 | test | `cyclonedx-test` / `json` |
 | provided | `cyclonedx-provided` / `json` |
 
-For example, the published 0.3.1 core runtime inventory is:
+For example, the published 0.4.0 core runtime inventory is:
 
 ```text
-https://repo.maven.apache.org/maven2/io/github/sjacek/promptjig/promptjig-core/0.3.1/promptjig-core-0.3.1-cyclonedx.json
+https://repo.maven.apache.org/maven2/io/github/sjacek/promptjig/promptjig-core/0.4.0/promptjig-core-0.4.0-cyclonedx.json
 ```
 
 The detached PGP signature uses the same URL with `.asc`; SHA-256 and SHA-512
@@ -50,11 +50,11 @@ well as signature validity. The main JAR's SHA-256 appears in the SBOM's
 
 ## Gradle Plugin Portal
 
-The published Portal 0.3.1 distribution carries the four documents in a separate
+The published Portal 0.4.0 distribution carries the four documents in a separate
 classifier JAR. Download it from:
 
 ```text
-https://plugins.gradle.org/m2/io/github/sjacek/promptjig/promptjig-gradle-plugin/0.3.1/promptjig-gradle-plugin-0.3.1-sbom.jar
+https://plugins.gradle.org/m2/io/github/sjacek/promptjig/promptjig-gradle-plugin/0.4.0/promptjig-gradle-plugin-0.4.0-sbom.jar
 ```
 
 Open it as a ZIP and read:
